@@ -34,7 +34,7 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero */}
-      <section className="hero-section">
+      <section style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden', paddingTop: 90, paddingBottom: 60, paddingLeft: 24, paddingRight: 24 }}>
         <div className="hero-grid" />
         <div className="orb float"  style={{ top: '15%', left: '12%', width: 450, height: 450, background: 'rgba(99,102,241,0.09)' }} />
         <div className="orb float-2" style={{ bottom: '15%', right: '12%', width: 380, height: 380, background: 'rgba(59,130,246,0.08)' }} />
