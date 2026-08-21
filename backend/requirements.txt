@@ -1,0 +1,15 @@
+flask==3.0.3
+flask-cors==4.0.1
+flask-jwt-extended==4.6.0
+flask-sqlalchemy==3.1.1
+sqlalchemy==2.0.31
+psycopg[binary]==3.3.4
+gunicorn==22.0.0
+werkzeug==3.0.3
+google-genai==2.19.0
+python-docx==1.1.2
+pdfplumber==0.11.3
+Pillow==10.4.0
+python-dotenv==1.0.1
+python-slugify==8.0.4
+uuid==1.30
