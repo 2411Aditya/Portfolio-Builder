@@ -104,29 +104,29 @@ export default function CookieConsent() {
             <div className="cookie-banner-actions">
               <button
                 type="button"
-                onClick={openPreferencesModal}
-                className="button-secondary cookie-btn-sm"
-                aria-label="Customize cookie and tracking settings"
+                onClick={handleAcceptAll}
+                className="button-primary cookie-btn-sm cookie-btn-accept"
+                aria-label="Accept all cookies and tracking"
               >
-                <Settings size={14} />
-                <span>Customize</span>
+                <Check size={14} strokeWidth={2.5} />
+                <span>Accept All</span>
               </button>
               <button
                 type="button"
                 onClick={handleRejectNonEssential}
-                className="button-secondary cookie-btn-sm"
+                className="button-secondary cookie-btn-sm cookie-btn-reject"
                 aria-label="Reject non-essential cookies"
               >
                 Reject Non-Essential
               </button>
               <button
                 type="button"
-                onClick={handleAcceptAll}
-                className="button-primary cookie-btn-sm"
-                aria-label="Accept all cookies and tracking"
+                onClick={openPreferencesModal}
+                className="button-secondary cookie-btn-sm cookie-btn-customize"
+                aria-label="Customize cookie and tracking settings"
               >
-                <Check size={14} strokeWidth={2.5} />
-                <span>Accept All</span>
+                <Settings size={13} />
+                <span>Customize</span>
               </button>
             </div>
           </div>

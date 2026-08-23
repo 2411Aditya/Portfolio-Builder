@@ -231,23 +231,24 @@ export default function DashboardPage() {
           <Link to="/" className="nav-brand">
             <span>PortfolioAI</span>
           </Link>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          <div className="dash-header-actions">
             <button
               type="button"
               onClick={() => setCheckoutOpen(true)}
-              className="button-primary"
-              style={{ padding: '7px 14px', fontSize: 13, gap: 6 }}
+              className="button-primary dash-upgrade-btn"
             >
-              <Sparkles size={14} /> Upgrade to Pro (7-Day Trial)
+              <Sparkles size={13} />
+              <span>Upgrade to Pro</span>
             </button>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 10px', background: '#f5f5f5', border: '1px solid #d8d8d8', borderRadius: 4 }}>
-              <div style={{ width: 22, height: 22, borderRadius: 2, background: '#080808', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 600 }}>
+            <div className="dash-user-badge">
+              <div className="dash-user-avatar">
                 {user?.username?.[0]?.toUpperCase() || 'U'}
               </div>
-              <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--color-ink)' }}>{user?.username}</span>
+              <span className="dash-user-name">{user?.username}</span>
             </div>
-            <button id="dashboard-logout-btn" onClick={handleLogout} className="button-secondary" style={{ padding: '7px 12px', fontSize: 13 }} type="button">
-              <LogOut size={13} strokeWidth={1.5} /> Logout
+            <button id="dashboard-logout-btn" onClick={handleLogout} className="button-secondary dash-logout-btn" type="button" title="Logout">
+              <LogOut size={13} strokeWidth={1.5} />
+              <span className="logout-text">Logout</span>
             </button>
           </div>
         </div>
