@@ -982,25 +982,27 @@ input, textarea, select {
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-level-2);
   overflow: hidden;
+  width: 100%;
 }
 
 .browser-bar {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 12px 18px;
+  gap: 12px;
+  padding: 10px 14px;
   background-color: #f7f7f7;
   border-bottom: 1px solid var(--color-hairline);
 }
 
 .browser-dots {
   display: flex;
-  gap: 6px;
+  gap: 5px;
+  flex-shrink: 0;
 }
 
 .browser-dot {
-  width: 10px;
-  height: 10px;
+  width: 9px;
+  height: 9px;
   border-radius: var(--radius-full);
 }
 
@@ -1011,21 +1013,85 @@ input, textarea, select {
 .browser-url {
   flex: 1;
   max-width: 480px;
+  min-width: 0;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   background-color: #ffffff;
   border: 1px solid var(--color-hairline);
   border-radius: var(--radius-sm);
-  padding: 4px 12px;
+  padding: 4px 10px;
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 11px;
   color: var(--color-body-mid);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.browser-url span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Mockup Inner Components */
+.mockup-desktop-content {
+  padding: 24px;
+  background-color: #ffffff;
+}
+
+.mockup-header-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  margin-bottom: 18px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.mockup-header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  flex: 1;
+}
+
+.mockup-desktop-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 820px) {
+  .mockup-desktop-content {
+    padding: 14px;
+  }
+  .mockup-header-box {
+    padding: 14px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .mockup-header-left {
+    width: 100%;
+  }
+  .mockup-header-box .btn-whatsapp {
+    width: 100%;
+    justify-content: center;
+  }
+  .mockup-desktop-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Phone Mockup Frame */
 .phone-mockup-frame {
   max-width: 380px;
+  width: 100%;
   margin: 0 auto;
   background-color: #ffffff;
   border: 3px solid var(--color-ink);

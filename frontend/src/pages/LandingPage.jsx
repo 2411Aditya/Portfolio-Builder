@@ -317,70 +317,69 @@ function BrowserMockup() {
               <div className="browser-dot green" />
             </div>
             <div className="browser-url">
-              <Globe size={12} style={{ color: '#898989' }} aria-hidden="true" />
-              portfolio-builder.app/p/alex/developer-portfolio
+              <Globe size={11} style={{ flexShrink: 0, color: '#898989' }} aria-hidden="true" />
+              <span>portfolio-builder.app/p/alex/developer-portfolio</span>
             </div>
           </div>
 
-          <div style={{ padding: 28, backgroundColor: '#ffffff' }}>
+          <div className="mockup-desktop-content">
             {/* Header Card */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', border: '1px solid #d8d8d8', borderRadius: 8, padding: '20px 24px', marginBottom: 20 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                <div style={{ width: 52, height: 52, borderRadius: 4, background: '#080808', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600, fontSize: 20, flexShrink: 0 }}>
+            <div className="mockup-header-box">
+              <div className="mockup-header-left">
+                <div style={{ width: 44, height: 44, borderRadius: 4, background: '#080808', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600, fontSize: 18, flexShrink: 0 }}>
                   A
                 </div>
-                <div>
-                  <div style={{ fontSize: 18, fontWeight: 600, color: '#080808' }}>Alex Mercer</div>
-                  <div style={{ fontSize: 13, color: '#5a5a5a', marginBottom: 6 }}>Staff Full-Stack Engineer • San Francisco, CA</div>
+                <div style={{ minWidth: 0, flex: 1 }}>
+                  <div style={{ fontSize: 16, fontWeight: 600, color: '#080808', lineHeight: 1.2 }}>Alex Mercer</div>
+                  <div style={{ fontSize: 12, color: '#5a5a5a', margin: '3px 0 6px' }}>Staff Full-Stack Engineer • San Francisco, CA</div>
                   <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                    <span className="badge-green-soft">✓ Verified Profile</span>
-                    <span className="badge-neutral">3 Roles</span>
-                    <span className="badge-neutral">4 Projects</span>
-                    <span className="badge-neutral">12 Skills</span>
+                    <span className="badge-green-soft" style={{ fontSize: 11 }}>✓ Verified Profile</span>
+                    <span className="badge-neutral" style={{ fontSize: 11 }}>3 Roles</span>
+                    <span className="badge-neutral" style={{ fontSize: 11 }}>4 Projects</span>
+                    <span className="badge-neutral" style={{ fontSize: 11 }}>12 Skills</span>
                   </div>
                 </div>
               </div>
-              <a href="#wa" onClick={e => e.preventDefault()} className="btn-whatsapp">
-                <MessageCircle size={15} /> WhatsApp
+              <a href="#wa" onClick={e => e.preventDefault()} className="btn-whatsapp" style={{ flexShrink: 0, padding: '8px 14px', fontSize: 13 }}>
+                <MessageCircle size={14} /> WhatsApp
               </a>
             </div>
 
             {/* Grid Content */}
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 18 }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                <div style={{ border: '1px solid #d8d8d8', borderRadius: 8, padding: 18 }}>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: '#080808', marginBottom: 8 }}>About & Summary</div>
-                  <p style={{ fontSize: 13, color: '#363636', lineHeight: 1.6 }}>Specialized in building scalable distributed applications, microservices, and modern web architectures with high availability.</p>
+            <div className="mockup-desktop-grid">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                <div style={{ border: '1px solid #d8d8d8', borderRadius: 8, padding: 14 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: '#080808', marginBottom: 6 }}>About & Summary</div>
+                  <p style={{ fontSize: 12, color: '#363636', lineHeight: 1.55 }}>Specialized in building scalable distributed applications, microservices, and modern web architectures with high availability.</p>
                 </div>
-                <div style={{ border: '1px solid #d8d8d8', borderRadius: 8, padding: 18 }}>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: '#080808', marginBottom: 12 }}>Work Experience</div>
-                  <div style={{ borderLeft: '2px solid #080808', paddingLeft: 12, marginBottom: 12 }}>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: '#080808' }}>Senior Lead Engineer • Stripe</div>
-                    <div style={{ fontSize: 12, color: '#5a5a5a' }}>2022 — Present • Full-time</div>
+                <div style={{ border: '1px solid #d8d8d8', borderRadius: 8, padding: 14 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: '#080808', marginBottom: 10 }}>Work Experience</div>
+                  <div style={{ borderLeft: '2px solid #080808', paddingLeft: 10, marginBottom: 10 }}>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: '#080808' }}>Senior Lead Engineer • Stripe</div>
+                    <div style={{ fontSize: 11, color: '#5a5a5a' }}>2022 — Present • Full-time</div>
                   </div>
-                  <div style={{ borderLeft: '2px solid #d8d8d8', paddingLeft: 12 }}>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: '#080808' }}>Frontend Architect • Vercel</div>
-                    <div style={{ fontSize: 12, color: '#5a5a5a' }}>2020 — 2022 • Remote</div>
+                  <div style={{ borderLeft: '2px solid #d8d8d8', paddingLeft: 10 }}>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: '#080808' }}>Frontend Architect • Vercel</div>
+                    <div style={{ fontSize: 11, color: '#5a5a5a' }}>2020 — 2022 • Remote</div>
                   </div>
                 </div>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                <div style={{ border: '1px solid #d8d8d8', borderRadius: 8, padding: 18 }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: '#080808', marginBottom: 10 }}>Technical Stack</div>
-                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                    <span className="badge-neutral">React</span>
-                    <span className="badge-neutral">TypeScript</span>
-                    <span className="badge-neutral">Node.js</span>
-                    <span className="badge-neutral">GraphQL</span>
-                    <span className="badge-neutral">PostgreSQL</span>
-                    <span className="badge-neutral">Docker</span>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                <div style={{ border: '1px solid #d8d8d8', borderRadius: 8, padding: 14 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: '#080808', marginBottom: 8 }}>Technical Stack</div>
+                  <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
+                    <span className="badge-neutral" style={{ fontSize: 11 }}>React</span>
+                    <span className="badge-neutral" style={{ fontSize: 11 }}>TypeScript</span>
+                    <span className="badge-neutral" style={{ fontSize: 11 }}>Node.js</span>
+                    <span className="badge-neutral" style={{ fontSize: 11 }}>PostgreSQL</span>
+                    <span className="badge-neutral" style={{ fontSize: 11 }}>Docker</span>
                   </div>
                 </div>
-                <div style={{ border: '1px solid #d8d8d8', borderRadius: 8, padding: 18 }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: '#080808', marginBottom: 10 }}>Credentials</div>
-                  <div style={{ fontSize: 12, color: '#15803d', background: '#f0fdf4', border: '1px solid #bbf7d0', padding: '5px 8px', borderRadius: 4, marginBottom: 6 }}>✓ AWS Solutions Architect</div>
-                  <div style={{ fontSize: 12, color: '#15803d', background: '#f0fdf4', border: '1px solid #bbf7d0', padding: '5px 8px', borderRadius: 4 }}>✓ Meta Senior React Engineer</div>
+                <div style={{ border: '1px solid #d8d8d8', borderRadius: 8, padding: 14 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: '#080808', marginBottom: 8 }}>Credentials</div>
+                  <div style={{ fontSize: 11, color: '#15803d', background: '#f0fdf4', border: '1px solid #bbf7d0', padding: '4px 7px', borderRadius: 4, marginBottom: 4 }}>✓ AWS Solutions Architect</div>
+                  <div style={{ fontSize: 11, color: '#15803d', background: '#f0fdf4', border: '1px solid #bbf7d0', padding: '4px 7px', borderRadius: 4 }}>✓ Meta Senior React Engineer</div>
                 </div>
               </div>
             </div>
