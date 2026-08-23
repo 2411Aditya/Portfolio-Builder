@@ -1,249 +1,356 @@
 import React, { useState } from 'react';
 import {
   Mail, Phone, Link2, GitBranch, Globe, ExternalLink,
-  Briefcase, Code2, GraduationCap, Award, User, ChevronDown, MessageCircle
+  Briefcase, Code2, GraduationCap, Award, User,
+  CheckCircle2, MessageCircle, FileText, ChevronRight
 } from 'lucide-react';
 
-function SectionHeader({ icon, title }) {
-  return (
-    <div className="lp-section-header">
-      <div className="lp-section-icon">{icon}</div>
-      <h2>{title}</h2>
-      <div className="lp-section-line" />
-    </div>
-  );
-}
-
-function ExpItem({ exp }) {
-  return (
-    <div className="lp-exp-item">
-      <div className="lp-exp-dot" />
-      <div style={{ marginLeft: 20 }}>
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap', marginBottom: 8 }}>
-          <div>
-            <div className="lp-exp-role">{exp.role}</div>
-            <div className="lp-exp-company">{exp.company}</div>
-          </div>
-          {exp.duration && <span className="lp-exp-duration">{exp.duration}</span>}
-        </div>
-        {exp.description && (
-          <div className="lp-exp-desc">
-            {exp.description.split('\n').filter(Boolean).map((line, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginBottom: 4 }}>
-                <span className="lp-exp-bullet">▸</span>
-                <span>{line.replace(/^[-•▸]\s*/, '')}</span>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function ProjCard({ project }) {
-  return (
-    <div className="lp-proj-card">
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginBottom: 10 }}>
-        <div className="lp-proj-name">{project.name}</div>
-        {project.url && (
-          <a href={project.url} target="_blank" rel="noreferrer" className="lp-proj-link">
-            <ExternalLink size={14} strokeWidth={1.5} />
-          </a>
-        )}
-      </div>
-      {project.description && <p className="lp-proj-desc">{project.description}</p>}
-      {project.tech?.length > 0 && (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-          {project.tech.map((t, i) => <span key={i} className="lp-tech-tag">{t}</span>)}
-        </div>
-      )}
-    </div>
-  );
-}
-
 export default function LightPortfolio({ data, meta }) {
-  const [activeSection, setActiveSection] = useState('hero');
+  const [activeTab, setActiveTab] = useState('all');
   const contact = data?.contact || {};
 
   const cleanPhone = contact.phone ? contact.phone.replace(/[^0-9]/g, '') : '';
   const waUrl = cleanPhone ? `https://wa.me/${cleanPhone}` : null;
 
-  const navItems = [
-    { id: 'about',      label: 'About',      show: !!data?.bio },
-    { id: 'skills',     label: 'Skills',     show: data?.skills?.length > 0 },
-    { id: 'experience', label: 'Experience', show: data?.experience?.length > 0 },
-    { id: 'projects',   label: 'Projects',   show: data?.projects?.length > 0 },
-    { id: 'education',  label: 'Education',  show: data?.education?.length > 0 },
-    { id: 'contact',    label: 'Contact',    show: true },
-  ].filter(n => n.show);
+  const candidateName = data?.name || meta?.owner || 'Candidate Name';
+  const candidateTitle = data?.title || 'Software Engineer / Developer';
 
-  const scrollTo = (id) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-    setActiveSection(id);
-  };
+  const projects = data?.projects || [];
+  const experience = data?.experience || [];
+  const skills = data?.skills || [];
+  const education = data?.education || [];
+  const certifications = data?.certifications || [];
 
   return (
-    <div className="lp-root">
-      {/* Nav */}
-      <nav className="lp-nav">
-        <div className="lp-nav-brand">{data?.name || meta?.owner}</div>
-        <div className="lp-nav-links">
-          {navItems.map(n => (
-            <button key={n.id} onClick={() => scrollTo(n.id)} className={`lp-nav-btn ${activeSection === n.id ? 'active' : ''}`}>
-              {n.label}
-            </button>
-          ))}
+    <div className="profile-shell">
+      <div className="profile-container">
+
+        {/* ── Breadcrumb / Profile Label ── */}
+        <div className="profile-breadcrumb">
+          <span>Portfolios</span>
+          <ChevronRight size={14} />
+          <span style={{ color: '#0f172a', fontWeight: 600 }}>{candidateName}</span>
         </div>
-      </nav>
 
-      {/* Hero */}
-      <section id="hero" className="lp-hero">
-        <div className="lp-orb-1" />
-        <div className="lp-orb-2" />
-
-        <div style={{ position: 'relative', zIndex: 1, maxWidth: 700, margin: '0 auto', textAlign: 'center' }}>
-          <div className="lp-avatar">{data?.name?.[0]?.toUpperCase() || '?'}</div>
-          <h1>{data?.name || 'Your Name'}</h1>
-          <div className="lp-hero-title">{data?.title || 'Professional Title'}</div>
-          {data?.bio && <p className="lp-hero-bio">{data.bio}</p>}
-
-          <div className="lp-socials">
-            {contact.email && (
-              <div className="lp-contact-display">
-                <Mail size={14} strokeWidth={1.5} style={{ color: '#4f46e5', flexShrink: 0 }} />
-                <span>{contact.email}</span>
+        {/* ── Profile Header Card (Dribbble Manufacturer Profile Header) ── */}
+        <header className="profile-header-card">
+          <div className="profile-header-main">
+            <div className="profile-header-left">
+              <div className="profile-avatar">
+                {candidateName.charAt(0).toUpperCase()}
               </div>
-            )}
-            {contact.phone && (
-              <div className="lp-contact-display">
-                <Phone size={14} strokeWidth={1.5} style={{ color: '#059669', flexShrink: 0 }} />
-                <span>{contact.phone}</span>
-              </div>
-            )}
-            {contact.linkedin && (
-              <a href={contact.linkedin} target="_blank" rel="noreferrer" className="lp-social-link">
-                <Link2 size={14} strokeWidth={1.5} style={{ color: '#3b82f6' }} /> LinkedIn
-              </a>
-            )}
-            {contact.github && (
-              <a href={contact.github} target="_blank" rel="noreferrer" className="lp-social-link">
-                <GitBranch size={14} strokeWidth={1.5} /> GitHub
-              </a>
-            )}
-            {contact.website && (
-              <a href={contact.website} target="_blank" rel="noreferrer" className="lp-social-link">
-                <Globe size={14} strokeWidth={1.5} style={{ color: '#0891b2' }} /> Website
-              </a>
-            )}
-          </div>
-        </div>
-
-        <div className="anim-bounce" style={{ position: 'absolute', bottom: 24, left: '50%', color: '#d4d4d8' }}>
-          <ChevronDown size={20} strokeWidth={1.5} />
-        </div>
-      </section>
-
-      {/* Content */}
-      <div className="lp-content">
-
-        {data?.bio && (
-          <section id="about" className="lp-section" style={{ paddingTop: 24 }}>
-            <SectionHeader icon={<User size={18} strokeWidth={1.5} color="#fff" />} title="About Me" />
-            <div className="lp-card">
-              <p style={{ fontSize: 15, color: '#71717a', lineHeight: 1.8 }}>{data.bio}</p>
-            </div>
-          </section>
-        )}
-
-        {data?.skills?.length > 0 && (
-          <section id="skills" className="lp-section">
-            <SectionHeader icon={<Code2 size={18} strokeWidth={1.5} color="#fff" />} title="Skills" />
-            <div className="skills-grid">
-              {data.skills.map((s, i) => <span key={i} className="lp-skill-badge">{s}</span>)}
-            </div>
-          </section>
-        )}
-
-        {data?.experience?.length > 0 && (
-          <section id="experience" className="lp-section">
-            <SectionHeader icon={<Briefcase size={18} strokeWidth={1.5} color="#fff" />} title="Work Experience" />
-            <div>
-              {data.experience.map((e, i) => <ExpItem key={i} exp={e} />)}
-            </div>
-          </section>
-        )}
-
-        {data?.projects?.length > 0 && (
-          <section id="projects" className="lp-section">
-            <SectionHeader icon={<Code2 size={18} strokeWidth={1.5} color="#fff" />} title="Projects" />
-            <div className="proj-grid">
-              {data.projects.map((p, i) => <ProjCard key={i} project={p} />)}
-            </div>
-          </section>
-        )}
-
-        {data?.education?.length > 0 && (
-          <section id="education" className="lp-section">
-            <SectionHeader icon={<GraduationCap size={18} strokeWidth={1.5} color="#fff" />} title="Education" />
-            <div className="edu-grid">
-              {data.education.map((e, i) => (
-                <div key={i} className="lp-edu-card">
-                  <div className="lp-edu-degree">{e.degree}</div>
-                  <div className="lp-edu-inst">{e.institution}</div>
-                  {e.year && <div className="lp-edu-year">{e.year}</div>}
+              <div className="profile-title-area">
+                <h1>{candidateName}</h1>
+                <p>{candidateTitle}</p>
+                <div className="profile-meta-pills">
+                  <span className="profile-meta-pill verified">
+                    <CheckCircle2 size={13} style={{ color: '#16a34a' }} />
+                    Verified Profile
+                  </span>
+                  {experience.length > 0 && (
+                    <span className="profile-meta-pill">
+                      <Briefcase size={13} style={{ color: '#64748b' }} />
+                      {experience.length} Experience {experience.length === 1 ? 'Role' : 'Roles'}
+                    </span>
+                  )}
+                  {projects.length > 0 && (
+                    <span className="profile-meta-pill">
+                      <Code2 size={13} style={{ color: '#64748b' }} />
+                      {projects.length} {projects.length === 1 ? 'Project' : 'Projects'}
+                    </span>
+                  )}
+                  {skills.length > 0 && (
+                    <span className="profile-meta-pill">
+                      <Award size={13} style={{ color: '#64748b' }} />
+                      {skills.length} Skills
+                    </span>
+                  )}
                 </div>
-              ))}
+              </div>
             </div>
-          </section>
-        )}
 
-        {data?.certifications?.length > 0 && (
-          <section id="certifications" className="lp-section">
-            <SectionHeader icon={<Award size={18} strokeWidth={1.5} color="#fff" />} title="Certifications" />
-            <div className="cert-grid">
-              {data.certifications.map((c, i) => (
-                <span key={i} className="lp-cert-tag">
-                  <Award size={13} strokeWidth={1.5} /> {c}
-                </span>
-              ))}
-            </div>
-          </section>
-        )}
-
-        <section id="contact" className="lp-section">
-          <SectionHeader icon={<Mail size={18} strokeWidth={1.5} color="#fff" />} title="Get In Touch" />
-          <div className="lp-contact-box">
-            <p>Interested in working together? Let's connect!</p>
-            <div className="lp-contact-links">
+            {/* Quick Action CTAs */}
+            <div className="profile-header-actions">
               {waUrl && (
                 <a href={waUrl} target="_blank" rel="noreferrer" className="btn-whatsapp">
-                  <MessageCircle size={16} strokeWidth={1.5} /> Chat on WhatsApp
-                </a>
-              )}
-              {contact.linkedin && (
-                <a href={contact.linkedin} target="_blank" rel="noreferrer" className="lp-contact-secondary">
-                  <Link2 size={14} strokeWidth={1.5} /> LinkedIn
-                </a>
-              )}
-              {contact.github && (
-                <a href={contact.github} target="_blank" rel="noreferrer" className="lp-contact-secondary">
-                  <GitBranch size={14} strokeWidth={1.5} /> GitHub
-                </a>
-              )}
-              {contact.email && (
-                <a href={`mailto:${contact.email}`} className="lp-contact-secondary">
-                  <Mail size={14} strokeWidth={1.5} /> Email
+                  <MessageCircle size={15} /> WhatsApp
                 </a>
               )}
             </div>
           </div>
-        </section>
-      </div>
+        </header>
 
-      <footer className="lp-footer">
-        Built with <span style={{ fontWeight: 700, background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>PortfolioAI</span> ✨
-      </footer>
+        {/* ── Underline Tab Navigation Bar ── */}
+        <nav className="profile-tab-bar" aria-label="Portfolio sections">
+          <button
+            type="button"
+            className={`profile-tab-btn ${activeTab === 'all' ? 'active' : ''}`}
+            onClick={() => setActiveTab('all')}
+          >
+            Overview & All Details
+          </button>
+          {experience.length > 0 && (
+            <button
+              type="button"
+              className={`profile-tab-btn ${activeTab === 'experience' ? 'active' : ''}`}
+              onClick={() => setActiveTab('experience')}
+            >
+              Experience ({experience.length})
+            </button>
+          )}
+          {projects.length > 0 && (
+            <button
+              type="button"
+              className={`profile-tab-btn ${activeTab === 'projects' ? 'active' : ''}`}
+              onClick={() => setActiveTab('projects')}
+            >
+              Projects ({projects.length})
+            </button>
+          )}
+          {skills.length > 0 && (
+            <button
+              type="button"
+              className={`profile-tab-btn ${activeTab === 'skills' ? 'active' : ''}`}
+              onClick={() => setActiveTab('skills')}
+            >
+              Skills & Education
+            </button>
+          )}
+        </nav>
+
+        {/* ── 2-Column Split Workspace (Main 65% / Sidebar 35%) ── */}
+        <div className="profile-grid-layout">
+          
+          {/* ── LEFT MAIN COLUMN ── */}
+          <main className="profile-main-col">
+            
+            {/* Bio / Summary Card */}
+            {(activeTab === 'all' || activeTab === 'overview') && data?.bio && (
+              <section className="dribbble-card" aria-labelledby="about-card-title">
+                <div className="dribbble-card-header">
+                  <div id="about-card-title" className="dribbble-card-title">
+                    <User size={16} style={{ color: '#2563eb' }} />
+                    About & Summary
+                  </div>
+                  <span className="dribbble-card-badge">Profile Overview</span>
+                </div>
+                <p style={{ fontSize: 14, color: '#475569', lineHeight: 1.7, whiteSpace: 'pre-line' }}>
+                  {data.bio}
+                </p>
+              </section>
+            )}
+
+            {/* Work Experience Section (styled like Dribbble Shipment/History Rows) */}
+            {(activeTab === 'all' || activeTab === 'experience') && experience.length > 0 && (
+              <section className="dribbble-card" aria-labelledby="exp-card-title">
+                <div className="dribbble-card-header">
+                  <div id="exp-card-title" className="dribbble-card-title">
+                    <Briefcase size={16} style={{ color: '#2563eb' }} />
+                    Work Experience
+                  </div>
+                  <span className="dribbble-card-badge">{experience.length} Roles Listed</span>
+                </div>
+
+                <div>
+                  {experience.map((exp, idx) => (
+                    <div key={idx} className="timeline-row">
+                      <div className="timeline-dot" />
+                      <div className="timeline-header">
+                        <div>
+                          <div className="timeline-role">{exp.role}</div>
+                          <div className="timeline-company">{exp.company}</div>
+                        </div>
+                        {exp.duration && <span className="timeline-duration">{exp.duration}</span>}
+                      </div>
+                      {exp.description && (
+                        <div className="timeline-desc">
+                          {exp.description.split('\n').filter(Boolean).map((line, lIdx) => (
+                            <div key={lIdx} style={{ display: 'flex', alignItems: 'flex-start', gap: 6, marginBottom: 3 }}>
+                              <span style={{ color: '#2563eb', fontWeight: 'bold' }}>•</span>
+                              <span>{line.replace(/^[-•▸]\s*/, '')}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Projects Showcase */}
+            {(activeTab === 'all' || activeTab === 'projects') && projects.length > 0 && (
+              <section className="dribbble-card" aria-labelledby="proj-card-title">
+                <div className="dribbble-card-header">
+                  <div id="proj-card-title" className="dribbble-card-title">
+                    <Code2 size={16} style={{ color: '#2563eb' }} />
+                    Key Projects & Deliverables
+                  </div>
+                  <span className="dribbble-card-badge">{projects.length} Completed</span>
+                </div>
+
+                <div>
+                  {projects.map((proj, idx) => (
+                    <article key={idx} className="project-list-item">
+                      <div className="project-list-header">
+                        <div className="project-list-title">{proj.name}</div>
+                        {proj.url && (
+                          <a
+                            href={proj.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="btn-secondary"
+                            style={{ padding: '4px 8px', fontSize: 12 }}
+                            aria-label={`View live project ${proj.name}`}
+                          >
+                            <ExternalLink size={12} /> Visit Project
+                          </a>
+                        )}
+                      </div>
+                      {proj.description && (
+                        <p style={{ fontSize: 13, color: '#64748b', lineHeight: 1.5, marginTop: 4 }}>
+                          {proj.description}
+                        </p>
+                      )}
+                      {proj.tech?.length > 0 && (
+                        <div className="project-list-tags">
+                          {proj.tech.map((t, tIdx) => (
+                            <span key={tIdx} className="project-tag">{t}</span>
+                          ))}
+                        </div>
+                      )}
+                    </article>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Education Section */}
+            {(activeTab === 'all' || activeTab === 'skills') && education.length > 0 && (
+              <section className="dribbble-card" aria-labelledby="edu-card-title">
+                <div className="dribbble-card-header">
+                  <div id="edu-card-title" className="dribbble-card-title">
+                    <GraduationCap size={16} style={{ color: '#2563eb' }} />
+                    Education & Credentials
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 12 }}>
+                  {education.map((edu, idx) => (
+                    <div key={idx} style={{ padding: '12px 14px', borderRadius: 8, background: '#f8fafc', border: '1px solid #e2e8f0' }}>
+                      <div style={{ fontSize: 14, fontBold: 700, fontWeight: 700, color: '#0f172a' }}>{edu.degree}</div>
+                      <div style={{ fontSize: 13, color: '#2563eb', fontWeight: 600, marginTop: 2 }}>{edu.institution}</div>
+                      {edu.year && <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 4 }}>{edu.year}</div>}
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+          </main>
+
+          {/* ── RIGHT DETAILS SIDEBAR (Dribbble Style Cards) ── */}
+          <aside className="profile-sidebar-col">
+            
+            {/* General Info Card */}
+            <div className="dribbble-card">
+              <div className="dribbble-card-header">
+                <div className="dribbble-card-title">
+                  <FileText size={15} style={{ color: '#2563eb' }} />
+                  General Details
+                </div>
+              </div>
+              <div className="kv-list">
+                <div className="kv-row">
+                  <span className="kv-label">Full Name</span>
+                  <span className="kv-value">{candidateName}</span>
+                </div>
+                <div className="kv-row">
+                  <span className="kv-label">Primary Role</span>
+                  <span className="kv-value">{candidateTitle}</span>
+                </div>
+                {contact.email && (
+                  <div className="kv-row">
+                    <span className="kv-label">Email</span>
+                    <span className="kv-value" style={{ fontSize: 12 }}>{contact.email}</span>
+                  </div>
+                )}
+                {contact.phone && (
+                  <div className="kv-row">
+                    <span className="kv-label">Phone</span>
+                    <span className="kv-value">{contact.phone}</span>
+                  </div>
+                )}
+                <div className="kv-row">
+                  <span className="kv-label">Availability</span>
+                  <span className="kv-value" style={{ color: '#15803d', display: 'flex', alignItems: 'center', gap: 5 }}>
+                    <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#16a34a' }} />
+                    Available for Hire
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Certifications (Matching Dribbble "Certificates" block) */}
+            {certifications.length > 0 && (
+              <div className="dribbble-card">
+                <div className="dribbble-card-header">
+                  <div className="dribbble-card-title">
+                    <Award size={15} style={{ color: '#16a34a' }} />
+                    Certifications & Marks
+                  </div>
+                  <span className="dribbble-card-badge" style={{ background: '#f0fdf4', borderColor: '#bbf7d0', color: '#15803d' }}>
+                    {certifications.length} Verified
+                  </span>
+                </div>
+                <div>
+                  {certifications.map((cert, idx) => (
+                    <div key={idx} className="cert-item-v3">
+                      <CheckCircle2 size={15} style={{ color: '#16a34a', flexShrink: 0 }} />
+                      <span>{cert}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Skills & Competencies */}
+            {skills.length > 0 && (
+              <div className="dribbble-card">
+                <div className="dribbble-card-header">
+                  <div className="dribbble-card-title">
+                    <Code2 size={15} style={{ color: '#2563eb' }} />
+                    Skills & Tech Stack
+                  </div>
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                  {skills.map((s, idx) => (
+                    <span key={idx} className="skill-pill-v3">{s}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Direct Connect Card (WhatsApp Only) */}
+            {waUrl && (
+              <div className="dribbble-card" style={{ background: '#f0fdf4', borderColor: '#bbf7d0' }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: '#15803d', marginBottom: 4 }}>
+                  Ready to collaborate?
+                </div>
+                <p style={{ fontSize: 13, color: '#166534', marginBottom: 12, lineHeight: 1.5 }}>
+                  Chat directly with {candidateName} on WhatsApp for inquiries and project discussions.
+                </p>
+                <a href={waUrl} target="_blank" rel="noreferrer" className="btn-whatsapp" style={{ width: '100%', justifyContent: 'center' }}>
+                  <MessageCircle size={15} /> Chat on WhatsApp
+                </a>
+              </div>
+            )}
+
+          </aside>
+
+        </div>
+
+      </div>
     </div>
   );
 }

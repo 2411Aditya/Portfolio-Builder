@@ -238,7 +238,7 @@ function UploadCard() {
   );
 }
 
-/* ─── Browser Mockup ─── */
+/* ─── Browser Mockup (Dribbble Profile Template) ─── */
 function BrowserMockup() {
   return (
     <div className="bento-inner">
@@ -249,37 +249,83 @@ function BrowserMockup() {
           <div className="browser-dot green" />
         </div>
         <div className="browser-url-bar">
-          <Globe size={11} style={{ color: 'rgba(255,255,255,0.3)' }} aria-hidden="true" />
+          <Globe size={11} style={{ color: '#94a3b8' }} aria-hidden="true" />
           portfolio-builder-six-jet.vercel.app/p/alex/developer-portfolio
         </div>
       </div>
-      <div className="browser-content" aria-label="Interactive portfolio theme preview">
-        <div className="mock-sidebar">
-          <div className="mock-avatar" />
-          <div className="mock-name" />
-          <div className="mock-title" />
-          <div className="mock-divider" />
-          <div className="mock-nav-item active" style={{ width: '70%' }} />
-          <div className="mock-nav-item" style={{ width: '55%' }} />
-          <div className="mock-nav-item" style={{ width: '65%' }} />
-          <div className="mock-nav-item" style={{ width: '50%' }} />
-        </div>
-        <div className="mock-main">
-          <div className="mock-section-title" />
-          <div className="mock-card">
-            <div className="mock-line medium" />
-            <div className="mock-line short" />
-            <div className="mock-line" style={{ width: '90%' }} />
-            <div className="mock-tags">
-              <div className="mock-tag" />
-              <div className="mock-tag" />
-              <div className="mock-tag" style={{ width: 50 }} />
+      
+      {/* Mini Dribbble Manufacturer Profile Page Preview */}
+      <div style={{ background: '#f8fafc', padding: '20px 24px', borderTop: '1px solid #e2e8f0' }}>
+        {/* Header Card */}
+        <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 12, padding: '16px 20px', marginBottom: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+              <div style={{ width: 46, height: 46, borderRadius: 10, background: 'linear-gradient(135deg, #2563eb, #4f46e5)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 18 }}>
+                A
+              </div>
+              <div>
+                <div style={{ fontSize: 17, fontWeight: 800, color: '#0f172a' }}>Alex Mercer</div>
+                <div style={{ fontSize: 13, color: '#64748b' }}>Staff Full-Stack Engineer</div>
+                <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
+                  <span style={{ fontSize: 11, fontWeight: 600, padding: '2px 6px', borderRadius: 4, background: '#f0fdf4', border: '1px solid #bbf7d0', color: '#15803d' }}>✓ Verified Profile</span>
+                  <span style={{ fontSize: 11, fontWeight: 500, padding: '2px 6px', borderRadius: 4, background: '#f1f5f9', border: '1px solid #e2e8f0', color: '#475569' }}>3 Roles</span>
+                  <span style={{ fontSize: 11, fontWeight: 500, padding: '2px 6px', borderRadius: 4, background: '#f1f5f9', border: '1px solid #e2e8f0', color: '#475569' }}>4 Projects</span>
+                </div>
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <span style={{ padding: '6px 12px', borderRadius: 6, background: '#16a34a', color: '#fff', fontSize: 12, fontWeight: 600 }}>WhatsApp</span>
             </div>
           </div>
-          <div className="mock-card">
-            <div className="mock-line" style={{ width: '95%' }} />
-            <div className="mock-line medium" />
-            <div className="mock-line short" />
+        </div>
+
+        {/* Tab Bar */}
+        <div style={{ display: 'flex', gap: 20, borderBottom: '1px solid #e2e8f0', marginBottom: 16, paddingBottom: 8 }}>
+          <span style={{ fontSize: 13, fontWeight: 700, color: '#2563eb', borderBottom: '2px solid #2563eb', paddingBottom: 6 }}>Overview & All Details</span>
+          <span style={{ fontSize: 13, fontWeight: 500, color: '#64748b' }}>Experience (3)</span>
+          <span style={{ fontSize: 13, fontWeight: 500, color: '#64748b' }}>Projects (4)</span>
+          <span style={{ fontSize: 13, fontWeight: 500, color: '#64748b' }}>Skills & Education</span>
+        </div>
+
+        {/* 2-Column Preview Grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 280px', gap: 16 }}>
+          {/* Main Column */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 10, padding: 14 }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#0f172a', marginBottom: 6 }}>About & Summary</div>
+              <p style={{ fontSize: 12, color: '#64748b', lineHeight: 1.5 }}>Specialized in building scalable distributed applications, modern web interfaces, and high-throughput microservices using React, Node.js, and TypeScript.</p>
+            </div>
+            <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 10, padding: 14 }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#0f172a', marginBottom: 8 }}>Work Experience</div>
+              <div style={{ borderLeft: '2px solid #e2e8f0', paddingLeft: 12, marginBottom: 8 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: '#0f172a' }}>Senior Lead Engineer • Stripe</div>
+                <div style={{ fontSize: 11, color: '#64748b' }}>2022 — Present • San Francisco, CA</div>
+              </div>
+              <div style={{ borderLeft: '2px solid #e2e8f0', paddingLeft: 12 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: '#0f172a' }}>Frontend Architect • Vercel</div>
+                <div style={{ fontSize: 11, color: '#64748b' }}>2020 — 2022 • Remote</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Sidebar Column */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 10, padding: 12 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#0f172a', marginBottom: 8 }}>General Details</div>
+              <div style={{ fontSize: 11, display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                <span style={{ color: '#64748b' }}>Status</span>
+                <span style={{ color: '#16a34a', fontWeight: 600 }}>● Available for Hire</span>
+              </div>
+              <div style={{ fontSize: 11, display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: '#64748b' }}>Role</span>
+                <span style={{ color: '#0f172a', fontWeight: 600 }}>Staff Engineer</span>
+              </div>
+            </div>
+            <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 10, padding: 12 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#16a34a', marginBottom: 6 }}>Certifications & Marks</div>
+              <div style={{ fontSize: 11, color: '#15803d', background: '#f0fdf4', padding: '4px 8px', borderRadius: 4, marginBottom: 4 }}>✓ AWS Solutions Architect</div>
+              <div style={{ fontSize: 11, color: '#15803d', background: '#f0fdf4', padding: '4px 8px', borderRadius: 4 }}>✓ Meta Senior React Engineer</div>
+            </div>
           </div>
         </div>
       </div>
@@ -372,35 +418,60 @@ export default function LandingPage() {
         <section className="hero-section" aria-labelledby="hero-heading">
           <div className="hero-noise" />
           <div className="hero-grid" />
-          <div className="orb float" style={{ top: '10%', left: '5%', width: 500, height: 500, background: 'rgba(99,102,241,0.05)' }} />
-          <div className="orb float-2" style={{ bottom: '10%', right: '5%', width: 380, height: 380, background: 'rgba(139,92,246,0.04)' }} />
+          <div className="orb float" style={{ position: 'absolute', top: '10%', left: '5%', width: 500, height: 500, background: 'rgba(99,102,241,0.05)', pointerEvents: 'none' }} />
+          <div className="orb float-2" style={{ position: 'absolute', bottom: '10%', right: '5%', width: 380, height: 380, background: 'rgba(139,92,246,0.04)', pointerEvents: 'none' }} />
 
-          <div className="hero-inner">
-            <div className="hero-badge fade-up">
-              <span className="hero-badge-dot" />
-              ✨ AI-Powered &nbsp;•&nbsp; Turn Resumes into Live Sites
+          <div className="hero-2col-layout">
+            
+            {/* Left Column: 3D AI Artwork Showcase */}
+            <div className="hero-left-col fade-up">
+              <div className="hero-artwork-container">
+                <img
+                  src="/hero-artwork.jpg"
+                  alt="AI Resume to Developer Portfolio Transformation Illustration"
+                  className="hero-artwork-img"
+                  loading="eager"
+                />
+                <div className="hero-artwork-footer">
+                  <span style={{ color: '#15803d', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+                    <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#16a34a' }} />
+                    AI Resume Parser
+                  </span>
+                  <span>⚡ ~30s Generation</span>
+                  <span>📁 PDF • DOCX • TXT</span>
+                </div>
+              </div>
             </div>
 
-            <h1 id="hero-heading" className="hero-title fade-up-1">
-              Turn Your Resume Into a{' '}
-              <span className="accent-word">Recruiter-Ready</span>{' '}
-              Portfolio in 30 Seconds.
-            </h1>
+            {/* Right Column: Heading, Subtext, CTAs, and Interactive Upload Card */}
+            <div className="hero-right-col fade-up-1">
+              <div className="hero-badge">
+                <span className="hero-badge-dot" />
+                ✨ AI-Powered &nbsp;•&nbsp; Turn Resumes into Live Sites
+              </div>
 
-            <p className="hero-sub fade-up-2">
-              Upload your resume, let our AI extract everything automatically, pick a theme — and get a beautiful, shareable portfolio URL instantly. No design skills needed.
-            </p>
+              <h1 id="hero-heading" className="hero-title">
+                Turn Your Resume Into a{' '}
+                <span className="accent-word">Recruiter-Ready</span>{' '}
+                Portfolio in 30 Seconds.
+              </h1>
 
-            <div className="hero-ctas fade-up-2">
-              <Link to="/register" id="hero-cta-primary" className="hero-cta-primary" aria-label="Build My Portfolio">
-                Build My Portfolio <ArrowRight size={16} strokeWidth={2} aria-hidden="true" />
-              </Link>
-              <Link to="/login" id="hero-cta-secondary" className="hero-cta-secondary" aria-label="Sign In to Existing Account">
-                Sign In
-              </Link>
+              <p className="hero-sub">
+                Upload your resume, let our AI extract everything automatically, pick a theme — and get a beautiful, shareable portfolio URL instantly. No design skills needed.
+              </p>
+
+              <div className="hero-ctas">
+                <Link to="/register" id="hero-cta-primary" className="hero-cta-primary" aria-label="Build My Portfolio">
+                  Build My Portfolio <ArrowRight size={16} strokeWidth={2} aria-hidden="true" />
+                </Link>
+                <Link to="/login" id="hero-cta-secondary" className="hero-cta-secondary" aria-label="Sign In to Existing Account">
+                  Sign In
+                </Link>
+              </div>
+
+              <UploadCard />
             </div>
 
-            <UploadCard />
           </div>
 
           {/* Scroll indicator */}
