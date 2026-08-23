@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
+<html lang="en" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -21,31 +21,44 @@
     <meta name="title" content="AI Portfolio Builder | Free Developer Portfolio Generator &amp; Resume to Website" />
     <meta name="description" content="Turn your resume into a stunning, recruiter-ready developer portfolio in under 30 seconds. Powered by AI with custom themes, instant hosting, and rich SEO." />
     <meta name="keywords" content="AI Portfolio Builder, Resume to Website, Free Developer Portfolio Generator, AI Resume Parser, Developer Portfolio Maker, Online Portfolio Builder" />
+    
+    <!-- Author Attribution for LinkedIn & Google -->
     <meta name="author" content="PortfolioAI" />
-    <meta name="image" content="https://portfolio-builder-six-jet.vercel.app/og-image.png" />
-    <link rel="image_src" href="https://portfolio-builder-six-jet.vercel.app/og-image.png" />
+    <meta property="article:author" content="PortfolioAI" />
+    <meta property="og:author" content="PortfolioAI" />
+
+    <!-- Image Fallbacks for LinkedIn Post Inspector & Crawlers -->
+    <meta name="image" content="https://portfolio-builder-six-jet.vercel.app/og-image.jpg" />
+    <link rel="image_src" type="image/jpeg" href="https://portfolio-builder-six-jet.vercel.app/og-image.jpg" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
 
-    <!-- Open Graph / Facebook / LinkedIn / WhatsApp -->
-    <meta property="og:type" content="website" />
+    <!-- Open Graph (Primary JPEG for maximum crawler compatibility) -->
     <meta property="og:site_name" content="PortfolioAI" />
+    <meta property="og:type" content="website" />
     <meta property="og:url" content="https://portfolio-builder-six-jet.vercel.app/" />
     <meta property="og:title" content="AI Portfolio Builder | Free Developer Portfolio Generator &amp; Resume to Website" />
     <meta property="og:description" content="Turn your resume into a stunning, recruiter-ready developer portfolio in under 30 seconds. Powered by AI with custom themes, instant hosting, and rich SEO." />
+    <meta property="og:image" content="https://portfolio-builder-six-jet.vercel.app/og-image.jpg" />
+    <meta property="og:image:secure_url" content="https://portfolio-builder-six-jet.vercel.app/og-image.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="PortfolioAI - AI Portfolio Builder Preview" />
+
+    <!-- Open Graph (Secondary PNG) -->
     <meta property="og:image" content="https://portfolio-builder-six-jet.vercel.app/og-image.png" />
     <meta property="og:image:secure_url" content="https://portfolio-builder-six-jet.vercel.app/og-image.png" />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="PortfolioAI - AI Portfolio Builder" />
 
     <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="https://portfolio-builder-six-jet.vercel.app/" />
     <meta name="twitter:title" content="AI Portfolio Builder | Free Developer Portfolio Generator &amp; Resume to Website" />
     <meta name="twitter:description" content="Turn your resume into a stunning, recruiter-ready developer portfolio in under 30 seconds. Powered by AI with custom themes, instant hosting, and rich SEO." />
-    <meta name="twitter:image" content="https://portfolio-builder-six-jet.vercel.app/og-image.png" />
-    <meta name="twitter:image:alt" content="PortfolioAI - AI Portfolio Builder" />
+    <meta name="twitter:image" content="https://portfolio-builder-six-jet.vercel.app/og-image.jpg" />
+    <meta name="twitter:image:alt" content="PortfolioAI - AI Portfolio Builder Preview" />
 
     <!-- Google Fonts Preconnect & Stylesheet -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
