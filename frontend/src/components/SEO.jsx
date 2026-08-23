@@ -7,7 +7,7 @@ const DEFAULT_SITE_NAME = 'PortfolioAI';
 const DEFAULT_TITLE = 'AI Portfolio Builder | Free Developer Portfolio Generator & Resume to Website';
 const DEFAULT_DESCRIPTION = 'Turn your resume into a stunning, recruiter-ready developer portfolio in under 30 seconds. Powered by AI with custom themes, instant hosting, and rich SEO.';
 const DEFAULT_KEYWORDS = 'AI Portfolio Builder, Resume to Website, Free Developer Portfolio Generator, AI Resume Parser, Developer Portfolio Maker, Online Portfolio Builder';
-const DEFAULT_IMAGE = `${DEFAULT_SITE_URL}/favicon.svg`;
+const DEFAULT_IMAGE = `${DEFAULT_SITE_URL}/og-image.png`;
 
 /**
  * Reusable SEO component for dynamic head metadata and JSON-LD schema injection.
@@ -83,6 +83,10 @@ export default function SEO({
       <meta property="og:description" content={description} />
       <meta property="og:url" content={canonicalUrl} />
       <meta property="og:image" content={imageUrl} />
+      <meta property="og:image:secure_url" content={imageUrl} />
+      <meta property="og:image:type" content="image/png" />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
       <meta property="og:image:alt" content={formattedTitle} />
 
       {/* ── Twitter Cards ── */}
