@@ -1,133 +1,512 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Zap, Upload, Palette, Globe, Shield, Link2, ArrowRight, Star, ChevronDown } from 'lucide-react';
+import {
+  Zap, ArrowRight, Upload, FileText, Image, X,
+  Moon, Sun, Check, ChevronDown, Globe, Link2, Sparkles,
+  Users
+} from 'lucide-react';
+import SEO from '../components/SEO';
 
+/* ─── FAQ Data ─── */
+const faqs = [
+  {
+    q: 'What file formats does Portfolio Builder support?',
+    a: 'We accept PDF, DOCX, and plain TXT resumes. Our AI engine is optimized for each format, extracting skills, experience, education, and contact information accurately.'
+  },
+  {
+    q: 'How long does it take to generate a portfolio?',
+    a: 'Most portfolios are live in under 30 seconds. Our AI parses your document, structures the data, and generates a fully hosted portfolio at a shareable URL instantly.'
+  },
+  {
+    q: 'Is my data private and secure?',
+    a: 'Yes. Your resume data is processed securely and only used to generate your portfolio. We use JWT authentication and your portfolio content is only accessible via the unique link.'
+  },
+  {
+    q: 'Can I delete or update my portfolio?',
+    a: 'Absolutely. From your dashboard you can delete any portfolio instantly — the public link stops working immediately. Simply upload a new version of your resume to create a fresh portfolio.'
+  },
+  {
+    q: 'Can I choose how my portfolio looks?',
+    a: 'Yes! You can choose between a sleek Dark Mode and a clean Light Mode when generating. Both are recruiter-optimized, mobile-first, and look stunning on any device.'
+  },
+];
+
+/* ─── Feature Cards ─── */
 const features = [
-  { icon: <Upload size={22} />, title: 'Smart Resume Parsing', desc: 'Upload PDF, DOCX, TXT or images. Our AI extracts every detail with precision.', color: 'linear-gradient(135deg,#6366f1,#3b82f6)' },
-  { icon: <Zap size={22} />, title: 'Instant Generation', desc: 'Portfolio generated in seconds with a live shareable link — no manual editing needed.', color: 'linear-gradient(135deg,#3b82f6,#06b6d4)' },
-  { icon: <Palette size={22} />, title: 'Beautiful Themes', desc: 'Choose between sleek Dark and clean Light themes. Both look stunning on any device.', color: 'linear-gradient(135deg,#06b6d4,#8b5cf6)' },
-  { icon: <Shield size={22} />, title: 'Secure & Private', desc: 'JWT authentication keeps your data safe. Delete any portfolio instantly.', color: 'linear-gradient(135deg,#ec4899,#8b5cf6)' },
-  { icon: <Globe size={22} />, title: 'Public Portfolio Links', desc: 'Share a clean URL like /p/yourname/id — accessible by anyone, anytime.', color: 'linear-gradient(135deg,#6366f1,#06b6d4)' },
-  { icon: <Link2 size={22} />, title: 'Portfolio History', desc: 'Manage all your portfolios from one dashboard. Preview, copy, or delete.', color: 'linear-gradient(135deg,#3b82f6,#ec4899)' },
+  {
+    icon: <Zap size={20} strokeWidth={1.5} style={{ color: '#818cf8' }} aria-hidden="true" />,
+    title: 'Instant AI Extraction',
+    desc: 'No manual data entry. Our AI reads your resume and extracts every skill, role, and achievement — perfectly structured.',
+  },
+  {
+    icon: <Link2 size={20} strokeWidth={1.5} style={{ color: '#818cf8' }} aria-hidden="true" />,
+    title: 'Shareable Custom Links',
+    desc: 'Every portfolio gets a clean public URL at /p/username/id. Share it in your email signature, LinkedIn, or anywhere.',
+  },
+  {
+    icon: <Users size={20} strokeWidth={1.5} style={{ color: '#818cf8' }} aria-hidden="true" />,
+    title: 'Recruiter-Optimized Design',
+    desc: 'Clean, mobile-first layouts designed to impress hiring managers. Both dark and light themes are crafted for clarity.',
+  },
 ];
 
-const steps = [
-  { num: '01', title: 'Create Account', desc: 'Sign up in seconds with email and a username.' },
-  { num: '02', title: 'Upload Resume', desc: 'Drag-and-drop your resume in any format.' },
-  { num: '03', title: 'AI Parses It', desc: 'Gemini AI extracts all your info into a clean structure.' },
-  { num: '04', title: 'Get Your Link', desc: 'Copy your portfolio URL and share with the world.' },
-];
-
-export default function LandingPage() {
+/* ─── FAQ Item with Accessibility ─── */
+function FaqItem({ q, a }) {
+  const [open, setOpen] = useState(false);
   return (
-    <div style={{ minHeight: '100vh', background: '#f8fafc', color: '#0f172a', overflowX: 'hidden' }}>
-      {/* Navbar */}
-      <nav className="navbar">
-        <div className="navbar-logo">
-          <div className="navbar-logo-icon"><Zap size={18} color="#fff" /></div>
-          <span className="grad">PortfolioAI</span>
-        </div>
-        <div className="navbar-actions">
-          <Link to="/login" className="navbar-link">Sign In</Link>
-          <Link to="/register" id="nav-get-started-btn" className="navbar-cta">Get Started Free</Link>
-        </div>
-      </nav>
+    <article className={`faq-item ${open ? 'open' : ''}`}>
+      <button
+        type="button"
+        className="faq-question"
+        onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        style={{ width: '100%', background: 'none', border: 'none', textAlign: 'left', cursor: 'pointer', fontFamily: 'inherit' }}
+      >
+        <span>{q}</span>
+        <ChevronDown size={18} strokeWidth={1.5} className="faq-chevron" aria-hidden="true" />
+      </button>
+      <div className="faq-answer" aria-hidden={!open}>
+        <div className="faq-answer-inner">{a}</div>
+      </div>
+    </article>
+  );
+}
 
-      {/* Hero */}
-      <section style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden', paddingTop: 90, paddingBottom: 60, paddingLeft: 24, paddingRight: 24 }}>
-        <div className="hero-grid" />
-        <div className="orb float"  style={{ top: '15%', left: '12%', width: 450, height: 450, background: 'rgba(99,102,241,0.09)' }} />
-        <div className="orb float-2" style={{ bottom: '15%', right: '12%', width: 380, height: 380, background: 'rgba(59,130,246,0.08)' }} />
-        <div className="orb float-3" style={{ top: '55%', left: '50%', width: 280, height: 280, background: 'rgba(6,182,212,0.06)' }} />
+/* ─── ACCEPTED types ─── */
+const ACCEPTED = ['pdf', 'docx', 'txt'];
+const STEPS = [
+  'Parsing document structure…',
+  'Extracting skills & experience…',
+  'Styling live portfolio…',
+];
 
-        <div style={{ position: 'relative', textAlign: 'center', maxWidth: 860, margin: '0 auto', zIndex: 1 }}>
-          <div className="fade-up" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '8px 20px', borderRadius: 40, background: '#ffffff', border: '1px solid #e2e8f0', boxShadow: '0 2px 10px rgba(0,0,0,0.03)', marginBottom: 26, fontSize: 13, fontWeight: 600, color: '#334155' }}>
-            <Star size={14} style={{ color: '#eab308', fill: '#eab308' }} />
-            AI-Powered Portfolio Builder
+/* ─── Upload Card (hero centerpiece) ─── */
+function UploadCard() {
+  const [file, setFile] = useState(null);
+  const [dragging, setDragging] = useState(false);
+  const [theme, setTheme] = useState('dark');
+  const [generating, setGenerating] = useState(false);
+  const [step, setStep] = useState(-1);
+  const fileInputRef = useRef(null);
+
+  const validateAndSet = (f) => {
+    const ext = f.name.split('.').pop().toLowerCase();
+    if (!ACCEPTED.includes(ext)) return;
+    if (f.size > 16 * 1024 * 1024) return;
+    setFile(f);
+  };
+
+  const onDrop = useCallback((e) => {
+    e.preventDefault(); setDragging(false);
+    const f = e.dataTransfer.files[0];
+    if (f) validateAndSet(f);
+  }, []);
+
+  const onDragOver = (e) => { e.preventDefault(); setDragging(true); };
+  const onDragLeave = () => setDragging(false);
+
+  const simulateGeneration = async () => {
+    if (!file) return;
+    setGenerating(true);
+    for (let i = 0; i < STEPS.length; i++) {
+      setStep(i);
+      await new Promise(r => setTimeout(r, 900));
+    }
+    setGenerating(false);
+    setStep(-1);
+  };
+
+  const isImage = file && ['png', 'jpg', 'jpeg', 'webp'].includes(file.name.split('.').pop().toLowerCase());
+
+  return (
+    <div className="upload-card fade-up-3">
+      <div className="upload-card-label">Upload Your Resume</div>
+
+      {/* Drop zone */}
+      {!file && (
+        <div
+          id="landing-drop-zone"
+          className={`drop-zone ${dragging ? 'dragging' : ''}`}
+          onDragOver={onDragOver}
+          onDragLeave={onDragLeave}
+          onDrop={onDrop}
+          onClick={() => fileInputRef.current?.click()}
+          role="button"
+          tabIndex={0}
+          aria-label="Upload resume dropzone"
+          onKeyDown={e => e.key === 'Enter' && fileInputRef.current?.click()}
+        >
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".pdf,.docx,.txt"
+            style={{ display: 'none' }}
+            aria-label="Select resume file"
+            onChange={e => { if (e.target.files[0]) validateAndSet(e.target.files[0]); }}
+          />
+          <div className="drop-upload-icon">
+            <Upload size={22} strokeWidth={1.5} style={{ color: '#818cf8' }} aria-hidden="true" />
           </div>
-
-          <h1 className="fade-up-1" style={{ fontFamily: "'Outfit',sans-serif", fontSize: 'clamp(36px,6vw,70px)', fontWeight: 900, lineHeight: 1.12, marginBottom: 22, color: '#0f172a' }}>
-            Turn Your Resume Into a{' '}
-            <span className="grad">Stunning Portfolio</span>
-            {' '}in Seconds
-          </h1>
-
-          <p className="fade-up-2" style={{ fontSize: 18, color: '#475569', maxWidth: 580, margin: '0 auto 36px', lineHeight: 1.7 }}>
-            Upload your resume, let AI extract everything, pick a theme — and get a shareable portfolio URL instantly.
-          </p>
-
-          <div className="fade-up-3" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 14, flexWrap: 'wrap' }}>
-            <Link to="/register" id="hero-cta-primary" className="btn-grad">
-              Build My Portfolio <ArrowRight size={18} />
-            </Link>
-            <Link to="/login" id="hero-cta-secondary" className="btn-ghost">
-              Sign In
-            </Link>
+          <p className="drop-main">Drop your resume here</p>
+          <p className="drop-sub">or click to browse files</p>
+          <div className="drop-pills">
+            {['PDF', 'DOCX', 'TXT'].map(t => <span key={t} className="drop-pill">.{t}</span>)}
+            <span className="drop-pill">Max 16 MB</span>
           </div>
         </div>
+      )}
 
-        <div className="anim-bounce" style={{ position: 'absolute', bottom: 28, left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, color: '#94a3b8', fontSize: 10, letterSpacing: 3 }}>
-          <span>SCROLL</span>
-          <ChevronDown size={16} />
+      {/* File preview */}
+      {file && !generating && (
+        <div className="file-preview">
+          <div className="file-preview-icon">
+            {isImage
+              ? <Image size={20} strokeWidth={1.5} style={{ color: '#4ade80' }} aria-hidden="true" />
+              : <FileText size={20} strokeWidth={1.5} style={{ color: '#4ade80' }} aria-hidden="true" />
+            }
+          </div>
+          <div className="file-preview-info">
+            <div className="file-preview-name">{file.name}</div>
+            <div className="file-preview-size">{(file.size / 1024).toFixed(0)} KB</div>
+          </div>
+          <span className="file-preview-chip">Ready to Scan</span>
+          <button
+            type="button"
+            className="file-preview-remove"
+            onClick={() => setFile(null)}
+            title="Remove file"
+            aria-label="Remove uploaded file"
+          >
+            <X size={14} strokeWidth={2} aria-hidden="true" />
+          </button>
         </div>
-      </section>
+      )}
 
-      {/* Features */}
-      <section className="section">
-        <div className="section-inner">
-          <h2 className="section-title">Everything You Need to <span className="grad">Stand Out</span></h2>
-          <p className="section-sub">From AI parsing to beautiful themes — PortfolioAI handles it all.</p>
-          <div className="features-grid">
-            {features.map((f, i) => (
-              <div key={i} className="feature-card">
-                <div className="feature-icon" style={{ background: f.color, boxShadow: '0 4px 14px rgba(99,102,241,0.2)' }}>
-                  {React.cloneElement(f.icon, { color: '#fff' })}
-                </div>
-                <h3>{f.title}</h3>
-                <p>{f.desc}</p>
+      {/* 3-step progress */}
+      {generating && (
+        <div className="progress-steps">
+          {STEPS.map((s, i) => (
+            <div key={i} className={`progress-step ${i === step ? 'active' : i < step ? 'done' : ''}`}>
+              <div className="progress-step-icon">
+                {i < step
+                  ? <Check size={12} strokeWidth={3} aria-hidden="true" />
+                  : i === step
+                  ? <div className="progress-step-spinner" />
+                  : i + 1
+                }
               </div>
-            ))}
-          </div>
+              <span>{s}</span>
+            </div>
+          ))}
         </div>
-      </section>
+      )}
 
-      {/* How it works */}
-      <section className="section" style={{ background: '#f1f5f9' }}>
-        <div className="section-inner">
-          <h2 className="section-title">How It <span className="grad">Works</span></h2>
-          <p className="section-sub">Four simple steps to your dream portfolio.</p>
-          <div className="timeline">
-            <div className="timeline-line" />
-            {steps.map((s, i) => (
-              <div key={i} className="timeline-item">
-                <div className="timeline-dot" />
-                <div className="timeline-content">
-                  <div className="timeline-num grad">{s.num}</div>
-                  <h3>{s.title}</h3>
-                  <p>{s.desc}</p>
-                </div>
-                <div className="timeline-spacer" />
-              </div>
-            ))}
-          </div>
+      {/* Theme segmented control */}
+      {!generating && (
+        <div className="theme-seg" role="group" aria-label="Portfolio theme selection">
+          {[
+            { value: 'dark', label: 'Dark Mode', icon: <Moon size={14} strokeWidth={1.5} aria-hidden="true" /> },
+            { value: 'light', label: 'Light Mode', icon: <Sun size={14} strokeWidth={1.5} aria-hidden="true" /> },
+          ].map(t => (
+            <button
+              key={t.value}
+              type="button"
+              className={`theme-seg-btn ${theme === t.value ? 'active' : ''}`}
+              onClick={() => setTheme(t.value)}
+              aria-pressed={theme === t.value}
+            >
+              {t.icon} {t.label}
+            </button>
+          ))}
         </div>
-      </section>
+      )}
 
       {/* CTA */}
-      <section className="section">
-        <div className="section-inner">
-          <div className="cta-box">
-            <h2>Ready to <span className="grad">Impress</span> Recruiters?</h2>
-            <p>Join and create your AI-powered portfolio in under 2 minutes.</p>
-            <Link to="/register" id="cta-bottom-register" className="btn-grad" style={{ display: 'inline-flex' }}>
-              Get Started Free <ArrowRight size={18} />
-            </Link>
+      {!generating && (
+        <Link to="/register" id="upload-card-cta" style={{ textDecoration: 'none' }} aria-label="Get started free with resume upload">
+          <button
+            type="button"
+            className="generate-btn"
+            onClick={file ? simulateGeneration : undefined}
+          >
+            <Zap size={16} strokeWidth={1.5} aria-hidden="true" />
+            {file ? 'Scan Resume & Generate Portfolio' : 'Get Started Free'}
+          </button>
+        </Link>
+      )}
+    </div>
+  );
+}
+
+/* ─── Browser Mockup ─── */
+function BrowserMockup() {
+  return (
+    <div className="bento-inner">
+      <div className="browser-mockup-bar">
+        <div className="browser-dots" aria-hidden="true">
+          <div className="browser-dot red" />
+          <div className="browser-dot yellow" />
+          <div className="browser-dot green" />
+        </div>
+        <div className="browser-url-bar">
+          <Globe size={11} style={{ color: 'rgba(255,255,255,0.3)' }} aria-hidden="true" />
+          portfolio-builder-six-jet.vercel.app/p/alex/developer-portfolio
+        </div>
+      </div>
+      <div className="browser-content" aria-label="Interactive portfolio theme preview">
+        <div className="mock-sidebar">
+          <div className="mock-avatar" />
+          <div className="mock-name" />
+          <div className="mock-title" />
+          <div className="mock-divider" />
+          <div className="mock-nav-item active" style={{ width: '70%' }} />
+          <div className="mock-nav-item" style={{ width: '55%' }} />
+          <div className="mock-nav-item" style={{ width: '65%' }} />
+          <div className="mock-nav-item" style={{ width: '50%' }} />
+        </div>
+        <div className="mock-main">
+          <div className="mock-section-title" />
+          <div className="mock-card">
+            <div className="mock-line medium" />
+            <div className="mock-line short" />
+            <div className="mock-line" style={{ width: '90%' }} />
+            <div className="mock-tags">
+              <div className="mock-tag" />
+              <div className="mock-tag" />
+              <div className="mock-tag" style={{ width: 50 }} />
+            </div>
+          </div>
+          <div className="mock-card">
+            <div className="mock-line" style={{ width: '95%' }} />
+            <div className="mock-line medium" />
+            <div className="mock-line short" />
           </div>
         </div>
-      </section>
+      </div>
+    </div>
+  );
+}
 
+/* ─── MAIN LANDING PAGE ─── */
+export default function LandingPage() {
+  // Structured Data Schemas for Google Rich Results
+  const softwareAppSchema = {
+    '@context': 'https://schema.org',
+    '@type': ['WebApplication', 'SoftwareApplication'],
+    name: 'AI Portfolio Builder',
+    operatingSystem: 'All',
+    applicationCategory: 'BusinessApplication, DesignApplication',
+    description: 'Turn your resume into a stunning, recruiter-ready developer portfolio in under 30 seconds. Powered by AI with custom themes and instant hosting.',
+    url: 'https://portfolio-builder-six-jet.vercel.app/',
+    offers: {
+      '@type': 'Offer',
+      price: '0.00',
+      priceCurrency: 'USD'
+    },
+    featureList: [
+      'Instant AI Resume Extraction from PDF, DOCX, and TXT',
+      'One-click recruiter-optimized Dark & Light themes',
+      'Shareable custom public URLs (/p/:username/:portfolioId)',
+      'Rich OpenGraph and Social Media link previews',
+      'Mobile-first responsive design'
+    ]
+  };
+
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map(faq => ({
+      '@type': 'Question',
+      name: faq.q,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: faq.a
+      }
+    }))
+  };
+
+  const websiteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'PortfolioAI',
+    url: 'https://portfolio-builder-six-jet.vercel.app/',
+    description: 'AI-Powered Developer Portfolio Generator'
+  };
+
+  return (
+    <div style={{ minHeight: '100vh', background: '#f8fafc', color: '#09090b', overflowX: 'hidden' }}>
+      {/* ── SEO Head & Schema Markup ── */}
+      <SEO
+        title="AI Portfolio Builder | Free Developer Portfolio Generator & Resume to Website"
+        description="Turn your resume into a stunning, recruiter-ready developer portfolio in under 30 seconds. Powered by AI with dark & light themes, instant hosting, and rich SEO."
+        keywords={[
+          'AI Portfolio Builder',
+          'Resume to Website',
+          'Free Developer Portfolio Generator',
+          'AI Resume Parser',
+          'Developer Portfolio Maker',
+          'Online Portfolio Builder',
+          'Recruiter Ready Portfolio'
+        ]}
+        url="https://portfolio-builder-six-jet.vercel.app/"
+        type="website"
+        schema={[softwareAppSchema, faqSchema, websiteSchema]}
+      />
+
+      {/* ── Header & Navbar ── */}
+      <header>
+        <nav className="navbar" aria-label="Main Navigation">
+          <Link to="/" className="navbar-logo" aria-label="PortfolioAI Homepage">
+            <div className="navbar-logo-icon">
+              <Zap size={16} strokeWidth={2} color="#fff" aria-hidden="true" />
+            </div>
+            <span>PortfolioAI</span>
+          </Link>
+          <div className="navbar-actions">
+            <Link to="/login" className="navbar-link">Sign In</Link>
+            <Link to="/register" id="nav-get-started-btn" className="navbar-cta">Get Started Free</Link>
+          </div>
+        </nav>
+      </header>
+
+      {/* ── Main Content Landmark ── */}
+      <main>
+        {/* ── Hero ── */}
+        <section className="hero-section" aria-labelledby="hero-heading">
+          <div className="hero-noise" />
+          <div className="hero-grid" />
+          <div className="orb float" style={{ top: '10%', left: '5%', width: 500, height: 500, background: 'rgba(99,102,241,0.05)' }} />
+          <div className="orb float-2" style={{ bottom: '10%', right: '5%', width: 380, height: 380, background: 'rgba(139,92,246,0.04)' }} />
+
+          <div className="hero-inner">
+            <div className="hero-badge fade-up">
+              <span className="hero-badge-dot" />
+              ✨ AI-Powered &nbsp;•&nbsp; Turn Resumes into Live Sites
+            </div>
+
+            <h1 id="hero-heading" className="hero-title fade-up-1">
+              Turn Your Resume Into a{' '}
+              <span className="accent-word">Recruiter-Ready</span>{' '}
+              Portfolio in 30 Seconds.
+            </h1>
+
+            <p className="hero-sub fade-up-2">
+              Upload your resume, let our AI extract everything automatically, pick a theme — and get a beautiful, shareable portfolio URL instantly. No design skills needed.
+            </p>
+
+            <div className="hero-ctas fade-up-2">
+              <Link to="/register" id="hero-cta-primary" className="hero-cta-primary" aria-label="Build My Portfolio">
+                Build My Portfolio <ArrowRight size={16} strokeWidth={2} aria-hidden="true" />
+              </Link>
+              <Link to="/login" id="hero-cta-secondary" className="hero-cta-secondary" aria-label="Sign In to Existing Account">
+                Sign In
+              </Link>
+            </div>
+
+            <UploadCard />
+          </div>
+
+          {/* Scroll indicator */}
+          <div className="anim-bounce" style={{ position: 'absolute', bottom: 24, left: '50%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, color: '#a1a1aa', fontSize: 10, letterSpacing: 3 }} aria-hidden="true">
+            <span>SCROLL</span>
+            <ChevronDown size={14} strokeWidth={1.5} />
+          </div>
+        </section>
+
+        {/* ── Features Grid ── */}
+        <section className="section" id="features" aria-labelledby="features-heading">
+          <div className="section-inner">
+            <p className="section-eyebrow">Why PortfolioAI</p>
+            <h2 id="features-heading" className="section-title">Everything you need to <span className="grad">stand out</span></h2>
+            <p className="section-sub">From AI-powered parsing to beautiful themes — your whole job search toolkit, in one place.</p>
+
+            <div className="features-grid">
+              {features.map((f, i) => (
+                <article key={i} className="feature-card-v2">
+                  <div className="feature-icon-v2">{f.icon}</div>
+                  <h3>{f.title}</h3>
+                  <p>{f.desc}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── Portfolio Preview Bento ── */}
+        <section className="bento-section" id="preview" aria-labelledby="preview-heading">
+          <div className="section-inner" style={{ marginBottom: 40 }}>
+            <p className="section-eyebrow">Live Preview</p>
+            <h2 id="preview-heading" className="section-title">Your portfolio, <span className="grad">beautifully crafted</span></h2>
+            <p className="section-sub">See what your generated portfolio looks like — a clean, professional page ready to share with the world.</p>
+          </div>
+          <BrowserMockup />
+        </section>
+
+        {/* ── FAQ ── */}
+        <section className="faq-section" id="faq" aria-labelledby="faq-heading">
+          <div className="section-inner" style={{ marginBottom: 40 }}>
+            <p className="section-eyebrow">FAQ</p>
+            <h2 id="faq-heading" className="section-title">Frequently asked <span className="grad">questions</span></h2>
+          </div>
+          <div className="faq-inner">
+            <div className="faq-list">
+              {faqs.map((f, i) => <FaqItem key={i} q={f.q} a={f.a} />)}
+            </div>
+          </div>
+        </section>
+
+        {/* ── CTA Banner ── */}
+        <section className="section" id="cta" style={{ paddingTop: 0 }} aria-labelledby="cta-heading">
+          <div className="section-inner">
+            <div style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.05), rgba(139,92,246,0.04))', border: '1px solid rgba(99,102,241,0.15)', borderRadius: 24, padding: '60px 40px', textAlign: 'center', position: 'relative', overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+              <div className="orb" style={{ top: '-30%', right: '-5%', width: 300, height: 300, background: 'rgba(139,92,246,0.06)' }} />
+              <div style={{ position: 'relative', zIndex: 1 }}>
+                <Sparkles size={32} strokeWidth={1.5} style={{ color: '#818cf8', margin: '0 auto 16px' }} aria-hidden="true" />
+                <h2 id="cta-heading" style={{ fontFamily: "'Outfit',sans-serif", fontSize: 'clamp(26px,4vw,40px)', fontWeight: 900, letterSpacing: '-0.03em', marginBottom: 12, color: '#09090b' }}>Ready to impress recruiters?</h2>
+                <p style={{ fontSize: 16, color: '#71717a', marginBottom: 28, maxWidth: 440, margin: '0 auto 28px' }}>Join thousands of professionals who built their portfolio in under 2 minutes.</p>
+                <Link to="/register" id="cta-bottom-register" className="hero-cta-primary" style={{ display: 'inline-flex' }} aria-label="Get Started Free">
+                  Get Started Free <ArrowRight size={16} strokeWidth={2} aria-hidden="true" />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* ── Footer ── */}
       <footer className="site-footer">
-        © 2026 PortfolioAI — Built with AI ❤️
+        <div className="footer-inner">
+          <div className="footer-top">
+            <div>
+              <div className="footer-brand">
+                <div className="footer-brand-icon">
+                  <Zap size={14} strokeWidth={2} color="#fff" aria-hidden="true" />
+                </div>
+                <span>PortfolioAI</span>
+              </div>
+              <p className="footer-desc">Turn your resume into a stunning portfolio in seconds. No design skills required.</p>
+            </div>
+            <div className="footer-nav">
+              <div className="footer-nav-col">
+                <span className="footer-nav-heading">Product</span>
+                <Link to="/register" className="footer-nav-link">Get Started</Link>
+                <Link to="/login" className="footer-nav-link">Sign In</Link>
+              </div>
+              <div className="footer-nav-col">
+                <span className="footer-nav-heading">Legal</span>
+                <span className="footer-nav-link" style={{ cursor: 'default' }}>Privacy Policy</span>
+                <span className="footer-nav-link" style={{ cursor: 'default' }}>Terms of Use</span>
+              </div>
+            </div>
+          </div>
+          <div className="footer-bottom">
+            <span className="footer-copy">© 2026 PortfolioAI. All rights reserved.</span>
+            <div className="footer-status">
+              <span className="footer-status-dot" aria-hidden="true" />
+              All systems operational
+            </div>
+          </div>
+        </div>
       </footer>
     </div>
   );

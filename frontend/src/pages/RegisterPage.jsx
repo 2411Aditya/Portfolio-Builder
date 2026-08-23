@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, User, Eye, EyeOff, Zap, ArrowRight, AlertCircle, CheckCircle, X } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import * as api from '../api/client';
+import SEO from '../components/SEO';
 
 export default function RegisterPage() {
   const [form, setForm] = useState({ username: '', email: '', password: '' });
@@ -36,6 +36,11 @@ export default function RegisterPage() {
 
   return (
     <div className="auth-page">
+      <SEO
+        title="Create Account | PortfolioAI"
+        description="Create your free PortfolioAI account to transform your resume into a stunning developer portfolio."
+        noindex={true}
+      />
       <div className="auth-orb-1" style={{ top: '15%', left: '25%', background: 'rgba(139,92,246,0.13)' }} />
       <div className="auth-orb-2" style={{ bottom: '15%', right: '25%', background: 'rgba(6,182,212,0.1)' }} />
 

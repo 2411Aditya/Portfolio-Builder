@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, Zap, ArrowRight, AlertCircle, X } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import * as api from '../api/client';
+import SEO from '../components/SEO';
 
 export default function LoginPage() {
   const [form, setForm] = useState({ email: '', password: '' });
@@ -28,6 +28,11 @@ export default function LoginPage() {
 
   return (
     <div className="auth-page">
+      <SEO
+        title="Sign In | PortfolioAI"
+        description="Sign in to your PortfolioAI account to manage your developer portfolios and access analytics."
+        noindex={true}
+      />
       <div className="auth-orb-1" />
       <div className="auth-orb-2" />
 
