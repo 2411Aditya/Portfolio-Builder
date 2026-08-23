@@ -66,6 +66,8 @@ export default function SEO({
       <meta name="description" content={description} />
       {keywordsContent && <meta name="keywords" content={keywordsContent} />}
       <meta name="author" content={author} />
+      <meta name="image" content={imageUrl} />
+      <link rel="image_src" href={imageUrl} />
       <meta
         name="robots"
         content={
