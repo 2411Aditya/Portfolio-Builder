@@ -9,6 +9,7 @@ export default function RegisterPage() {
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [agreeConsent, setAgreeConsent] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
 
@@ -132,12 +133,29 @@ export default function RegisterPage() {
             </div>
           )}
 
+          <div style={{ margin: '14px 0 16px' }}>
+            <label className="checkbox-label" htmlFor="register-terms-consent" style={{ display: 'flex', alignItems: 'flex-start', gap: 10, cursor: 'pointer' }}>
+              <input
+                id="register-terms-consent"
+                type="checkbox"
+                required
+                checked={agreeConsent}
+                onChange={e => setAgreeConsent(e.target.checked)}
+                className="compliance-checkbox"
+                style={{ marginTop: 3 }}
+              />
+              <span style={{ fontSize: 12, color: 'var(--color-body)', lineHeight: 1.45 }}>
+                I agree to the <a href="#" onClick={e => e.preventDefault()} style={{ color: 'var(--color-brand)', textDecoration: 'underline' }}>Terms of Service</a> and have read and accept the <Link to="/privacy" target="_blank" style={{ color: 'var(--color-brand)', textDecoration: 'underline' }}>Privacy Policy & Data Disclosure</Link>.
+              </span>
+            </label>
+          </div>
+
           <button
             id="register-submit-btn"
             type="submit"
-            disabled={loading}
+            disabled={loading || !agreeConsent}
             className="button-primary"
-            style={{ width: '100%', marginTop: 8 }}
+            style={{ width: '100%', marginTop: 4 }}
           >
             {loading
               ? <div className="spinner" style={{ width: 16, height: 16, borderWidth: 2, borderTopColor: '#ffffff' }} />

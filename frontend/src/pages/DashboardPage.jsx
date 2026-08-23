@@ -3,11 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
   Upload, Zap, Moon, Sun, Copy, ExternalLink, Trash2, FileText,
   AlertCircle, LogOut, Clock, Loader2, X, Globe, Check,
-  LayoutDashboard, ShieldCheck, CheckCircle
+  LayoutDashboard, ShieldCheck, CheckCircle, Sparkles, Bell
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import * as api from '../api/client';
 import SEO from '../components/SEO';
+import CheckoutModal from '../components/CheckoutModal';
 
 const ACCEPTED = ['pdf', 'docx', 'txt', 'png', 'jpg', 'jpeg', 'webp'];
 
@@ -137,6 +138,7 @@ export default function DashboardPage() {
   const [portfolios, setPortfolios] = useState([]);
   const [historyLoading, setHistoryLoading] = useState(true);
   const [historyError, setHistoryError] = useState('');
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
 
   const fileInputRef = useRef(null);
 
@@ -179,16 +181,16 @@ export default function DashboardPage() {
         clearInterval(stepTimer);
         return prev;
       });
-    }, 3000);
+    }, 700);
 
     try {
       const res = await api.generatePortfolio({ file, theme });
       clearInterval(stepTimer);
-      setGenStep(STEPS.length);
-      await new Promise(r => setTimeout(r, 400));
-      setNewPortfolio(res.data);
+      setGenStep(STEPS.length - 1);
+      setNewPortfolio(res.data.portfolio);
       setFile(null);
-      await fetchHistory();
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      fetchHistory();
     } catch (err) {
       clearInterval(stepTimer);
       setError(err.message || 'Generation failed. Please try again.');
@@ -199,8 +201,13 @@ export default function DashboardPage() {
   };
 
   const handleDelete = async (id) => {
-    try { await api.deletePortfolio(id); setPortfolios(prev => prev.filter(p => p.id !== id)); }
-    catch { alert('Failed to delete portfolio.'); }
+    try {
+      await api.deletePortfolio(id);
+      setPortfolios(prev => prev.filter(p => p.id !== id));
+      if (newPortfolio?.id === id) setNewPortfolio(null);
+    } catch (err) {
+      alert(err.message || 'Failed to delete portfolio.');
+    }
   };
 
   const handleCopyLink = (url) => { navigator.clipboard.writeText(window.location.origin + url); };
@@ -212,6 +219,11 @@ export default function DashboardPage() {
         description="Manage your generated portfolios, generate new portfolios from resumes, and monitor your public links."
         noindex={true}
       />
+      <CheckoutModal
+        isOpen={checkoutOpen}
+        onClose={() => setCheckoutOpen(false)}
+        initialPlan="monthly"
+      />
 
       {/* Navbar */}
       <header className="dash-header">
@@ -220,6 +232,14 @@ export default function DashboardPage() {
             <span>PortfolioAI</span>
           </Link>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            <button
+              type="button"
+              onClick={() => setCheckoutOpen(true)}
+              className="button-primary"
+              style={{ padding: '7px 14px', fontSize: 13, gap: 6 }}
+            >
+              <Sparkles size={14} /> Upgrade to Pro (7-Day Trial)
+            </button>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 10px', background: '#f5f5f5', border: '1px solid #d8d8d8', borderRadius: 4 }}>
               <div style={{ width: 22, height: 22, borderRadius: 2, background: '#080808', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 600 }}>
                 {user?.username?.[0]?.toUpperCase() || 'U'}
@@ -245,10 +265,18 @@ export default function DashboardPage() {
               Generate, manage, and monitor recruiter-ready portfolio links.
             </p>
           </div>
-          <div style={{ display: 'flex', gap: 8 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <span className="badge-green-soft" style={{ padding: '6px 10px' }}>
-              <ShieldCheck size={14} /> Free Plan Active
+              <ShieldCheck size={14} /> Free Starter Plan
             </span>
+            <button
+              type="button"
+              onClick={() => setCheckoutOpen(true)}
+              className="button-secondary"
+              style={{ fontSize: 12, padding: '6px 12px' }}
+            >
+              Billing & Trial Info
+            </button>
           </div>
         </div>
 

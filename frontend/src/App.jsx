@@ -7,6 +7,8 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import PortfolioViewerPage from './pages/PortfolioViewerPage';
+import PrivacyPage from './pages/PrivacyPage';
+import CookieConsent from './components/CookieConsent';
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -28,6 +30,8 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
+      <Route path="/privacy" element={<PrivacyPage />} />
+      <Route path="/privacy-policy" element={<PrivacyPage />} />
       <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
       <Route path="/register" element={<GuestRoute><RegisterPage /></GuestRoute>} />
       <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
@@ -43,6 +47,7 @@ export default function App() {
       <BrowserRouter>
         <AuthProvider>
           <AppRoutes />
+          <CookieConsent />
         </AuthProvider>
       </BrowserRouter>
     </HelmetProvider>

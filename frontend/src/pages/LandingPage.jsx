@@ -3,10 +3,11 @@ import { Link } from 'react-router-dom';
 import {
   Zap, ArrowRight, Upload, FileText, Image, X,
   Moon, Sun, Check, ChevronDown, Globe,
-  Smartphone, Monitor, MessageCircle
+  Smartphone, Monitor, MessageCircle, ShieldCheck, Bell, RefreshCw, Lock, Sparkles
 } from 'lucide-react';
 import SEO from '../components/SEO';
 import DotField from '../components/DotField';
+import CheckoutModal from '../components/CheckoutModal';
 
 /* ─── FAQ Data ─── */
 const faqs = [
@@ -392,6 +393,14 @@ function BrowserMockup() {
 
 /* ─── MAIN LANDING PAGE ─── */
 export default function LandingPage() {
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [checkoutPlan, setCheckoutPlan] = useState('monthly');
+
+  const openCheckout = (plan = 'monthly') => {
+    setCheckoutPlan(plan);
+    setCheckoutOpen(true);
+  };
+
   // Structured Data Schemas for Google Rich Results
   const softwareAppSchema = {
     '@context': 'https://schema.org',
@@ -467,6 +476,7 @@ export default function LandingPage() {
               <a href="#categories" className="nav-link">Product Features</a>
               <a href="#preview" className="nav-link">Live Preview</a>
               <a href="#workflow" className="nav-link">How It Works</a>
+              <a href="#pricing" className="nav-link">Pricing & Plans</a>
               <a href="#faq" className="nav-link">FAQ</a>
             </div>
             <div className="nav-actions">
@@ -651,6 +661,87 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* ── Pricing & Free Trial Transparency Section ── */}
+        <section className="pricing-section" id="pricing" aria-labelledby="pricing-heading">
+          <div className="category-container">
+            <div style={{ textAlign: 'center', marginBottom: 36 }}>
+              <div className="eyebrow-uppercase" style={{ marginBottom: 12 }}>TRANSPARENT PRICING & FREE TRIAL</div>
+              <h2 id="pricing-heading" className="display-lg">
+                Simple, transparent plans with 7-day free trial
+              </h2>
+              <p className="body-md" style={{ maxWidth: 640, margin: '12px auto 0', color: 'var(--color-body)' }}>
+                Start risk-free. No charges today. We guarantee an email reminder 3 days before your trial ends, and you can cancel anytime in 1 click.
+              </p>
+            </div>
+
+            <div className="pricing-grid">
+              {/* Card 1: Free Starter */}
+              <div className="pricing-card">
+                <div className="pricing-card-header">
+                  <span className="pricing-tag">FREE FOREVER</span>
+                  <h3 className="pricing-title">Starter Developer</h3>
+                  <p className="pricing-desc">Essential resume parsing for job applicants.</p>
+                  <div className="pricing-price-wrap">
+                    <span className="pricing-price">$0</span>
+                    <span className="pricing-period">/ month</span>
+                  </div>
+                </div>
+                <ul className="pricing-features">
+                  <li><Check size={16} className="feature-check" /> 1 Hosted Portfolio</li>
+                  <li><Check size={16} className="feature-check" /> Standard Dark / Light Theme</li>
+                  <li><Check size={16} className="feature-check" /> Instant AI Resume Extraction</li>
+                  <li><Check size={16} className="feature-check" /> Public Shareable URL</li>
+                </ul>
+                <Link to="/register" className="button-secondary" style={{ width: '100%', justifyContent: 'center', marginTop: 'auto' }}>
+                  Get Started Free
+                </Link>
+              </div>
+
+              {/* Card 2: Pro (Featured with 7-Day Free Trial) */}
+              <div className="pricing-card featured">
+                <div className="pricing-popular-badge">
+                  <Sparkles size={12} /> MOST POPULAR • 7-DAY FREE TRIAL
+                </div>
+                <div className="pricing-card-header">
+                  <span className="pricing-tag pro">PRO ARCHITECT</span>
+                  <h3 className="pricing-title">Professional Suite</h3>
+                  <p className="pricing-desc">Advanced recruiter SEO, custom themes, and WhatsApp connect.</p>
+                  <div className="pricing-price-wrap">
+                    <span className="pricing-price">$12</span>
+                    <span className="pricing-period">/ month (or $8/mo billed yearly)</span>
+                  </div>
+                </div>
+                <ul className="pricing-features">
+                  <li><Check size={16} className="feature-check" /> Unlimited AI Portfolios & Re-generations</li>
+                  <li><Check size={16} className="feature-check" /> Full Dark & Light Multi-Theme Studio</li>
+                  <li><Check size={16} className="feature-check" /> Recruiter Rich Preview & WhatsApp Direct Button</li>
+                  <li><Check size={16} className="feature-check" /> Google JSON-LD Schema & Priority Indexing</li>
+                  <li><Check size={16} className="feature-check" /> Global Edge CDN Sub-50ms Response Speed</li>
+                </ul>
+
+                {/* Trial & Auto-Renewal Transparency Guarantee Badge */}
+                <div className="pricing-guarantee-box">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 600, fontSize: 12, color: 'var(--color-ink)' }}>
+                    <Bell size={13} /> 7-Day Free Trial • No Charge Today
+                  </div>
+                  <div style={{ fontSize: 11, color: 'var(--color-body)', marginTop: 3, lineHeight: 1.4 }}>
+                    Email reminder sent 3 days before trial ends. Auto-renews monthly unless cancelled. Cancel anytime with 1 click in settings.
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => openCheckout('monthly')}
+                  className="button-primary"
+                  style={{ width: '100%', justifyContent: 'center', padding: '14px', fontSize: 15 }}
+                >
+                  <Zap size={16} /> Start 7-Day Free Trial
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ── FAQ Section ── */}
         <section className="faq-section" id="faq" aria-labelledby="faq-heading">
           <div className="faq-container">
@@ -682,7 +773,7 @@ export default function LandingPage() {
         </section>
       </main>
 
-      {/* ── Footer ── */}
+      {/* ── Footer with Complete Legal & Consent Links ── */}
       <footer className="footer-band">
         <div className="footer-container">
           <div>
@@ -690,13 +781,28 @@ export default function LandingPage() {
             <p className="body-sm">The visual web development platform for developer portfolios.</p>
           </div>
           <div className="footer-links">
-            <Link to="/register">Get Started</Link>
+            <a href="#pricing">Pricing & Free Trial</a>
+            <Link to="/privacy">Privacy Policy & Disclosures</Link>
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('openCookieSettings'))}
+              style={{ background: 'none', border: 'none', padding: 0, font: 'inherit', color: 'inherit', cursor: 'pointer' }}
+            >
+              Cookie Settings
+            </button>
             <Link to="/login">Sign In</Link>
             <span style={{ color: 'var(--color-mute)' }}>•</span>
             <span style={{ color: 'var(--color-mute)' }}>© 2026 PortfolioAI. All rights reserved.</span>
           </div>
         </div>
       </footer>
+
+      {/* ── Global Checkout & Subscription Modal with Disclosures ── */}
+      <CheckoutModal
+        isOpen={checkoutOpen}
+        onClose={() => setCheckoutOpen(false)}
+        initialPlan={checkoutPlan}
+      />
     </div>
   );
 }
