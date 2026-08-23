@@ -1,8 +1,4 @@
-import * as pdfjsLib from 'pdfjs-dist';
 import mammoth from 'mammoth';
-
-// Set up pdf.js worker using CDN
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
 
 const RESUME_PROMPT = `You are an expert resume parser. Extract all information from the following resume and return a single valid JSON object — no markdown fences, no extra commentary.
 
@@ -52,22 +48,6 @@ Rules:
 `;
 
 /**
- * Extract text from PDF
- */
-async function extractTextFromPdf(file) {
-  const arrayBuffer = await file.arrayBuffer();
-  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-  let fullText = '';
-  for (let i = 1; i <= pdf.numPages; i++) {
-    const page = await pdf.getPage(i);
-    const content = await page.getTextContent();
-    const pageText = content.items.map((item) => item.str).join(' ');
-    fullText += pageText + '\n';
-  }
-  return fullText;
-}
-
-/**
  * Extract text from DOCX
  */
 async function extractTextFromDocx(file) {
@@ -83,10 +63,15 @@ function fileToBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => {
-      const base64 = reader.result.split(',')[1];
-      resolve(base64);
+      const result = reader.result;
+      if (typeof result === 'string') {
+        const base64 = result.includes(',') ? result.split(',')[1] : result;
+        resolve(base64);
+      } else {
+        reject(new Error('Failed to read file as data URL'));
+      }
     };
-    reader.onerror = reject;
+    reader.onerror = () => reject(new Error('Error reading resume file'));
     reader.readAsDataURL(file);
   });
 }
@@ -110,7 +95,7 @@ function cleanAndParseJson(rawText) {
 }
 
 /**
- * Main parse resume function
+ * Main parse resume function using Gemini Multimodal Engine
  */
 export async function parseResumeWithAI(file) {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
@@ -120,10 +105,28 @@ export async function parseResumeWithAI(file) {
 
   const ext = file.name.split('.').pop().toLowerCase();
   const isImage = ['png', 'jpg', 'jpeg', 'webp'].includes(ext);
+  const isPdf = ext === 'pdf';
 
   let contents = [];
 
-  if (isImage) {
+  if (isPdf) {
+    // Send PDF directly to Gemini natively via base64 inline_data
+    // This avoids client-side worker crashes on iOS/Safari and delivers full visual + layout OCR
+    const base64Data = await fileToBase64(file);
+    contents = [
+      {
+        parts: [
+          { text: RESUME_PROMPT + '\nResume Document (PDF) attached below:' },
+          {
+            inline_data: {
+              mime_type: 'application/pdf',
+              data: base64Data,
+            },
+          },
+        ],
+      },
+    ];
+  } else if (isImage) {
     const base64Data = await fileToBase64(file);
     const mimeType = file.type || `image/${ext === 'jpg' ? 'jpeg' : ext}`;
     contents = [
@@ -141,9 +144,7 @@ export async function parseResumeWithAI(file) {
     ];
   } else {
     let extractedText = '';
-    if (ext === 'pdf') {
-      extractedText = await extractTextFromPdf(file);
-    } else if (ext === 'docx') {
+    if (ext === 'docx') {
       extractedText = await extractTextFromDocx(file);
     } else if (ext === 'txt') {
       extractedText = await file.text();
@@ -151,7 +152,7 @@ export async function parseResumeWithAI(file) {
       throw new Error(`Unsupported file format: .${ext}`);
     }
 
-    if (!extractedText.trim()) {
+    if (!extractedText || !extractedText.trim()) {
       throw new Error('Could not extract text from this file. Please ensure the document is not empty.');
     }
 
@@ -178,7 +179,7 @@ export async function parseResumeWithAI(file) {
   const data = await response.json();
   const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
   if (!rawText) {
-    throw new Error('Gemini did not return any content.');
+    throw new Error('Gemini did not return any content. Please try again.');
   }
 
   return cleanAndParseJson(rawText);
