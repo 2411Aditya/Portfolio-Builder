@@ -28,7 +28,7 @@ export default function RegisterPage() {
   };
 
   const reqs = [
-    { label: 'Username 3–30 chars, letters/numbers/_', met: /^[a-zA-Z0-9_]{3,30}$/.test(form.username) },
+    { label: 'Username 3–30 chars, alphanumeric / _', met: /^[a-zA-Z0-9_]{3,30}$/.test(form.username) },
     { label: 'Valid email address', met: /^[\w.-]+@[\w.-]+\.\w+$/.test(form.email) },
     { label: 'Password at least 6 characters', met: form.password.length >= 6 },
   ];
@@ -41,32 +41,33 @@ export default function RegisterPage() {
         description="Create your free PortfolioAI account to transform your resume into a stunning developer portfolio."
         noindex={true}
       />
-      <div className="auth-orb-1" style={{ top: '15%', left: '25%', background: 'rgba(139,92,246,0.13)' }} />
-      <div className="auth-orb-2" style={{ bottom: '15%', right: '25%', background: 'rgba(6,182,212,0.1)' }} />
 
-      <div className="auth-card fade-up">
+      <div className="auth-card">
         <div className="auth-logo">
-          <Link to="/" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <span className="auth-logo-text grad">PortfolioAI</span>
+          <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+            <span className="auth-logo-text">PortfolioAI</span>
           </Link>
         </div>
 
+        <div className="eyebrow-uppercase-sm" style={{ textAlign: 'center', marginBottom: 6 }}>GET STARTED</div>
         <h1 className="auth-heading">Create your account</h1>
-        <p className="auth-sub">Build your AI portfolio in minutes</p>
+        <p className="auth-sub">Build your AI portfolio in seconds</p>
 
         {error && (
           <div className="err-banner">
-            <AlertCircle size={16} style={{ flexShrink: 0, marginTop: 1 }} />
+            <AlertCircle size={16} style={{ flexShrink: 0 }} />
             <span>{error}</span>
-            <button onClick={() => setError('')}><X size={15} /></button>
+            <button type="button" onClick={() => setError('')} aria-label="Dismiss error">
+              <X size={14} />
+            </button>
           </div>
         )}
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label className="form-label">Username</label>
+            <label className="form-label" htmlFor="register-username">Username</label>
             <div className="input-wrap">
-              <span className="input-icon"><User size={16} /></span>
+              <span className="input-icon"><User size={15} /></span>
               <input
                 id="register-username"
                 type="text"
@@ -74,15 +75,15 @@ export default function RegisterPage() {
                 placeholder="johndoe"
                 value={form.username}
                 onChange={e => setForm({ ...form, username: e.target.value })}
-                className="form-input no-right-icon"
+                className="form-input has-icon"
               />
             </div>
           </div>
 
           <div className="form-group">
-            <label className="form-label">Email</label>
+            <label className="form-label" htmlFor="register-email">Email Address</label>
             <div className="input-wrap">
-              <span className="input-icon"><Mail size={16} /></span>
+              <span className="input-icon"><Mail size={15} /></span>
               <input
                 id="register-email"
                 type="email"
@@ -90,15 +91,15 @@ export default function RegisterPage() {
                 placeholder="you@example.com"
                 value={form.email}
                 onChange={e => setForm({ ...form, email: e.target.value })}
-                className="form-input no-right-icon"
+                className="form-input has-icon"
               />
             </div>
           </div>
 
           <div className="form-group">
-            <label className="form-label">Password</label>
+            <label className="form-label" htmlFor="register-password">Password</label>
             <div className="input-wrap">
-              <span className="input-icon"><Lock size={16} /></span>
+              <span className="input-icon"><Lock size={15} /></span>
               <input
                 id="register-password"
                 type={showPass ? 'text' : 'password'}
@@ -106,19 +107,25 @@ export default function RegisterPage() {
                 placeholder="••••••••"
                 value={form.password}
                 onChange={e => setForm({ ...form, password: e.target.value })}
-                className="form-input"
+                className="form-input has-icon"
               />
-              <span className="input-icon-right" onClick={() => setShowPass(!showPass)}>
-                {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
+              <span
+                className="input-icon-right"
+                onClick={() => setShowPass(!showPass)}
+                role="button"
+                tabIndex={0}
+                aria-label={showPass ? 'Hide password' : 'Show password'}
+              >
+                {showPass ? <EyeOff size={15} /> : <Eye size={15} />}
               </span>
             </div>
           </div>
 
           {showReqs && (
-            <div className="req-list" style={{ marginBottom: 14 }}>
+            <div className="req-list" style={{ marginBottom: 16 }}>
               {reqs.map((r, i) => (
                 <div key={i} className={`req-item ${r.met ? 'met' : ''}`}>
-                  <CheckCircle size={13} />
+                  <CheckCircle size={12} />
                   {r.label}
                 </div>
               ))}
@@ -129,11 +136,12 @@ export default function RegisterPage() {
             id="register-submit-btn"
             type="submit"
             disabled={loading}
-            className="btn-grad form-submit"
+            className="button-primary"
+            style={{ width: '100%', marginTop: 8 }}
           >
             {loading
-              ? <span className="spinner" style={{ width: 18, height: 18, borderWidth: 2 }} />
-              : <><span>Create Account</span><ArrowRight size={16} /></>
+              ? <div className="spinner" style={{ width: 16, height: 16, borderWidth: 2, borderTopColor: '#ffffff' }} />
+              : <><span>Create Account</span><ArrowRight size={15} /></>
             }
           </button>
         </form>

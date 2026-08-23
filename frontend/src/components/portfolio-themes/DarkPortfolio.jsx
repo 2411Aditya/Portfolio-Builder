@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
-  Mail, Phone, Link2, GitBranch, Globe, ExternalLink,
-  Briefcase, Code2, GraduationCap, Award, User,
+  ExternalLink, Briefcase, Code2, GraduationCap, Award, User,
   CheckCircle2, MessageCircle, FileText, ChevronRight
 } from 'lucide-react';
 
