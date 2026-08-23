@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, User, Eye, EyeOff, Zap, ArrowRight, AlertCircle, CheckCircle, X } from 'lucide-react';
+import { Mail, Lock, User, Eye, EyeOff, ArrowRight, AlertCircle, CheckCircle, X } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import SEO from '../components/SEO';
 
@@ -46,8 +46,7 @@ export default function RegisterPage() {
 
       <div className="auth-card fade-up">
         <div className="auth-logo">
-          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div className="auth-logo-icon"><Zap size={22} color="#fff" /></div>
+          <Link to="/" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <span className="auth-logo-text grad">PortfolioAI</span>
           </Link>
         </div>

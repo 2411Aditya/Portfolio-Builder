@@ -208,10 +208,7 @@ export default function DashboardPage() {
       {/* Navbar */}
       <nav className="dash-nav">
         <Link to="/" className="dash-nav-brand">
-          <div style={{ width: 30, height: 30, borderRadius: 7, background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Zap size={14} strokeWidth={2} color="#fff" />
-          </div>
-          PortfolioAI
+          <span>PortfolioAI</span>
         </Link>
         <div className="dash-nav-right">
           <div className="dash-user-badge">

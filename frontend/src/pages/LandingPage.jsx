@@ -357,9 +357,6 @@ export default function LandingPage() {
       <header>
         <nav className="navbar" aria-label="Main Navigation">
           <Link to="/" className="navbar-logo" aria-label="PortfolioAI Homepage">
-            <div className="navbar-logo-icon">
-              <Zap size={16} strokeWidth={2} color="#fff" aria-hidden="true" />
-            </div>
             <span>PortfolioAI</span>
           </Link>
           <div className="navbar-actions">
@@ -479,9 +476,6 @@ export default function LandingPage() {
           <div className="footer-top">
             <div>
               <div className="footer-brand">
-                <div className="footer-brand-icon">
-                  <Zap size={14} strokeWidth={2} color="#fff" aria-hidden="true" />
-                </div>
                 <span>PortfolioAI</span>
               </div>
               <p className="footer-desc">Turn your resume into a stunning portfolio in seconds. No design skills required.</p>

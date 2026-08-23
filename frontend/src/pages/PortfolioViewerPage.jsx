@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Zap, AlertCircle, ArrowLeft } from 'lucide-react';
+import { AlertCircle, ArrowLeft } from 'lucide-react';
 import * as api from '../api/client';
 import SEO from '../components/SEO';
 import DarkPortfolio from '../components/portfolio-themes/DarkPortfolio';
@@ -15,9 +15,6 @@ function BuiltWithBadge({ theme }) {
       title="Built with PortfolioAI"
       aria-label="Built with PortfolioAI"
     >
-      <div className="built-with-badge-icon">
-        <Zap size={11} strokeWidth={2.5} color="#fff" aria-hidden="true" />
-      </div>
       <span>Built with PortfolioAI</span>
     </Link>
   );
@@ -47,10 +44,7 @@ export default function PortfolioViewerPage() {
     return (
       <div className="pv-loading" role="status" aria-live="polite">
         <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
-          <div style={{ width: 32, height: 32, borderRadius: 8, background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Zap size={16} strokeWidth={2} color="#fff" aria-hidden="true" />
-          </div>
-          <span style={{ fontFamily: "'Outfit',sans-serif", fontSize: 20, fontWeight: 900, letterSpacing: '-0.03em', color: 'var(--fg)' }}>PortfolioAI</span>
+          <span style={{ fontFamily: "'Outfit',sans-serif", fontSize: 22, fontWeight: 900, letterSpacing: '-0.03em', color: 'var(--fg)' }}>PortfolioAI</span>
         </div>
         <div className="spinner" style={{ width: 32, height: 32 }} />
         <p style={{ color: 'var(--fg-muted)', fontSize: 14 }}>Loading portfolio…</p>

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import {
   Mail, Phone, Link2, GitBranch, Globe, ExternalLink,
-  Briefcase, Code2, GraduationCap, Award, User, Zap,
-  ChevronDown, MessageCircle, Check
+  Briefcase, Code2, GraduationCap, Award, User,
+  ChevronDown, MessageCircle
 } from 'lucide-react';
 
 function SectionHeader({ icon, title }) {
@@ -89,7 +89,6 @@ export default function DarkPortfolio({ data, meta }) {
       {/* Nav */}
       <nav className="dp-nav">
         <div className="dp-nav-brand">
-          <Zap size={16} strokeWidth={1.5} style={{ color: '#818cf8' }} />
           <span className="grad">{data?.name || meta?.owner}</span>
         </div>
         <div className="dp-nav-links">
