@@ -7,8 +7,8 @@ const corsHeaders = {
 };
 
 const PLAN_PRICES: Record<string, number> = {
-  lite: 9900, // ₹99 in paise
-  pro: 29900, // ₹299 in paise
+  lite: 1900, // ₹19 in paise
+  pro: 2900,  // ₹29 in paise
 };
 
 serve(async (req) => {

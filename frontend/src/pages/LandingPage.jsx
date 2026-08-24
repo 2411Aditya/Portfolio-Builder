@@ -729,8 +729,8 @@ export default function LandingPage() {
                   <h3 className="pricing-title">Lite Creator</h3>
                   <p className="pricing-desc">Dynamic modern layouts to captivate recruiters.</p>
                   <div className="pricing-price-wrap">
-                    <span className="pricing-price">₹99</span>
-                    <span className="pricing-period">/ one-time</span>
+                    <span className="pricing-price">₹19</span>
+                    <span className="pricing-period">/ year</span>
                   </div>
                 </div>
                 <ul className="pricing-features" style={{ margin: '20px 0' }}>
@@ -746,7 +746,7 @@ export default function LandingPage() {
                   className="button-primary"
                   style={{ width: '100%', justifyContent: 'center', padding: '12px', background: '#0284c7', borderColor: '#0284c7' }}
                 >
-                  Get Lite Plan (₹99)
+                  Get Lite Plan (₹19/yr)
                 </button>
               </div>
 
@@ -760,8 +760,8 @@ export default function LandingPage() {
                   <h3 className="pricing-title">Pro Visionary</h3>
                   <p className="pricing-desc">Full suite of 10 templates with AI Customizer Chatbox.</p>
                   <div className="pricing-price-wrap">
-                    <span className="pricing-price">₹299</span>
-                    <span className="pricing-period">/ lifetime access</span>
+                    <span className="pricing-price">₹29</span>
+                    <span className="pricing-period">/ year</span>
                   </div>
                 </div>
                 <ul className="pricing-features" style={{ margin: '20px 0' }}>
@@ -777,7 +777,7 @@ export default function LandingPage() {
                   className="button-primary"
                   style={{ width: '100%', justifyContent: 'center', padding: '14px', fontSize: 15, background: 'linear-gradient(135deg, #a855f7, #6366f1)', border: 'none' }}
                 >
-                  <Sparkles size={16} /> Unlock All 10 + AI (₹299)
+                  <Sparkles size={16} /> Unlock All 10 + AI (₹29/yr)
                 </button>
               </div>
 

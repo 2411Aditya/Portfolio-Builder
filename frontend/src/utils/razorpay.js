@@ -50,7 +50,7 @@ export async function createRazorpayOrder(planTier) {
   }
 
   // 2. Client fallback
-  const amounts = { lite: 9900, pro: 29900 };
+  const amounts = { lite: 1900, pro: 2900 };
   const keyId = import.meta.env.VITE_RAZORPAY_KEY_ID || DEFAULT_TEST_KEY_ID;
 
   return {

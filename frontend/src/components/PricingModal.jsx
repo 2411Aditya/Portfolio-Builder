@@ -41,9 +41,9 @@ export default function PricingModal({
     {
       id: 'lite',
       name: 'Lite Creator',
-      price: '₹99',
-      period: 'one-time',
-      amount: 9900,
+      price: '₹19',
+      period: 'year',
+      amount: 1900,
       description: 'Modern visual designs to stand out in recruiter inboxes.',
       features: [
         '6 Dynamic Templates (Bento, Executive, Creative Bold, Split Screen + Free)',
@@ -52,7 +52,7 @@ export default function PricingModal({
         'Priority Public CDN Hosting',
         'Direct WhatsApp & Social Links',
       ],
-      cta: currentTier === 'lite' ? 'Current Plan' : 'Upgrade to Lite',
+      cta: currentTier === 'lite' ? 'Current Plan' : 'Upgrade to Lite (₹19/yr)',
       disabled: currentTier === 'lite' || currentTier === 'pro',
       popular: false,
       badge: 'POPULAR CHOICE',
@@ -60,9 +60,9 @@ export default function PricingModal({
     {
       id: 'pro',
       name: 'Pro Visionary',
-      price: '₹299',
-      period: 'lifetime access',
-      amount: 29900,
+      price: '₹29',
+      period: 'year',
+      amount: 2900,
       description: 'Maximum impact with all 10 templates and AI Customizer.',
       features: [
         'All 10 Modular Templates (Glassmorphism, Timeline Story, Notion Doc, Neumorphic, etc.)',
@@ -72,7 +72,7 @@ export default function PricingModal({
         'Verified Pro Badge on Live Link',
         'SEO Rich Snippets & JSON-LD Schemas',
       ],
-      cta: currentTier === 'pro' ? 'Current Plan' : 'Unlock All 10 + AI',
+      cta: currentTier === 'pro' ? 'Current Plan' : 'Unlock All 10 + AI (₹29/yr)',
       disabled: currentTier === 'pro',
       popular: true,
       badge: 'BEST VALUE • UNLIMITED AI',
