@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff, ArrowRight, AlertCircle, X } from 'lucide-react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Mail, Lock, Eye, EyeOff, ArrowRight, AlertCircle, X, Sparkles, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import SEO from '../components/SEO';
 
 export default function LoginPage() {
+  const [searchParams] = useSearchParams();
+  const selectedPlan = searchParams.get('plan') || 'free';
+
   const [form, setForm] = useState({ email: '', password: '' });
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -18,7 +21,11 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await login(form);
-      navigate('/dashboard');
+      if (selectedPlan === 'lite' || selectedPlan === 'pro') {
+        navigate(`/dashboard?plan=${selectedPlan}&autoCheckout=true`);
+      } else {
+        navigate('/dashboard');
+      }
     } catch (err) {
       setError(err.message || 'Login failed. Please check your credentials.');
     } finally {
@@ -40,6 +47,44 @@ export default function LoginPage() {
             <span className="auth-logo-text">PortfolioAI</span>
           </Link>
         </div>
+
+        {/* Selected Plan Banner if Paid */}
+        {selectedPlan !== 'free' && (
+          <div
+            style={{
+              padding: '10px 14px',
+              borderRadius: 8,
+              background: selectedPlan === 'pro' ? 'linear-gradient(135deg, rgba(168, 85, 247, 0.12), rgba(99, 102, 241, 0.12))' : 'rgba(2, 132, 199, 0.12)',
+              border: selectedPlan === 'pro' ? '1px solid rgba(168, 85, 247, 0.3)' : '1px solid rgba(2, 132, 199, 0.3)',
+              marginBottom: 16,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              {selectedPlan === 'pro' ? <Sparkles size={16} style={{ color: '#a855f7' }} /> : <ShieldCheck size={16} style={{ color: '#0284c7' }} />}
+              <div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--color-ink)' }}>
+                  Selected: {selectedPlan === 'pro' ? 'Pro Visionary (₹299)' : 'Lite Creator (₹99)'}
+                </div>
+                <div style={{ fontSize: 11, color: 'var(--color-mute)' }}>Proceed to Razorpay after sign in</div>
+              </div>
+            </div>
+            <span
+              style={{
+                fontSize: 10,
+                fontWeight: 800,
+                padding: '2px 6px',
+                borderRadius: 4,
+                background: selectedPlan === 'pro' ? '#a855f7' : '#0284c7',
+                color: '#fff',
+              }}
+            >
+              {selectedPlan.toUpperCase()}
+            </span>
+          </div>
+        )}
 
         <div className="eyebrow-uppercase-sm" style={{ textAlign: 'center', marginBottom: 6 }}>AUTHENTICATION</div>
         <h1 className="auth-heading">Welcome back</h1>
@@ -115,7 +160,7 @@ export default function LoginPage() {
 
         <p className="auth-footer">
           Don't have an account?{' '}
-          <Link to="/register" id="login-to-register-link">Create one</Link>
+          <Link to={`/register${selectedPlan !== 'free' ? `?plan=${selectedPlan}` : ''}`} id="login-to-register-link">Create one</Link>
         </p>
       </div>
     </div>

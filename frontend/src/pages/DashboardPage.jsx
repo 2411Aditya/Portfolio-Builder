@@ -1,14 +1,15 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Upload, Zap, Moon, Sun, Copy, ExternalLink, Trash2, FileText,
   AlertCircle, LogOut, Clock, Loader2, X, Globe, Check,
-  LayoutDashboard, ShieldCheck, CheckCircle, Sparkles, Bell
+  LayoutDashboard, ShieldCheck, CheckCircle, Sparkles, Lock, Palette
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import * as api from '../api/client';
 import SEO from '../components/SEO';
-import CheckoutModal from '../components/CheckoutModal';
+import PricingModal from '../components/PricingModal';
+import { TEMPLATE_REGISTRY, canAccessTemplate } from '../templates';
 
 const ACCEPTED = ['pdf', 'docx', 'txt', 'png', 'jpg', 'jpeg', 'webp'];
 
@@ -18,11 +19,11 @@ const STEPS = [
   'Styling live responsive portfolio…',
 ];
 
-/* ── Delete Confirmation Modal (Level 4 Heavy Shadow) ── */
+/* ── Delete Confirmation Modal ── */
 function DeleteModal({ portfolioTitle, onCancel, onConfirm, deleting }) {
   return (
     <div className="modal-overlay" onClick={onCancel}>
-      <div className="modal-card" onClick={e => e.stopPropagation()}>
+      <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div style={{ width: 44, height: 44, borderRadius: 4, background: '#fef2f2', border: '1px solid #fecaca', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
           <Trash2 size={20} strokeWidth={1.5} style={{ color: '#ee1d36' }} />
         </div>
@@ -50,7 +51,7 @@ function DeleteModal({ portfolioTitle, onCancel, onConfirm, deleting }) {
   );
 }
 
-/* ── Portfolio Card (Webflow 8px Chrome & 4px Action Buttons) ── */
+/* ── Portfolio Card with Template Badge ── */
 function PortfolioCard({ portfolio, onDelete, onCopyLink }) {
   const [copied, setCopied] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -68,6 +69,8 @@ function PortfolioCard({ portfolio, onDelete, onCopyLink }) {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+
+  const templateMeta = TEMPLATE_REGISTRY[portfolio.template_id] || TEMPLATE_REGISTRY.minimal;
 
   return (
     <>
@@ -103,6 +106,22 @@ function PortfolioCard({ portfolio, onDelete, onCopyLink }) {
               <span className="port-status-dot" />
               Live
             </span>
+            <span
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                padding: '2px 8px',
+                borderRadius: 4,
+                background: `${templateMeta.thumbnailColor}18`,
+                color: templateMeta.thumbnailColor,
+                border: `1px solid ${templateMeta.thumbnailColor}33`,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 4,
+              }}
+            >
+              <Palette size={11} /> {templateMeta.name}
+            </span>
             <span className="theme-badge">
               {portfolio.theme === 'dark'
                 ? <Moon size={11} strokeWidth={1.5} />
@@ -124,11 +143,15 @@ function PortfolioCard({ portfolio, onDelete, onCopyLink }) {
 
 /* ── Main Dashboard Page ── */
 export default function DashboardPage() {
-  const { user, logout } = useAuth();
+  const { user, profile, logout } = useAuth();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const userTier = profile?.plan_tier || 'free';
 
   const [file, setFile] = useState(null);
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState('dark');
+  const [selectedTemplate, setSelectedTemplate] = useState('minimal');
   const [dragging, setDragging] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [genStep, setGenStep] = useState(-1);
@@ -138,9 +161,21 @@ export default function DashboardPage() {
   const [portfolios, setPortfolios] = useState([]);
   const [historyLoading, setHistoryLoading] = useState(true);
   const [historyError, setHistoryError] = useState('');
-  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [pricingOpen, setPricingOpen] = useState(false);
+  const [targetTierForUpgrade, setTargetTierForUpgrade] = useState('pro');
 
   const fileInputRef = useRef(null);
+
+  // Auto-trigger Razorpay modal pipeline if user arrived from register/login with a paid plan
+  useEffect(() => {
+    const autoCheckout = searchParams.get('autoCheckout');
+    const plan = searchParams.get('plan');
+    if (autoCheckout === 'true' && (plan === 'lite' || plan === 'pro')) {
+      setTargetTierForUpgrade(plan);
+      setPricingOpen(true);
+      setSearchParams({}, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   const fetchHistory = useCallback(async () => {
     setHistoryLoading(true);
@@ -171,6 +206,16 @@ export default function DashboardPage() {
     setError(''); setFile(f); setNewPortfolio(null);
   };
 
+  const handleSelectTemplate = (templateKey, templateMeta) => {
+    const isAccessible = canAccessTemplate(userTier, templateMeta.tier);
+    if (!isAccessible) {
+      setTargetTierForUpgrade(templateMeta.tier);
+      setPricingOpen(true);
+      return;
+    }
+    setSelectedTemplate(templateKey);
+  };
+
   const handleGenerate = async () => {
     if (!file) { setError('Please select a resume file first.'); return; }
     setGenerating(true); setError(''); setNewPortfolio(null); setGenStep(0);
@@ -184,10 +229,14 @@ export default function DashboardPage() {
     }, 700);
 
     try {
-      const res = await api.generatePortfolio({ file, theme });
+      const res = await api.generatePortfolio({
+        file,
+        theme,
+        templateId: selectedTemplate,
+      });
       clearInterval(stepTimer);
       setGenStep(STEPS.length - 1);
-      setNewPortfolio(res.data.portfolio);
+      setNewPortfolio(res.data);
       setFile(null);
       if (fileInputRef.current) fileInputRef.current.value = '';
       fetchHistory();
@@ -212,17 +261,41 @@ export default function DashboardPage() {
 
   const handleCopyLink = (url) => { navigator.clipboard.writeText(window.location.origin + url); };
 
+  const getTierBadge = () => {
+    if (userTier === 'pro') {
+      return (
+        <span style={{ padding: '6px 12px', borderRadius: 9999, background: 'linear-gradient(135deg, #a855f7, #6366f1)', color: '#fff', fontSize: 12, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          <Sparkles size={14} /> Pro Visionary
+        </span>
+      );
+    }
+    if (userTier === 'lite') {
+      return (
+        <span style={{ padding: '6px 12px', borderRadius: 9999, background: 'rgba(2, 132, 199, 0.15)', color: '#0284c7', fontSize: 12, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 6, border: '1px solid rgba(2, 132, 199, 0.3)' }}>
+          <ShieldCheck size={14} /> Lite Creator
+        </span>
+      );
+    }
+    return (
+      <span className="badge-green-soft" style={{ padding: '6px 12px' }}>
+        <ShieldCheck size={14} /> Free Starter Plan
+      </span>
+    );
+  };
+
   return (
     <div className="dash-shell">
       <SEO
         title="Dashboard | PortfolioAI"
-        description="Manage your generated portfolios, generate new portfolios from resumes, and monitor your public links."
+        description="Manage your generated portfolios, select modular templates, and customize themes."
         noindex={true}
       />
-      <CheckoutModal
-        isOpen={checkoutOpen}
-        onClose={() => setCheckoutOpen(false)}
-        initialPlan="monthly"
+      
+      {/* Razorpay Pricing Modal */}
+      <PricingModal
+        isOpen={pricingOpen}
+        onClose={() => setPricingOpen(false)}
+        initialTier={targetTierForUpgrade}
       />
 
       {/* Navbar */}
@@ -232,14 +305,24 @@ export default function DashboardPage() {
             <span>PortfolioAI</span>
           </Link>
           <div className="dash-header-actions">
-            <button
-              type="button"
-              onClick={() => setCheckoutOpen(true)}
-              className="button-primary dash-upgrade-btn"
-            >
-              <Sparkles size={13} />
-              <span>Upgrade to Pro</span>
-            </button>
+            {userTier !== 'pro' && (
+              <button
+                type="button"
+                onClick={() => {
+                  setTargetTierForUpgrade('pro');
+                  setPricingOpen(true);
+                }}
+                className="button-primary dash-upgrade-btn"
+                style={{
+                  background: 'linear-gradient(135deg, #a855f7, #6366f1)',
+                  border: 'none',
+                  boxShadow: '0 4px 14px rgba(168, 85, 247, 0.3)',
+                }}
+              >
+                <Sparkles size={13} />
+                <span>{userTier === 'lite' ? 'Upgrade to Pro' : 'Unlock Pro (₹299)'}</span>
+              </button>
+            )}
             <div className="dash-user-badge">
               <div className="dash-user-avatar">
                 {user?.username?.[0]?.toUpperCase() || 'U'}
@@ -263,21 +346,24 @@ export default function DashboardPage() {
               Welcome back, {user?.username}
             </h1>
             <p className="body-sm" style={{ marginTop: 2 }}>
-              Generate, manage, and monitor recruiter-ready portfolio links.
+              Generate, manage, and customize your live portfolio links across 10 modular templates.
             </p>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <span className="badge-green-soft" style={{ padding: '6px 10px' }}>
-              <ShieldCheck size={14} /> Free Starter Plan
-            </span>
-            <button
-              type="button"
-              onClick={() => setCheckoutOpen(true)}
-              className="button-secondary"
-              style={{ fontSize: 12, padding: '6px 12px' }}
-            >
-              Billing & Trial Info
-            </button>
+            {getTierBadge()}
+            {userTier !== 'pro' && (
+              <button
+                type="button"
+                onClick={() => {
+                  setTargetTierForUpgrade('pro');
+                  setPricingOpen(true);
+                }}
+                className="button-secondary"
+                style={{ fontSize: 12, padding: '6px 12px' }}
+              >
+                View Plans & Pricing
+              </button>
+            )}
           </div>
         </div>
 
@@ -288,22 +374,27 @@ export default function DashboardPage() {
             <div style={{ fontSize: 24, fontWeight: 600, color: 'var(--color-ink)' }}>{portfolios.length}</div>
           </div>
           <div className="dash-card" style={{ padding: 20 }}>
-            <div className="eyebrow-uppercase-sm" style={{ marginBottom: 6 }}>ACTIVE LINKS</div>
-            <div style={{ fontSize: 24, fontWeight: 600, color: '#15803d' }}>{portfolios.length} Live</div>
+            <div className="eyebrow-uppercase-sm" style={{ marginBottom: 6 }}>AVAILABLE TEMPLATES</div>
+            <div style={{ fontSize: 24, fontWeight: 600, color: '#15803d' }}>
+              {userTier === 'pro' ? '10/10 (All Unlocked)' : userTier === 'lite' ? '6/10 (Lite)' : '2/10 (Free)'}
+            </div>
           </div>
           <div className="dash-card" style={{ padding: 20 }}>
-            <div className="eyebrow-uppercase-sm" style={{ marginBottom: 6 }}>GENERATION SPEED</div>
-            <div style={{ fontSize: 24, fontWeight: 600, color: 'var(--color-accent-blue-deep)' }}>~30s</div>
+            <div className="eyebrow-uppercase-sm" style={{ marginBottom: 6 }}>AI CUSTOMIZER</div>
+            <div style={{ fontSize: 24, fontWeight: 600, color: userTier === 'pro' ? '#a855f7' : 'var(--color-mute)' }}>
+              {userTier === 'pro' ? 'Active' : 'Locked (Pro)'}
+            </div>
           </div>
         </div>
 
         {/* Generator Card & History Grid */}
         <div className="dash-grid">
+          
           {/* Left Column: Generator Form */}
           <div className="dash-card">
             <div className="eyebrow-uppercase-sm" style={{ marginBottom: 4 }}>INSTANT GENERATOR</div>
             <div className="dash-card-title">Generate New Portfolio</div>
-            <div className="dash-card-sub">Upload a resume to create a live public profile.</div>
+            <div className="dash-card-sub">Upload your resume and choose from 10 modular designs.</div>
 
             {/* Error Banner */}
             {error && (
@@ -316,7 +407,7 @@ export default function DashboardPage() {
 
             {/* Success Banner */}
             {newPortfolio && (
-              <div style={{ padding: 16, borderRadius: 4, background: '#f0fdf4', border: '1px solid #bbf7d0', marginBottom: 20 }}>
+              <div style={{ padding: 16, borderRadius: 8, background: '#f0fdf4', border: '1px solid #bbf7d0', marginBottom: 20 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 600, color: '#15803d', fontSize: 13, marginBottom: 8 }}>
                   <CheckCircle size={15} /> Portfolio Generated Successfully!
                 </div>
@@ -340,7 +431,7 @@ export default function DashboardPage() {
               className={`drop-zone ${dragging ? 'dragging' : ''}`}
               onDragOver={onDragOver} onDragLeave={onDragLeave} onDrop={onDrop}
               onClick={() => !file && fileInputRef.current?.click()}
-              style={{ padding: '24px 16px', marginBottom: 16 }}
+              style={{ padding: '20px 16px', marginBottom: 16 }}
             >
               <input ref={fileInputRef} id="resume-file-input" type="file" accept=".pdf,.docx,.txt,.png,.jpg,.jpeg,.webp" style={{ display: 'none' }} onChange={onFileChange} />
               {file ? (
@@ -358,28 +449,92 @@ export default function DashboardPage() {
                     <Upload size={16} style={{ color: 'var(--color-ink)' }} />
                   </div>
                   <div className="drop-main" style={{ fontSize: 13 }}>Click to browse or drop resume</div>
-                  <div className="drop-sub" style={{ fontSize: 11, marginBottom: 0 }}>PDF, DOCX, TXT (Max 16 MB)</div>
+                  <div className="drop-sub" style={{ fontSize: 11, marginBottom: 0 }}>PDF, DOCX, TXT, PNG (Max 16 MB)</div>
                 </div>
               )}
             </div>
 
-            {/* Visual Template Selector */}
-            <div className="form-group">
-              <label className="form-label">Visual Template</label>
+            {/* 10-Template Visual Grid Selector */}
+            <div className="form-group" style={{ marginBottom: 16 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                <label className="form-label" style={{ margin: 0 }}>Select Template (10 Available)</label>
+                <span style={{ fontSize: 11, color: 'var(--color-mute)' }}>
+                  Selected: <strong style={{ color: 'var(--color-ink)' }}>{TEMPLATE_REGISTRY[selectedTemplate]?.name}</strong>
+                </span>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: 8, maxHeight: 220, overflowY: 'auto', paddingRight: 4 }}>
+                {Object.entries(TEMPLATE_REGISTRY).map(([tKey, tMeta]) => {
+                  const isAccessible = canAccessTemplate(userTier, tMeta.tier);
+                  const isSelected = selectedTemplate === tKey;
+
+                  return (
+                    <button
+                      key={tKey}
+                      type="button"
+                      onClick={() => handleSelectTemplate(tKey, tMeta)}
+                      style={{
+                        padding: '10px 8px',
+                        borderRadius: 8,
+                        border: isSelected ? `2px solid ${tMeta.thumbnailColor}` : '1px solid #e2e8f0',
+                        background: isSelected ? `${tMeta.thumbnailColor}0a` : '#ffffff',
+                        cursor: 'pointer',
+                        textAlign: 'left',
+                        position: 'relative',
+                        transition: 'all 0.15s',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'space-between',
+                      }}
+                    >
+                      <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                          <span
+                            style={{
+                              fontSize: 9,
+                              fontWeight: 800,
+                              textTransform: 'uppercase',
+                              padding: '2px 5px',
+                              borderRadius: 4,
+                              background: tMeta.tier === 'pro' ? '#a855f7' : tMeta.tier === 'lite' ? '#0284c7' : '#10b981',
+                              color: '#ffffff',
+                            }}
+                          >
+                            {tMeta.tier}
+                          </span>
+                          {!isAccessible && (
+                            <Lock size={12} style={{ color: '#94a3b8' }} />
+                          )}
+                        </div>
+                        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--color-ink)', lineHeight: 1.2, marginTop: 4 }}>
+                          {tMeta.name}
+                        </div>
+                      </div>
+
+                      <div style={{ height: 4, borderRadius: 2, background: tMeta.thumbnailColor, marginTop: 8, opacity: isSelected ? 1 : 0.4 }} />
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Visual Theme Segments (Dark / Light) */}
+            <div className="form-group" style={{ marginBottom: 16 }}>
+              <label className="form-label">Base Theme</label>
               <div className="theme-seg" style={{ margin: 0 }}>
+                <button
+                  type="button"
+                  className={`theme-seg-btn ${theme === 'dark' ? 'active' : ''}`}
+                  onClick={() => setTheme('dark')}
+                >
+                  <Moon size={13} /> Dark Mode
+                </button>
                 <button
                   type="button"
                   className={`theme-seg-btn ${theme === 'light' ? 'active' : ''}`}
                   onClick={() => setTheme('light')}
                 >
                   <Sun size={13} /> Light Canvas
-                </button>
-                <button
-                  type="button"
-                  className={`theme-seg-btn ${theme === 'dark' ? 'active' : ''}`}
-                  onClick={() => setTheme('dark')}
-                >
-                  <Moon size={13} /> Dark Terminal
                 </button>
               </div>
             </div>

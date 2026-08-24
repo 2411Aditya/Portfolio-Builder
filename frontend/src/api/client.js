@@ -2,9 +2,9 @@ import { supabase } from '../lib/supabase';
 import { parseResumeWithAI } from '../utils/aiParser';
 
 /**
- * Generate and store portfolio in Supabase
+ * Generate and store portfolio in Supabase with template_id and custom_styles
  */
-export async function generatePortfolio({ file, theme }) {
+export async function generatePortfolio({ file, theme = 'dark', templateId = 'minimal', customStyles = {} }) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -28,6 +28,8 @@ export async function generatePortfolio({ file, theme }) {
         username: username,
         title: title,
         theme: theme || 'dark',
+        template_id: templateId || 'minimal',
+        custom_styles: customStyles || {},
         data: parsedData,
       },
     ])
@@ -70,6 +72,8 @@ export async function getHistory() {
 
   const portfolios = (data || []).map((p) => ({
     ...p,
+    template_id: p.template_id || 'minimal',
+    custom_styles: p.custom_styles || {},
     public_url: `/p/${p.username}/${p.id}`,
   }));
 
@@ -88,7 +92,7 @@ export async function deletePortfolio(id) {
 }
 
 /**
- * Get public portfolio by ID
+ * Get public portfolio by ID (with fallback to minimal template_id and custom_styles)
  */
 export async function getPublicPortfolio(username, portfolioId) {
   const { data, error } = await supabase
@@ -104,11 +108,56 @@ export async function getPublicPortfolio(username, portfolioId) {
   return {
     data: {
       id: data.id,
+      user_id: data.user_id,
       title: data.title,
-      theme: data.theme,
+      theme: data.theme || 'dark',
+      template_id: data.template_id || 'minimal',
+      custom_styles: data.custom_styles || {},
       data: data.data,
       created_at: data.created_at,
       owner: data.username,
     },
   };
+}
+
+/**
+ * Update portfolio custom styles
+ */
+export async function updatePortfolioStyles(portfolioId, customStyles) {
+  const { data, error } = await supabase
+    .from('portfolios')
+    .update({
+      custom_styles: customStyles,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', portfolioId)
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error(`Failed to update custom styles: ${error.message}`);
+  }
+
+  return data;
+}
+
+/**
+ * Update portfolio template ID
+ */
+export async function updatePortfolioTemplate(portfolioId, templateId) {
+  const { data, error } = await supabase
+    .from('portfolios')
+    .update({
+      template_id: templateId,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', portfolioId)
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error(`Failed to update template: ${error.message}`);
+  }
+
+  return data;
 }

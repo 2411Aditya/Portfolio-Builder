@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Zap, ArrowRight, Upload, FileText, Image, X,
   Moon, Sun, Check, ChevronDown, Globe,
@@ -7,7 +7,8 @@ import {
 } from 'lucide-react';
 import SEO from '../components/SEO';
 import DotField from '../components/DotField';
-import CheckoutModal from '../components/CheckoutModal';
+import PricingModal from '../components/PricingModal';
+import { useAuth } from '../contexts/AuthContext';
 
 /* ─── FAQ Data ─── */
 const faqs = [
@@ -393,12 +394,27 @@ function BrowserMockup() {
 
 /* ─── MAIN LANDING PAGE ─── */
 export default function LandingPage() {
-  const [checkoutOpen, setCheckoutOpen] = useState(false);
-  const [checkoutPlan, setCheckoutPlan] = useState('monthly');
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const [pricingOpen, setPricingOpen] = useState(false);
+  const [pricingTier, setPricingTier] = useState('pro');
 
-  const openCheckout = (plan = 'monthly') => {
-    setCheckoutPlan(plan);
-    setCheckoutOpen(true);
+  const handlePlanSelect = (tier) => {
+    if (tier === 'free') {
+      if (user) {
+        navigate('/dashboard');
+      } else {
+        navigate('/register?plan=free');
+      }
+      return;
+    }
+    // Paid tier ('lite' or 'pro')
+    if (user) {
+      setPricingTier(tier);
+      setPricingOpen(true);
+    } else {
+      navigate(`/register?plan=${tier}`);
+    }
   };
 
   // Structured Data Schemas for Google Rich Results
@@ -661,83 +677,108 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ── Pricing & Free Trial Transparency Section ── */}
+        {/* ── Pricing & Tier Plans Section ── */}
         <section className="pricing-section" id="pricing" aria-labelledby="pricing-heading">
           <div className="category-container">
             <div style={{ textAlign: 'center', marginBottom: 36 }}>
-              <div className="eyebrow-uppercase" style={{ marginBottom: 12 }}>TRANSPARENT PRICING & FREE TRIAL</div>
+              <div className="eyebrow-uppercase" style={{ marginBottom: 12 }}>TRANSPARENT TIER ACCESS</div>
               <h2 id="pricing-heading" className="display-lg">
-                Simple, transparent plans with 7-day free trial
+                Choose the perfect portfolio plan
               </h2>
               <p className="body-md" style={{ maxWidth: 640, margin: '12px auto 0', color: 'var(--color-body)' }}>
-                Start risk-free. No charges today. We guarantee an email reminder 3 days before your trial ends, and you can cancel anytime in 1 click.
+                One-time simple pricing with instant activation. Unlock modular templates and AI-powered custom styling.
               </p>
             </div>
 
-            <div className="pricing-grid">
+            <div className="pricing-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24, maxWidth: 1060, margin: '0 auto' }}>
+              
               {/* Card 1: Free Starter */}
-              <div className="pricing-card">
+              <div className="pricing-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 <div className="pricing-card-header">
                   <span className="pricing-tag">FREE FOREVER</span>
-                  <h3 className="pricing-title">Starter Developer</h3>
-                  <p className="pricing-desc">Essential resume parsing for job applicants.</p>
+                  <h3 className="pricing-title">Free Starter</h3>
+                  <p className="pricing-desc">Essential resume parsing and clean classic layout.</p>
                   <div className="pricing-price-wrap">
-                    <span className="pricing-price">$0</span>
-                    <span className="pricing-period">/ month</span>
+                    <span className="pricing-price">₹0</span>
+                    <span className="pricing-period">/ forever</span>
                   </div>
                 </div>
-                <ul className="pricing-features">
-                  <li><Check size={16} className="feature-check" /> 1 Hosted Portfolio</li>
-                  <li><Check size={16} className="feature-check" /> Standard Dark / Light Theme</li>
-                  <li><Check size={16} className="feature-check" /> Instant AI Resume Extraction</li>
-                  <li><Check size={16} className="feature-check" /> Public Shareable URL</li>
+                <ul className="pricing-features" style={{ margin: '20px 0' }}>
+                  <li><Check size={16} className="feature-check" /> 2 Classic Templates (Minimal & Terminal)</li>
+                  <li><Check size={16} className="feature-check" /> Instant AI Resume OCR & Extraction</li>
+                  <li><Check size={16} className="feature-check" /> Standard Dark & Light Canvas Modes</li>
+                  <li><Check size={16} className="feature-check" /> Shareable Public URL (<code>/p/user/id</code>)</li>
+                  <li><Check size={16} className="feature-check" /> Unlimited Profile Visits</li>
                 </ul>
-                <Link to="/register" className="button-secondary" style={{ width: '100%', justifyContent: 'center', marginTop: 'auto' }}>
-                  Get Started Free
-                </Link>
-              </div>
-
-              {/* Card 2: Pro (Featured with 7-Day Free Trial) */}
-              <div className="pricing-card featured">
-                <div className="pricing-popular-badge">
-                  <Sparkles size={12} /> MOST POPULAR • 7-DAY FREE TRIAL
-                </div>
-                <div className="pricing-card-header">
-                  <span className="pricing-tag pro">PRO ARCHITECT</span>
-                  <h3 className="pricing-title">Professional Suite</h3>
-                  <p className="pricing-desc">Advanced recruiter SEO, custom themes, and WhatsApp connect.</p>
-                  <div className="pricing-price-wrap">
-                    <span className="pricing-price">$12</span>
-                    <span className="pricing-period">/ month (or $8/mo billed yearly)</span>
-                  </div>
-                </div>
-                <ul className="pricing-features">
-                  <li><Check size={16} className="feature-check" /> Unlimited AI Portfolios & Re-generations</li>
-                  <li><Check size={16} className="feature-check" /> Full Dark & Light Multi-Theme Studio</li>
-                  <li><Check size={16} className="feature-check" /> Recruiter Rich Preview & WhatsApp Direct Button</li>
-                  <li><Check size={16} className="feature-check" /> Google JSON-LD Schema & Priority Indexing</li>
-                  <li><Check size={16} className="feature-check" /> Global Edge CDN Sub-50ms Response Speed</li>
-                </ul>
-
-                {/* Trial & Auto-Renewal Transparency Guarantee Badge */}
-                <div className="pricing-guarantee-box">
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 600, fontSize: 12, color: 'var(--color-ink)' }}>
-                    <Bell size={13} /> 7-Day Free Trial • No Charge Today
-                  </div>
-                  <div style={{ fontSize: 11, color: 'var(--color-body)', marginTop: 3, lineHeight: 1.4 }}>
-                    Email reminder sent 3 days before trial ends. Auto-renews monthly unless cancelled. Cancel anytime with 1 click in settings.
-                  </div>
-                </div>
-
                 <button
                   type="button"
-                  onClick={() => openCheckout('monthly')}
-                  className="button-primary"
-                  style={{ width: '100%', justifyContent: 'center', padding: '14px', fontSize: 15 }}
+                  onClick={() => handlePlanSelect('free')}
+                  className="button-secondary"
+                  style={{ width: '100%', justifyContent: 'center', marginTop: 'auto', padding: '12px' }}
                 >
-                  <Zap size={16} /> Start 7-Day Free Trial
+                  Get Started Free
                 </button>
               </div>
+
+              {/* Card 2: Lite Creator */}
+              <div className="pricing-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <div className="pricing-card-header">
+                  <span className="pricing-tag" style={{ background: '#e0f2fe', color: '#0284c7' }}>LITE CREATOR</span>
+                  <h3 className="pricing-title">Lite Creator</h3>
+                  <p className="pricing-desc">Dynamic modern layouts to captivate recruiters.</p>
+                  <div className="pricing-price-wrap">
+                    <span className="pricing-price">₹99</span>
+                    <span className="pricing-period">/ one-time</span>
+                  </div>
+                </div>
+                <ul className="pricing-features" style={{ margin: '20px 0' }}>
+                  <li><Check size={16} className="feature-check" /> 6 Dynamic Templates (Bento, Executive, Creative, Split)</li>
+                  <li><Check size={16} className="feature-check" /> Modern Bento Grid & Sidebar Hierarchy</li>
+                  <li><Check size={16} className="feature-check" /> Priority Global Edge CDN Hosting</li>
+                  <li><Check size={16} className="feature-check" /> WhatsApp Direct Contact Button</li>
+                  <li><Check size={16} className="feature-check" /> Google SEO Schema & Indexing</li>
+                </ul>
+                <button
+                  type="button"
+                  onClick={() => handlePlanSelect('lite')}
+                  className="button-primary"
+                  style={{ width: '100%', justifyContent: 'center', padding: '12px', background: '#0284c7', borderColor: '#0284c7' }}
+                >
+                  Get Lite Plan (₹99)
+                </button>
+              </div>
+
+              {/* Card 3: Pro Visionary */}
+              <div className="pricing-card featured" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', border: '2px solid #a855f7' }}>
+                <div className="pricing-popular-badge" style={{ background: 'linear-gradient(135deg, #a855f7, #6366f1)' }}>
+                  <Sparkles size={12} /> BEST VALUE • ALL 10 TEMPLATES + AI
+                </div>
+                <div className="pricing-card-header">
+                  <span className="pricing-tag pro" style={{ background: '#f3e8ff', color: '#7e22ce' }}>PRO VISIONARY</span>
+                  <h3 className="pricing-title">Pro Visionary</h3>
+                  <p className="pricing-desc">Full suite of 10 templates with AI Customizer Chatbox.</p>
+                  <div className="pricing-price-wrap">
+                    <span className="pricing-price">₹299</span>
+                    <span className="pricing-period">/ lifetime access</span>
+                  </div>
+                </div>
+                <ul className="pricing-features" style={{ margin: '20px 0' }}>
+                  <li><Check size={16} className="feature-check" /> All 10 Templates (Glass, Timeline, Notion, Neumorphic)</li>
+                  <li><Check size={16} className="feature-check" /> <strong>AI Customizer Chatbox</strong> (Natural Language Styling)</li>
+                  <li><Check size={16} className="feature-check" /> Custom Color & Typography Palette Tuning</li>
+                  <li><Check size={16} className="feature-check" /> AI Resume Content Refinements</li>
+                  <li><Check size={16} className="feature-check" /> Verified Pro Badge on Live Link</li>
+                </ul>
+                <button
+                  type="button"
+                  onClick={() => handlePlanSelect('pro')}
+                  className="button-primary"
+                  style={{ width: '100%', justifyContent: 'center', padding: '14px', fontSize: 15, background: 'linear-gradient(135deg, #a855f7, #6366f1)', border: 'none' }}
+                >
+                  <Sparkles size={16} /> Unlock All 10 + AI (₹299)
+                </button>
+              </div>
+
             </div>
           </div>
         </section>
@@ -797,11 +838,11 @@ export default function LandingPage() {
         </div>
       </footer>
 
-      {/* ── Global Checkout & Subscription Modal with Disclosures ── */}
-      <CheckoutModal
-        isOpen={checkoutOpen}
-        onClose={() => setCheckoutOpen(false)}
-        initialPlan={checkoutPlan}
+      {/* ── Global Pricing & Upgrade Modal with Razorpay ── */}
+      <PricingModal
+        isOpen={pricingOpen}
+        onClose={() => setPricingOpen(false)}
+        initialTier={pricingTier}
       />
     </div>
   );

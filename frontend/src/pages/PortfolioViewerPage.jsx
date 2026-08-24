@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { AlertCircle, ArrowLeft } from 'lucide-react';
+import { AlertCircle, ArrowLeft, Sparkles } from 'lucide-react';
 import * as api from '../api/client';
 import SEO from '../components/SEO';
-import DarkPortfolio from '../components/portfolio-themes/DarkPortfolio';
-import LightPortfolio from '../components/portfolio-themes/LightPortfolio';
+import { useAuth } from '../contexts/AuthContext';
+import { getTemplateComponent } from '../templates';
+import AICustomizerDrawer from '../components/AICustomizerDrawer';
+import PricingModal from '../components/PricingModal';
 
 /* ── Floating "Built with" badge ── */
 function BuiltWithBadge({ theme }) {
@@ -22,15 +24,22 @@ function BuiltWithBadge({ theme }) {
 
 export default function PortfolioViewerPage() {
   const { username, portfolioId } = useParams();
+  const { user } = useAuth();
+
   const [portfolio, setPortfolio] = useState(null);
+  const [customStyles, setCustomStyles] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [pricingOpen, setPricingOpen] = useState(false);
+  const [pricingTier, setPricingTier] = useState('pro');
 
   useEffect(() => {
     const fetch = async () => {
       try {
         const res = await api.getPublicPortfolio(username, portfolioId);
         setPortfolio(res.data);
+        setCustomStyles(res.data.custom_styles || {});
       } catch (err) {
         setError(err.message || 'Portfolio not found.');
       } finally {
@@ -76,7 +85,7 @@ export default function PortfolioViewerPage() {
 
   // Candidate dynamic information for SEO & Schema markup
   const candidateData = portfolio.data || {};
-  const candidateName = candidateData.name || portfolio.owner || 'Candidate';
+  const candidateName = customStyles.contentRefinements?.headline || candidateData.name || portfolio.owner || 'Candidate';
   const jobTitle = candidateData.title || 'Professional';
   const pageTitle = `${candidateName} - ${jobTitle} | Portfolio`;
   const canonicalUrl = `https://portfolio-builder-six-jet.vercel.app/p/${username}/${portfolioId}`;
@@ -84,8 +93,8 @@ export default function PortfolioViewerPage() {
   // Structured skills & description
   const skillsList = candidateData.skills || [];
   const topSkills = skillsList.slice(0, 6).join(', ');
-  const pageDescription = candidateData.bio
-    ? (candidateData.bio.length > 160 ? `${candidateData.bio.substring(0, 157)}...` : candidateData.bio)
+  const pageDescription = customStyles.contentRefinements?.bio || candidateData.bio
+    ? (candidateData.bio?.length > 160 ? `${candidateData.bio.substring(0, 157)}...` : candidateData.bio)
     : `Explore ${candidateName}'s interactive developer portfolio featuring verified experience, projects, and skills in ${topSkills || 'modern software engineering'}.`;
 
   const sameAsLinks = [
@@ -117,6 +126,20 @@ export default function PortfolioViewerPage() {
     mainEntity: personSchema
   };
 
+  // Resolve template component with safe fallback to Minimal
+  const TemplateComponent = getTemplateComponent(portfolio.template_id);
+
+  // Check if current logged-in user is the owner of this portfolio
+  const isOwner = user && (user.id === portfolio.user_id || user.username === portfolio.owner || user.username === username);
+
+  const handleApplyStyles = (newStyles) => {
+    setCustomStyles(newStyles);
+    setPortfolio(prev => ({
+      ...prev,
+      custom_styles: newStyles
+    }));
+  };
+
   return (
     <>
       <SEO
@@ -136,10 +159,66 @@ export default function PortfolioViewerPage() {
         schema={[personSchema, profilePageSchema]}
       />
 
-      {portfolio.theme === 'light'
-        ? <LightPortfolio data={portfolio.data} meta={{ title: portfolio.title, owner: portfolio.owner }} />
-        : <DarkPortfolio  data={portfolio.data} meta={{ title: portfolio.title, owner: portfolio.owner }} />
-      }
+      {/* Render Selected Dynamic Template */}
+      <TemplateComponent
+        data={portfolio.data}
+        theme={portfolio.theme}
+        customStyles={customStyles}
+        meta={{ title: portfolio.title, owner: portfolio.owner }}
+      />
+
+      {/* Floating AI Customizer Button (if owner is viewing) */}
+      {isOwner && (
+        <button
+          type="button"
+          onClick={() => setDrawerOpen(true)}
+          style={{
+            position: 'fixed',
+            bottom: 24,
+            left: 24,
+            zIndex: 9990,
+            background: 'linear-gradient(135deg, #a855f7, #6366f1)',
+            color: '#ffffff',
+            border: 'none',
+            borderRadius: 9999,
+            padding: '10px 18px',
+            fontWeight: 700,
+            fontSize: 13,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            boxShadow: '0 8px 24px rgba(168, 85, 247, 0.45)',
+            cursor: 'pointer',
+            transition: 'transform 0.2s',
+          }}
+          title="Open AI Customizer"
+        >
+          <Sparkles size={16} />
+          <span>Customize with AI</span>
+        </button>
+      )}
+
+      {/* AI Customizer Drawer */}
+      <AICustomizerDrawer
+        isOpen={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        portfolioId={portfolio.id}
+        portfolioData={portfolio.data}
+        currentCustomStyles={customStyles}
+        onApplyStyles={handleApplyStyles}
+        onOpenPricing={(tier) => {
+          setPricingTier(tier || 'pro');
+          setPricingOpen(true);
+        }}
+      />
+
+      {/* Pricing Modal */}
+      <PricingModal
+        isOpen={pricingOpen}
+        onClose={() => setPricingOpen(false)}
+        initialTier={pricingTier}
+      />
+
       <BuiltWithBadge theme={portfolio.theme} />
     </>
   );
