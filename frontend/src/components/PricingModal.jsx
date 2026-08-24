@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   X, Check, Zap, Sparkles, ShieldCheck, Lock,
   CreditCard, Loader2, CheckCircle2, ArrowRight
@@ -6,14 +6,17 @@ import {
 import { useAuth } from '../contexts/AuthContext';
 import { loadRazorpayScript, createRazorpayOrder, verifyAndUpgradeTier } from '../utils/razorpay';
 
-export default function PricingModal({ isOpen, onClose, initialTier = 'pro', onSuccess }) {
+export default function PricingModal({
+  isOpen,
+  onClose,
+  initialTier = 'pro',
+  autoTrigger = false,
+  onSuccess
+}) {
   const { user, profile, refreshProfile } = useAuth();
-  const [selectedTier, setSelectedTier] = useState(initialTier); // 'lite' | 'pro'
-  const [processing, setProcessing] = useState(false);
+  const [processingTier, setProcessingTier] = useState(null); // 'lite' | 'pro' | null
   const [error, setError] = useState('');
   const [successTier, setSuccessTier] = useState(null);
-
-  if (!isOpen) return null;
 
   const currentTier = profile?.plan_tier || 'free';
 
@@ -77,9 +80,9 @@ export default function PricingModal({ isOpen, onClose, initialTier = 'pro', onS
   ];
 
   const handleCheckout = async (tierId) => {
-    if (tierId === 'free' || tierId === currentTier) return;
+    if (tierId === 'free' || tierId === currentTier || processingTier) return;
     setError('');
-    setProcessing(true);
+    setProcessingTier(tierId);
 
     try {
       // 1. Load Razorpay script
@@ -91,7 +94,7 @@ export default function PricingModal({ isOpen, onClose, initialTier = 'pro', onS
       // 2. Create Order
       const orderData = await createRazorpayOrder(tierId);
       const userEmail = user?.email || '';
-      const userName = user?.username || userEmail.split('@')[0] || 'User';
+      const userName = user?.username || userEmail.split('@')[0] || 'Portfolio User';
 
       // 3. Configure Razorpay Options
       const options = {
@@ -99,14 +102,20 @@ export default function PricingModal({ isOpen, onClose, initialTier = 'pro', onS
         amount: orderData.amount,
         currency: orderData.currency || 'INR',
         name: 'PortfolioAI Builder',
-        description: `${tierId.toUpperCase()} Plan Upgrade`,
+        description: `${tierId.toUpperCase()} Lifetime Plan Upgrade`,
         order_id: orderData.orderId.startsWith('order_mock') ? undefined : orderData.orderId,
         prefill: {
           name: userName,
           email: userEmail,
+          contact: '9876543210',
         },
         theme: {
           color: '#6366f1',
+          backdrop_color: 'rgba(0, 0, 0, 0.65)',
+        },
+        notes: {
+          planTier: tierId,
+          userId: user?.id || '',
         },
         handler: async (response) => {
           try {
@@ -118,12 +127,12 @@ export default function PricingModal({ isOpen, onClose, initialTier = 'pro', onS
             console.error('Upgrade sync error:', err);
             setSuccessTier(tierId);
           } finally {
-            setProcessing(false);
+            setProcessingTier(null);
           }
         },
         modal: {
           ondismiss: () => {
-            setProcessing(false);
+            setProcessingTier(null);
           },
         },
       };
@@ -132,22 +141,31 @@ export default function PricingModal({ isOpen, onClose, initialTier = 'pro', onS
         const rzp = new window.Razorpay(options);
         rzp.on('payment.failed', (response) => {
           setError(response.error?.description || 'Payment was unsuccessful.');
-          setProcessing(false);
+          setProcessingTier(null);
         });
         rzp.open();
       } else {
-        // Mock success in dev if Razorpay object not initialized
+        // Mock fallback if Razorpay object unavailable
         await verifyAndUpgradeTier(tierId);
         if (refreshProfile) await refreshProfile();
         setSuccessTier(tierId);
         if (onSuccess) onSuccess(tierId);
-        setProcessing(false);
+        setProcessingTier(null);
       }
     } catch (err) {
       setError(err.message || 'Payment initiation failed.');
-      setProcessing(false);
+      setProcessingTier(null);
     }
   };
+
+  // Automatically trigger checkout popup if autoTrigger prop is passed
+  useEffect(() => {
+    if (isOpen && autoTrigger && initialTier && initialTier !== 'free' && initialTier !== currentTier && !processingTier && !successTier) {
+      handleCheckout(initialTier);
+    }
+  }, [isOpen, autoTrigger, initialTier]);
+
+  if (!isOpen) return null;
 
   return (
     <div
@@ -270,7 +288,7 @@ export default function PricingModal({ isOpen, onClose, initialTier = 'pro', onS
             {/* Pricing Grid */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 20, marginBottom: 28 }}>
               {PLANS.map((plan) => {
-                const isSelected = selectedTier === plan.id;
+                const isPlanProcessing = processingTier === plan.id;
                 return (
                   <div
                     key={plan.id}
@@ -334,7 +352,7 @@ export default function PricingModal({ isOpen, onClose, initialTier = 'pro', onS
 
                     <button
                       type="button"
-                      disabled={plan.disabled || processing}
+                      disabled={plan.disabled || !!processingTier}
                       onClick={() => handleCheckout(plan.id)}
                       style={{
                         width: '100%',
@@ -349,7 +367,7 @@ export default function PricingModal({ isOpen, onClose, initialTier = 'pro', onS
                         color: plan.disabled ? '#94a3b8' : '#ffffff',
                         fontWeight: 700,
                         fontSize: 14,
-                        cursor: plan.disabled ? 'default' : 'pointer',
+                        cursor: plan.disabled || processingTier ? 'default' : 'pointer',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -358,7 +376,7 @@ export default function PricingModal({ isOpen, onClose, initialTier = 'pro', onS
                         transition: 'all 0.2s',
                       }}
                     >
-                      {processing && selectedTier === plan.id ? (
+                      {isPlanProcessing ? (
                         <>
                           <Loader2 size={16} style={{ animation: 'spin 0.6s linear infinite' }} /> Processing...
                         </>

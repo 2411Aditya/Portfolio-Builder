@@ -163,6 +163,7 @@ export default function DashboardPage() {
   const [historyError, setHistoryError] = useState('');
   const [pricingOpen, setPricingOpen] = useState(false);
   const [targetTierForUpgrade, setTargetTierForUpgrade] = useState('pro');
+  const [autoTriggerCheckout, setAutoTriggerCheckout] = useState(false);
 
   const fileInputRef = useRef(null);
 
@@ -172,6 +173,7 @@ export default function DashboardPage() {
     const plan = searchParams.get('plan');
     if (autoCheckout === 'true' && (plan === 'lite' || plan === 'pro')) {
       setTargetTierForUpgrade(plan);
+      setAutoTriggerCheckout(true);
       setPricingOpen(true);
       setSearchParams({}, { replace: true });
     }
@@ -598,6 +600,17 @@ export default function DashboardPage() {
           </div>
         </div>
       </main>
+
+      {/* ── Pricing & Upgrade Modal with Razorpay ── */}
+      <PricingModal
+        isOpen={pricingOpen}
+        onClose={() => {
+          setPricingOpen(false);
+          setAutoTriggerCheckout(false);
+        }}
+        initialTier={targetTierForUpgrade}
+        autoTrigger={autoTriggerCheckout}
+      />
     </div>
   );
 }
