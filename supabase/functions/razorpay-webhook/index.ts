@@ -1,11 +1,26 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-import { hmac } from 'https://deno.land/x/hmac@v2.0.1/mod.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-razorpay-signature',
 };
+
+async function verifyHmacSha256(secret: string, body: string, signature: string): Promise<boolean> {
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    'raw',
+    encoder.encode(secret),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+  const signatureBuffer = await crypto.subtle.sign('HMAC', key, encoder.encode(body));
+  const hexSignature = Array.from(new Uint8Array(signatureBuffer))
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+  return hexSignature.toLowerCase() === signature.toLowerCase();
+}
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -19,8 +34,8 @@ serve(async (req) => {
     const bodyText = await req.text();
 
     if (webhookSecret && signature) {
-      const generatedSignature = hmac('sha256', webhookSecret, bodyText, 'utf8', 'hex');
-      if (generatedSignature !== signature) {
+      const isValid = await verifyHmacSha256(webhookSecret, bodyText, signature);
+      if (!isValid) {
         return new Response(JSON.stringify({ error: 'Invalid webhook signature' }), {
           status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
