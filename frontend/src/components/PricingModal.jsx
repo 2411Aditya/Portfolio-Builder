@@ -160,8 +160,11 @@ export default function PricingModal({
 
   // Automatically trigger checkout popup if autoTrigger prop is passed
   useEffect(() => {
-    if (isOpen && autoTrigger && initialTier && initialTier !== 'free' && initialTier !== currentTier && !processingTier && !successTier) {
-      handleCheckout(initialTier);
+    if (isOpen && autoTrigger && initialTier && initialTier !== 'free' && !processingTier && !successTier) {
+      const timer = setTimeout(() => {
+        handleCheckout(initialTier);
+      }, 300);
+      return () => clearTimeout(timer);
     }
   }, [isOpen, autoTrigger, initialTier]);
 

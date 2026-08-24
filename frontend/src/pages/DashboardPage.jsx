@@ -164,6 +164,7 @@ export default function DashboardPage() {
   const [pricingOpen, setPricingOpen] = useState(false);
   const [targetTierForUpgrade, setTargetTierForUpgrade] = useState('pro');
   const [autoTriggerCheckout, setAutoTriggerCheckout] = useState(false);
+  const autoCheckoutTriggeredRef = useRef(false);
 
   const fileInputRef = useRef(null);
 
@@ -171,13 +172,13 @@ export default function DashboardPage() {
   useEffect(() => {
     const autoCheckout = searchParams.get('autoCheckout');
     const plan = searchParams.get('plan');
-    if (autoCheckout === 'true' && (plan === 'lite' || plan === 'pro')) {
+    if (autoCheckout === 'true' && (plan === 'lite' || plan === 'pro') && !autoCheckoutTriggeredRef.current) {
+      autoCheckoutTriggeredRef.current = true;
       setTargetTierForUpgrade(plan);
       setAutoTriggerCheckout(true);
       setPricingOpen(true);
-      setSearchParams({}, { replace: true });
     }
-  }, [searchParams, setSearchParams]);
+  }, [searchParams]);
 
   const fetchHistory = useCallback(async () => {
     setHistoryLoading(true);
@@ -607,6 +608,7 @@ export default function DashboardPage() {
         onClose={() => {
           setPricingOpen(false);
           setAutoTriggerCheckout(false);
+          setSearchParams({}, { replace: true });
         }}
         initialTier={targetTierForUpgrade}
         autoTrigger={autoTriggerCheckout}
