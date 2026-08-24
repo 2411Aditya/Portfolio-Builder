@@ -401,6 +401,7 @@ export default function LandingPage() {
 
   const handlePlanSelect = (tier) => {
     if (tier === 'free') {
+      sessionStorage.removeItem('pendingCheckoutPlan');
       if (user) {
         navigate('/dashboard');
       } else {
@@ -409,6 +410,7 @@ export default function LandingPage() {
       return;
     }
     // Paid tier ('lite' or 'pro')
+    sessionStorage.setItem('pendingCheckoutPlan', tier);
     if (user) {
       setPricingTier(tier);
       setPricingOpen(true);

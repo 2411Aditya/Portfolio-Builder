@@ -170,11 +170,13 @@ export default function DashboardPage() {
 
   // Auto-trigger Razorpay modal pipeline if user arrived from register/login with a paid plan
   useEffect(() => {
-    const autoCheckout = searchParams.get('autoCheckout');
-    const plan = searchParams.get('plan');
-    if (autoCheckout === 'true' && (plan === 'lite' || plan === 'pro') && !autoCheckoutTriggeredRef.current) {
+    const pendingPlan = sessionStorage.getItem('pendingCheckoutPlan') || searchParams.get('plan');
+    const isAutoCheckout = searchParams.get('autoCheckout') === 'true' || !!sessionStorage.getItem('pendingCheckoutPlan');
+
+    if (isAutoCheckout && (pendingPlan === 'lite' || pendingPlan === 'pro') && !autoCheckoutTriggeredRef.current) {
       autoCheckoutTriggeredRef.current = true;
-      setTargetTierForUpgrade(plan);
+      sessionStorage.removeItem('pendingCheckoutPlan');
+      setTargetTierForUpgrade(pendingPlan);
       setAutoTriggerCheckout(true);
       setPricingOpen(true);
     }

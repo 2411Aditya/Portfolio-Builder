@@ -6,7 +6,7 @@ import SEO from '../components/SEO';
 
 export default function RegisterPage() {
   const [searchParams] = useSearchParams();
-  const selectedPlan = searchParams.get('plan') || 'free';
+  const selectedPlan = searchParams.get('plan') || sessionStorage.getItem('pendingCheckoutPlan') || 'free';
 
   const [form, setForm] = useState({ username: '', email: '', password: '' });
   const [showPass, setShowPass] = useState(false);
@@ -22,6 +22,9 @@ export default function RegisterPage() {
     if (form.password.length < 6) { setError('Password must be at least 6 characters.'); return; }
     setLoading(true);
     try {
+      if (selectedPlan === 'lite' || selectedPlan === 'pro') {
+        sessionStorage.setItem('pendingCheckoutPlan', selectedPlan);
+      }
       await register(form);
       if (selectedPlan === 'lite' || selectedPlan === 'pro') {
         navigate(`/dashboard?plan=${selectedPlan}&autoCheckout=true`);

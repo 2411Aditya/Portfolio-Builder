@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import LandingPage from './pages/LandingPage';
@@ -22,8 +22,9 @@ function ProtectedRoute({ children }) {
 
 function GuestRoute({ children }) {
   const { user, loading } = useAuth();
+  const location = useLocation();
   if (loading) return null;
-  return !user ? children : <Navigate to="/dashboard" replace />;
+  return !user ? children : <Navigate to={`/dashboard${location.search}`} replace />;
 }
 
 function AppRoutes() {
