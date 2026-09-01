@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { useLocation } from 'react-router-dom';
 
 const DEFAULT_SITE_URL = 'https://portfolio-builder-six-jet.vercel.app';
-const DEFAULT_SITE_NAME = 'PortfolioAI';
+const DEFAULT_SITE_NAME = 'auoraa';
 const DEFAULT_TITLE = 'AI Portfolio Builder | Free Developer Portfolio Generator & Resume to Website';
 const DEFAULT_DESCRIPTION = 'Turn your resume into a stunning, recruiter-ready developer portfolio in under 30 seconds. Powered by AI with custom themes, instant hosting, and rich SEO.';
 const DEFAULT_KEYWORDS = 'AI Portfolio Builder, Resume to Website, Free Developer Portfolio Generator, AI Resume Parser, Developer Portfolio Maker, Online Portfolio Builder';

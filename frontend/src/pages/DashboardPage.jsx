@@ -10,6 +10,7 @@ import * as api from '../api/client';
 import SEO from '../components/SEO';
 import PricingModal from '../components/PricingModal';
 import { TEMPLATE_REGISTRY, canAccessTemplate } from '../templates';
+import logoImg from '../assets/Logo.png';
 
 const ACCEPTED = ['pdf', 'docx', 'txt', 'png', 'jpg', 'jpeg', 'webp'];
 
@@ -291,7 +292,7 @@ export default function DashboardPage() {
   return (
     <div className="dash-shell">
       <SEO
-        title="Dashboard | PortfolioAI"
+        title="Dashboard | auoraa"
         description="Manage your generated portfolios, select modular templates, and customize themes."
         noindex={true}
       />
@@ -307,7 +308,8 @@ export default function DashboardPage() {
       <header className="dash-header">
         <div className="dash-header-inner">
           <Link to="/" className="nav-brand">
-            <span>PortfolioAI</span>
+            <img src={logoImg} alt="auoraa Logo" className="brand-logo" />
+            <span>auoraa</span>
           </Link>
           <div className="dash-header-actions">
             {userTier !== 'pro' && (

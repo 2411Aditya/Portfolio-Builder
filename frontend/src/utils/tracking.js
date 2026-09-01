@@ -1,9 +1,9 @@
 /**
- * Consent and Tracking Utility for PortfolioAI
+ * Consent and Tracking Utility for auoraa
  * Respects user preferences for Google Analytics (GA4) and Meta Pixel (Facebook Pixel).
  */
 
-const CONSENT_STORAGE_KEY = 'portfolio_ai_cookie_consent';
+const CONSENT_STORAGE_KEY = 'auoraa_cookie_consent';
 
 export const DEFAULT_CONSENT = {
   necessary: true,   // Always required (Session, auth tokens)
@@ -80,7 +80,7 @@ export function applyTracking(consent = getSavedConsent()) {
  * Initialize Google Analytics (GA4)
  */
 function enableGoogleAnalytics() {
-  const GA_ID = window.__GA_MEASUREMENT_ID__ || 'G-PORTFOLIOAI01'; // Can be set via env or window
+  const GA_ID = window.__GA_MEASUREMENT_ID__ || 'G-AUORAA01'; // Can be set via env or window
 
   if (window[`ga-disable-${GA_ID}`]) {
     window[`ga-disable-${GA_ID}`] = false;
@@ -105,7 +105,7 @@ function enableGoogleAnalytics() {
  * Disable Google Analytics
  */
 function disableGoogleAnalytics() {
-  const GA_ID = window.__GA_MEASUREMENT_ID__ || 'G-PORTFOLIOAI01';
+  const GA_ID = window.__GA_MEASUREMENT_ID__ || 'G-AUORAA01';
   window[`ga-disable-${GA_ID}`] = true;
 }
 

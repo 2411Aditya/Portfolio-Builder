@@ -5,6 +5,7 @@ import {
   Trash2, RefreshCw, Eye, Globe, Mail, ArrowLeft
 } from 'lucide-react';
 import SEO from '../components/SEO';
+import logoImg from '../assets/Logo.png';
 
 export default function PrivacyPage() {
   useEffect(() => {
@@ -14,8 +15,8 @@ export default function PrivacyPage() {
   return (
     <div className="site-wrapper" style={{ backgroundColor: 'var(--color-canvas)' }}>
       <SEO
-        title="Privacy Policy & Data Disclosure | PortfolioAI"
-        description="Learn how PortfolioAI collects, processes, and protects your resume data, our auto-renewal billing terms, free trial notification commitments, and tracking policies."
+        title="Privacy Policy & Data Disclosure | auoraa"
+        description="Learn how auoraa collects, processes, and protects your resume data, our auto-renewal billing terms, free trial notification commitments, and tracking policies."
         url="https://portfolio-builder-six-jet.vercel.app/privacy"
         type="website"
       />
@@ -25,7 +26,8 @@ export default function PrivacyPage() {
         <nav className="nav-bar">
           <div className="nav-container">
             <Link to="/" className="nav-brand">
-              <span>PortfolioAI</span>
+              <img src={logoImg} alt="auoraa Logo" className="brand-logo" />
+              <span>auoraa</span>
             </Link>
             <div className="nav-links">
               <Link to="/" className="button-secondary" style={{ padding: '7px 14px', fontSize: 13, gap: 6 }}>
@@ -75,7 +77,7 @@ export default function PrivacyPage() {
           <section className="privacy-section">
             <h2>1. Overview & Commitment to Transparency</h2>
             <p>
-              At <strong>PortfolioAI</strong> ("we", "our", or "us"), we believe developer portfolios should be effortless to build while keeping candidate data safe, transparent, and strictly under your control. This Privacy Policy & Data Disclosure explains what information we collect when you visit our website, upload your resume, generate a portfolio, or subscribe to our services.
+              At <strong>auoraa</strong> ("we", "our", or "us"), we believe developer portfolios should be effortless to build while keeping candidate data safe, transparent, and strictly under your control. This Privacy Policy & Data Disclosure explains what information we collect when you visit our website, upload your resume, generate a portfolio, or subscribe to our services.
             </p>
           </section>
 
@@ -108,7 +110,7 @@ export default function PrivacyPage() {
             <div className="privacy-sub-box">
               <h3>C. Payment & Billing Data</h3>
               <p>
-                All payment transactions are processed securely through certified, PCI-DSS Level 1 compliant payment gateways (e.g., Stripe / Razorpay). PortfolioAI never stores complete credit card numbers or CVV codes on our servers.
+                All payment transactions are processed securely through certified, PCI-DSS Level 1 compliant payment gateways (e.g., Stripe / Razorpay). auoraa never stores complete credit card numbers or CVV codes on our servers.
               </p>
             </div>
 
@@ -237,7 +239,7 @@ export default function PrivacyPage() {
             <div className="privacy-contact-box">
               <Mail size={18} style={{ color: 'var(--color-ink)' }} />
               <div>
-                <strong>PortfolioAI Privacy & Data Compliance Office</strong><br />
+                <strong>auoraa Privacy & Data Compliance Office</strong><br />
                 Email: <a href="mailto:privacy@portfolio-builder.app" style={{ color: 'var(--color-brand)' }}>privacy@portfolio-builder.app</a><br />
                 Support: <a href="mailto:support@portfolio-builder.app" style={{ color: 'var(--color-brand)' }}>support@portfolio-builder.app</a>
               </div>
@@ -250,7 +252,10 @@ export default function PrivacyPage() {
       <footer className="footer-band">
         <div className="footer-container">
           <div>
-            <div style={{ fontSize: 18, fontWeight: 600, color: 'var(--color-ink)', marginBottom: 6 }}>PortfolioAI</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+              <img src={logoImg} alt="auoraa Logo" style={{ height: 26, width: 'auto', objectFit: 'contain' }} />
+              <span style={{ fontSize: 18, fontWeight: 600, color: 'var(--color-ink)' }}>auoraa</span>
+            </div>
             <p className="body-sm">The visual web development platform for developer portfolios.</p>
           </div>
           <div className="footer-links">
@@ -264,7 +269,7 @@ export default function PrivacyPage() {
               Cookie Settings
             </button>
             <span style={{ color: 'var(--color-mute)' }}>•</span>
-            <span style={{ color: 'var(--color-mute)' }}>© 2026 PortfolioAI. All rights reserved.</span>
+            <span style={{ color: 'var(--color-mute)' }}>© 2026 auoraa. All rights reserved.</span>
           </div>
         </div>
       </footer>

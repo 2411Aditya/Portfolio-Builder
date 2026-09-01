@@ -7,6 +7,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { getTemplateComponent } from '../templates';
 import AICustomizerDrawer from '../components/AICustomizerDrawer';
 import PricingModal from '../components/PricingModal';
+import logoImg from '../assets/Logo.png';
 
 /* ── Floating "Built with" badge ── */
 function BuiltWithBadge({ theme }) {
@@ -14,10 +15,12 @@ function BuiltWithBadge({ theme }) {
     <Link
       to="/"
       className={`built-with-badge${theme === 'dark' ? ' dark-theme' : ''}`}
-      title="Built with PortfolioAI"
-      aria-label="Built with PortfolioAI"
+      title="Built with auoraa"
+      aria-label="Built with auoraa"
+      style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}
     >
-      <span>Built with PortfolioAI</span>
+      <img src={logoImg} alt="auoraa Logo" style={{ height: 16, width: 'auto', objectFit: 'contain', borderRadius: 3 }} />
+      <span>Built with auoraa</span>
     </Link>
   );
 }
@@ -53,7 +56,8 @@ export default function PortfolioViewerPage() {
     return (
       <div className="pv-loading" role="status" aria-live="polite">
         <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
-          <span style={{ fontFamily: "'Outfit',sans-serif", fontSize: 22, fontWeight: 900, letterSpacing: '-0.03em', color: 'var(--fg)' }}>PortfolioAI</span>
+          <img src={logoImg} alt="auoraa Logo" style={{ height: 32, width: 'auto', objectFit: 'contain', borderRadius: 6 }} />
+          <span style={{ fontFamily: "'Outfit',sans-serif", fontSize: 22, fontWeight: 900, letterSpacing: '-0.03em', color: 'var(--fg)' }}>auoraa</span>
         </div>
         <div className="spinner" style={{ width: 32, height: 32 }} />
         <p style={{ color: 'var(--fg-muted)', fontSize: 14 }}>Loading portfolio…</p>
@@ -65,7 +69,7 @@ export default function PortfolioViewerPage() {
     return (
       <div className="pv-error" role="alert">
         <SEO
-          title="Portfolio Not Found | PortfolioAI"
+          title="Portfolio Not Found | auoraa"
           description="The requested portfolio could not be found or has been removed."
           noindex={true}
         />

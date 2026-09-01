@@ -570,11 +570,20 @@ input, textarea, select {
 .nav-brand {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   font-size: 19px;
   font-weight: 600;
   letter-spacing: -0.4px;
   color: var(--color-ink);
+  text-decoration: none;
+}
+
+.brand-logo {
+  height: 28px;
+  width: auto;
+  object-fit: contain;
+  border-radius: 6px;
+  display: block;
 }
 
 .nav-links {
@@ -1294,6 +1303,14 @@ input, textarea, select {
 .auth-logo {
   text-align: center;
   margin-bottom: 24px;
+}
+
+.auth-logo-img {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  display: inline-block;
 }
 
 .auth-logo-text {

@@ -1,4 +1,4 @@
-# PortfolioAI — Full-Stack Portfolio Builder
+# auoraa — Full-Stack Portfolio Builder
 
 > Upload a resume → AI parses it → Get a stunning shareable portfolio URL instantly.
 

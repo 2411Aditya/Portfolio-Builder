@@ -1,5 +1,5 @@
 """
-Email Service for PortfolioAI
+Email Service for auoraa
 Handles Free Trial Expiration Notifications, Auto-Renewal Notices, and Transactional Alerts.
 Complies with global subscription disclosure rules and FTC Negative Option regulations.
 """
@@ -8,7 +8,7 @@ import os
 import logging
 from datetime import datetime
 
-logger = logging.getLogger('portfolio_ai_email')
+logger = logging.getLogger('auoraa_email')
 
 
 def render_trial_expiry_warning_template(username, days_remaining, trial_end_date, plan_name, recurring_amount, cancel_url):
@@ -37,13 +37,13 @@ def render_trial_expiry_warning_template(username, days_remaining, trial_end_dat
     <body>
       <div class="card">
         <div class="header">
-          <span class="logo">PortfolioAI</span>
+          <span class="logo">auoraa</span>
         </div>
         <span class="badge">Trial Notice ({days_remaining} Days Left)</span>
         <h1>Your 7-Day Free Trial is Ending Soon</h1>
         <p>Hi {username},</p>
         <p>
-          We're writing to let you know that your 7-day free trial of <strong>PortfolioAI {plan_name}</strong> will conclude on <strong>{trial_end_date}</strong>.
+          We're writing to let you know that your 7-day free trial of <strong>auoraa {plan_name}</strong> will conclude on <strong>{trial_end_date}</strong>.
         </p>
         <div class="box">
           <div class="box-row">
@@ -68,7 +68,7 @@ def render_trial_expiry_warning_template(username, days_remaining, trial_end_dat
         <a href="{cancel_url}" class="btn">Manage Subscription or Cancel</a>
         <div class="footer">
           You are receiving this required billing notification pursuant to our subscription disclosure terms.<br>
-          PortfolioAI Inc., Data & Billing Operations.
+          auoraa Inc., Data & Billing Operations.
         </div>
       </div>
     </body>
@@ -84,7 +84,7 @@ def send_trial_expiry_warning_email(user_email, username, days_remaining=3, tria
     if not trial_end_date:
         trial_end_date = datetime.utcnow().strftime('%B %d, %Y')
 
-    subject = f"Notice: Your PortfolioAI Pro trial ends in {days_remaining} days"
+    subject = f"Notice: Your auoraa Pro trial ends in {days_remaining} days"
     html_content = render_trial_expiry_warning_template(
         username=username,
         days_remaining=days_remaining,

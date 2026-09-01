@@ -101,7 +101,7 @@ export default function PricingModal({
         key: orderData.keyId || import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_mock',
         amount: orderData.amount,
         currency: orderData.currency || 'INR',
-        name: 'PortfolioAI Builder',
+        name: 'auoraa Builder',
         description: `${tierId.toUpperCase()} Lifetime Plan Upgrade`,
         order_id: orderData.orderId.startsWith('order_mock') ? undefined : orderData.orderId,
         prefill: {
@@ -253,7 +253,7 @@ export default function PricingModal({
               UPGRADE SUCCESSFUL
             </div>
             <h2 style={{ fontSize: 28, fontWeight: 800, color: '#0f172a', margin: '0 0 12px' }}>
-              Welcome to PortfolioAI {successTier.toUpperCase()}!
+              Welcome to auoraa {successTier.toUpperCase()}!
             </h2>
             <p style={{ color: '#64748b', fontSize: 15, maxWidth: 500, margin: '0 auto 28px', lineHeight: 1.6 }}>
               Your account has been upgraded. All {successTier === 'pro' ? '10 templates and AI Customizer' : 'Lite templates'} are now unlocked.

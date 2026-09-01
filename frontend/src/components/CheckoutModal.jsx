@@ -70,7 +70,7 @@ export default function CheckoutModal({ isOpen, onClose, initialPlan = 'monthly'
             </div>
             <div className="eyebrow-uppercase-sm" style={{ color: '#15803d', marginBottom: 6 }}>PRO TRIAL ACTIVATED</div>
             <h2 style={{ fontSize: 22, fontWeight: 700, color: 'var(--color-ink)', marginBottom: 8 }}>
-              Welcome to PortfolioAI Pro!
+              Welcome to auoraa Pro!
             </h2>
             <p style={{ fontSize: 14, color: 'var(--color-body)', lineHeight: 1.55, marginBottom: 20 }}>
               Your 7-day free trial is now active. We have sent a confirmation and free trial notice to your email.
@@ -182,7 +182,7 @@ export default function CheckoutModal({ isOpen, onClose, initialPlan = 'monthly'
                   className="compliance-checkbox"
                 />
                 <span className="checkbox-text">
-                  <strong>I acknowledge the Auto-Renewal & Free Trial Terms:</strong> My 7-day free trial will automatically convert to a recurring subscription at <strong>${price}/{interval}</strong> starting on {trialEndFormatted} unless cancelled prior. PortfolioAI will email me 3 days in advance.
+                  <strong>I acknowledge the Auto-Renewal & Free Trial Terms:</strong> My 7-day free trial will automatically convert to a recurring subscription at <strong>${price}/{interval}</strong> starting on {trialEndFormatted} unless cancelled prior. auoraa will email me 3 days in advance.
                 </span>
               </label>
 

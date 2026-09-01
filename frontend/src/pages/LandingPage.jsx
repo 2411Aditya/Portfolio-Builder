@@ -9,6 +9,7 @@ import SEO from '../components/SEO';
 import DotField from '../components/DotField';
 import PricingModal from '../components/PricingModal';
 import { useAuth } from '../contexts/AuthContext';
+import logoImg from '../assets/Logo.png';
 
 /* ─── FAQ Data ─── */
 const faqs = [
@@ -458,7 +459,7 @@ export default function LandingPage() {
   const websiteSchema = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'PortfolioAI',
+    name: 'auoraa',
     url: 'https://portfolio-builder-six-jet.vercel.app/',
     description: 'AI-Powered Developer Portfolio Generator'
   };
@@ -487,8 +488,9 @@ export default function LandingPage() {
       <header>
         <nav className="nav-bar" aria-label="Main Navigation">
           <div className="nav-container">
-            <Link to="/" className="nav-brand" aria-label="PortfolioAI Homepage">
-              <span>PortfolioAI</span>
+            <Link to="/" className="nav-brand" aria-label="auoraa Homepage">
+              <img src={logoImg} alt="auoraa Logo" className="brand-logo" />
+              <span>auoraa</span>
             </Link>
             <div className="nav-links">
               <a href="#categories" className="nav-link">Product Features</a>
@@ -820,7 +822,10 @@ export default function LandingPage() {
       <footer className="footer-band">
         <div className="footer-container">
           <div>
-            <div style={{ fontSize: 18, fontWeight: 600, color: 'var(--color-ink)', marginBottom: 6 }}>PortfolioAI</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+              <img src={logoImg} alt="auoraa Logo" style={{ height: 26, width: 'auto', objectFit: 'contain' }} />
+              <span style={{ fontSize: 18, fontWeight: 600, color: 'var(--color-ink)' }}>auoraa</span>
+            </div>
             <p className="body-sm">The visual web development platform for developer portfolios.</p>
           </div>
           <div className="footer-links">
@@ -835,7 +840,7 @@ export default function LandingPage() {
             </button>
             <Link to="/login">Sign In</Link>
             <span style={{ color: 'var(--color-mute)' }}>•</span>
-            <span style={{ color: 'var(--color-mute)' }}>© 2026 PortfolioAI. All rights reserved.</span>
+            <span style={{ color: 'var(--color-mute)' }}>© 2026 auoraa. All rights reserved.</span>
           </div>
         </div>
       </footer>

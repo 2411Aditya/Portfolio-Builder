@@ -155,7 +155,7 @@ export default function CookieConsent() {
             </div>
 
             <p style={{ fontSize: 13, color: 'var(--color-body)', lineHeight: 1.5, marginBottom: 20 }}>
-              Control how PortfolioAI collects and processes your telemetry. You can update these settings at any point via the "Cookie Settings" link in the footer.
+              Control how auoraa collects and processes your telemetry. You can update these settings at any point via the "Cookie Settings" link in the footer.
             </p>
 
             {/* Category 1: Strictly Necessary */}

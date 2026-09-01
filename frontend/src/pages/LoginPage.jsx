@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, ArrowRight, AlertCircle, X, Sparkles, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import SEO from '../components/SEO';
+import logoImg from '../assets/Logo.png';
 
 export default function LoginPage() {
   const [searchParams] = useSearchParams();
@@ -36,15 +37,16 @@ export default function LoginPage() {
   return (
     <div className="auth-page">
       <SEO
-        title="Sign In | PortfolioAI"
-        description="Sign in to your PortfolioAI account to manage your developer portfolios and access analytics."
+        title="Sign In | auoraa"
+        description="Sign in to your auoraa account to manage your developer portfolios and access analytics."
         noindex={true}
       />
 
       <div className="auth-card">
         <div className="auth-logo">
-          <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-            <span className="auth-logo-text">PortfolioAI</span>
+          <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
+            <img src={logoImg} alt="auoraa Logo" className="auth-logo-img" />
+            <span className="auth-logo-text">auoraa</span>
           </Link>
         </div>
 
