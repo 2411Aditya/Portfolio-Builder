@@ -12,6 +12,38 @@ export default function PrivacyPage() {
     window.scrollTo(0, 0);
   }, []);
 
+  const privacyPageSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: 'Privacy Policy & Data Disclosure | auoraa',
+    url: 'https://portfolio-builder-six-jet.vercel.app/privacy',
+    description: 'Learn how auoraa collects, processes, and protects your resume data, auto-renewal billing terms, and zero data selling commitment.',
+    publisher: {
+      '@type': 'Organization',
+      name: 'auoraa',
+      url: 'https://portfolio-builder-six-jet.vercel.app/'
+    }
+  };
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'auoraa',
+        item: 'https://portfolio-builder-six-jet.vercel.app/'
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Privacy Policy',
+        item: 'https://portfolio-builder-six-jet.vercel.app/privacy'
+      }
+    ]
+  };
+
   return (
     <div className="site-wrapper" style={{ backgroundColor: 'var(--color-canvas)' }}>
       <SEO
@@ -19,7 +51,9 @@ export default function PrivacyPage() {
         description="Learn how auoraa collects, processes, and protects your resume data, our auto-renewal billing terms, free trial notification commitments, and tracking policies."
         url="https://portfolio-builder-six-jet.vercel.app/privacy"
         type="website"
+        schema={[privacyPageSchema, breadcrumbSchema]}
       />
+
 
       {/* ── Top Header Bar ── */}
       <header>

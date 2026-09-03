@@ -130,6 +130,26 @@ export default function PortfolioViewerPage() {
     mainEntity: personSchema
   };
 
+  // JSON-LD BreadcrumbList Schema for Google Search Snippets
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'auoraa',
+        item: 'https://portfolio-builder-six-jet.vercel.app/'
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: `${candidateName} — Portfolio`,
+        item: canonicalUrl
+      }
+    ]
+  };
+
   // Resolve template component with safe fallback to Minimal
   const TemplateComponent = getTemplateComponent(portfolio.template_id);
 
@@ -153,6 +173,7 @@ export default function PortfolioViewerPage() {
           candidateName,
           jobTitle,
           ...skillsList,
+          'auoraa Portfolio',
           'Developer Portfolio',
           'Candidate Profile',
           'Professional Resume Website'
@@ -160,8 +181,9 @@ export default function PortfolioViewerPage() {
         url={canonicalUrl}
         type="profile"
         author={candidateName}
-        schema={[personSchema, profilePageSchema]}
+        schema={[personSchema, profilePageSchema, breadcrumbSchema]}
       />
+
 
       {/* Render Selected Dynamic Template */}
       <TemplateComponent

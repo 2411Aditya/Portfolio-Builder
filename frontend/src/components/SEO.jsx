@@ -4,9 +4,9 @@ import { useLocation } from 'react-router-dom';
 
 const DEFAULT_SITE_URL = 'https://portfolio-builder-six-jet.vercel.app';
 const DEFAULT_SITE_NAME = 'auoraa';
-const DEFAULT_TITLE = 'AI Portfolio Builder | Free Developer Portfolio Generator & Resume to Website';
-const DEFAULT_DESCRIPTION = 'Turn your resume into a stunning, recruiter-ready developer portfolio in under 30 seconds. Powered by AI with custom themes, instant hosting, and rich SEO.';
-const DEFAULT_KEYWORDS = 'AI Portfolio Builder, Resume to Website, Free Developer Portfolio Generator, AI Resume Parser, Developer Portfolio Maker, Online Portfolio Builder';
+const DEFAULT_TITLE = 'auoraa | AI Portfolio Builder — Resume to Developer Website in 30s';
+const DEFAULT_DESCRIPTION = 'Turn your resume into a stunning, recruiter-ready developer portfolio in under 30 seconds. Powered by AI with 10 modular themes, AI customizer, instant hosting, and rich SEO.';
+const DEFAULT_KEYWORDS = 'auoraa, AI Portfolio Builder, Resume to Website, Free Developer Portfolio Generator, Bento Portfolio, Notion Portfolio, Developer Portfolio Maker, AI Resume Parser, Online Portfolio Builder';
 const DEFAULT_IMAGE = `${DEFAULT_SITE_URL}/og-image.jpg`;
 
 /**

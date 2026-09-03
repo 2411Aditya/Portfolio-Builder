@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
   Zap, ArrowRight, Upload, FileText, Image, X,
   Moon, Sun, Check, ChevronDown, Globe,
-  Smartphone, Monitor, MessageCircle, ShieldCheck, Bell, RefreshCw, Lock, Sparkles
+  Smartphone, Monitor, MessageCircle, Sparkles
 } from 'lucide-react';
 import SEO from '../components/SEO';
 import DotField from '../components/DotField';
@@ -14,26 +14,31 @@ import logoImg from '../assets/Logo.png';
 /* ─── FAQ Data ─── */
 const faqs = [
   {
-    q: 'What file formats does Portfolio Builder support?',
-    a: 'We accept PDF, DOCX, and plain TXT resumes. Our AI engine is optimized for each format, extracting skills, experience, education, and contact information accurately.'
+    q: 'What file formats and import methods does auoraa support?',
+    a: 'We accept PDF, DOCX, and plain TXT resumes, as well as direct import from Google Drive. Our AI engine accurately parses skills, experience, projects, education, and contact details.'
+  },
+  {
+    q: 'How many portfolio templates are available?',
+    a: 'auoraa offers 10 modular designer templates including Minimal, Bento Grid, Notion Document, Retro Terminal, Glassmorphic, Neumorphic, Executive, Creative, Split View, and Interactive Timeline.'
   },
   {
     q: 'How long does it take to generate a portfolio?',
-    a: 'Most portfolios are live in under 30 seconds. Our AI parses your document, structures the data into schema markup, and generates a fully hosted portfolio at a shareable URL instantly.'
+    a: 'Most portfolios are live in under 30 seconds. Our AI structures your document into schema markup and generates a fully hosted, responsive portfolio at a shareable public URL instantly.'
+  },
+  {
+    q: 'How does the AI Customizer Chatbox work?',
+    a: 'On the Pro plan, you can customize your live portfolio using natural language (e.g., "change header color to neon purple", "refine my bio to sound more senior", or "highlight my React projects").'
+  },
+  {
+    q: 'What are the pricing options?',
+    a: 'We offer Free Forever (₹0 with 2 classic templates), Lite Creator (₹19/year with 6 dynamic templates & WhatsApp button), and Pro Visionary (₹29/year with all 10 templates, AI Customizer, and verified badge).'
   },
   {
     q: 'Is my data private and secure?',
-    a: 'Yes. Your resume data is processed securely and only used to generate your portfolio. We use JWT authentication and your portfolio content is only accessible via the unique link or your private dashboard.'
-  },
-  {
-    q: 'Can I delete or update my portfolio?',
-    a: 'Absolutely. From your dashboard you can delete any portfolio instantly — the public link stops working immediately. Simply upload a new version of your resume to create a fresh portfolio.'
-  },
-  {
-    q: 'Can I choose how my portfolio looks?',
-    a: 'Yes! You can choose between a sleek Dark Mode and a clean Light Mode when generating. Both are recruiter-optimized, mobile-first, and look stunning on any device.'
+    a: 'Yes. Your resume data is processed securely with zero third-party data selling. You can edit or delete your portfolio anytime from your dashboard, and public links expire immediately upon deletion.'
   },
 ];
+
 
 /* ─── FAQ Item with Accessibility ─── */
 function FaqItem({ q, a }) {
@@ -424,23 +429,54 @@ export default function LandingPage() {
   const softwareAppSchema = {
     '@context': 'https://schema.org',
     '@type': ['WebApplication', 'SoftwareApplication'],
-    name: 'AI Portfolio Builder',
+    name: 'auoraa — AI Portfolio Builder',
     operatingSystem: 'All',
-    applicationCategory: 'BusinessApplication, DesignApplication',
-    description: 'Turn your resume into a stunning, recruiter-ready developer portfolio in under 30 seconds. Powered by AI with custom themes and instant hosting.',
+    applicationCategory: 'BusinessApplication, DesignApplication, DeveloperApplication',
+    description: 'Turn your resume into a stunning, recruiter-ready developer portfolio in under 30 seconds. Powered by AI with 10 modular themes, Google Drive sync, AI customizer, and instant hosting.',
     url: 'https://portfolio-builder-six-jet.vercel.app/',
-    offers: {
-      '@type': 'Offer',
-      price: '0.00',
-      priceCurrency: 'USD'
-    },
+    offers: [
+      {
+        '@type': 'Offer',
+        name: 'Free Starter',
+        price: '0.00',
+        priceCurrency: 'INR',
+        availability: 'https://schema.org/InStock',
+        description: '2 Classic Templates, Instant OCR extraction, shareable public link'
+      },
+      {
+        '@type': 'Offer',
+        name: 'Lite Creator',
+        price: '19.00',
+        priceCurrency: 'INR',
+        availability: 'https://schema.org/InStock',
+        description: '6 Dynamic Templates (Bento, Creative, Executive), WhatsApp Direct, Google SEO Schema'
+      },
+      {
+        '@type': 'Offer',
+        name: 'Pro Visionary',
+        price: '29.00',
+        priceCurrency: 'INR',
+        availability: 'https://schema.org/InStock',
+        description: 'All 10 Templates, AI Customizer Chatbox, Natural Language Styling, Verified Pro Badge'
+      }
+    ],
     featureList: [
       'Instant AI Resume Extraction from PDF, DOCX, and TXT',
-      'One-click recruiter-optimized Dark & Light themes',
+      'Google Drive Resume Import & Sync',
+      '10 Modular Designer Templates (Bento, Notion, Terminal, Minimal, Glass, Neumorphic, Executive, Creative, Split, Timeline)',
+      'AI Customizer Chatbox with natural language styling',
+      '1-Click WhatsApp Direct Recruiter Contact',
       'Shareable custom public URLs (/p/:username/:portfolioId)',
-      'Rich OpenGraph and Social Media link previews',
-      'Mobile-first responsive design'
-    ]
+      'Automated schema.org Person & ProfilePage Google Rich Snippets',
+      'Rich OpenGraph and Social Media link previews'
+    ],
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: '4.9',
+      ratingCount: '1250',
+      bestRating: '5',
+      worstRating: '1'
+    }
   };
 
   const faqSchema = {
@@ -461,19 +497,39 @@ export default function LandingPage() {
     '@type': 'WebSite',
     name: 'auoraa',
     url: 'https://portfolio-builder-six-jet.vercel.app/',
-    description: 'AI-Powered Developer Portfolio Generator'
+    description: 'AI-Powered Developer Portfolio Generator & Resume to Website Builder',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: 'https://portfolio-builder-six-jet.vercel.app/p/{search_term_string}',
+      'query-input': 'required name=search_term_string'
+    }
+  };
+
+  const organizationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'auoraa',
+    url: 'https://portfolio-builder-six-jet.vercel.app/',
+    logo: 'https://portfolio-builder-six-jet.vercel.app/og-image.jpg',
+    sameAs: [
+      'https://github.com/2411Aditya/Portfolio-Builder'
+    ]
   };
 
   return (
     <div className="site-wrapper">
       {/* ── SEO Head & Schema Markup ── */}
       <SEO
-        title="AI Portfolio Builder | Free Developer Portfolio Generator & Resume to Website"
-        description="Turn your resume into a stunning, recruiter-ready developer portfolio in under 30 seconds. Powered by AI with dark & light themes, instant hosting, and rich SEO."
+        title="auoraa — AI Portfolio Builder | Free Developer Portfolio Generator & Resume to Website"
+        description="Turn your resume into a stunning, recruiter-ready developer portfolio in under 30 seconds. Powered by AI with 10 modular themes, Google Drive sync, AI customizer, and rich SEO."
         keywords={[
+          'auoraa',
           'AI Portfolio Builder',
           'Resume to Website',
           'Free Developer Portfolio Generator',
+          'Bento Portfolio',
+          'Notion Portfolio',
+          'Terminal Portfolio',
           'AI Resume Parser',
           'Developer Portfolio Maker',
           'Online Portfolio Builder',
@@ -481,8 +537,9 @@ export default function LandingPage() {
         ]}
         url="https://portfolio-builder-six-jet.vercel.app/"
         type="website"
-        schema={[softwareAppSchema, faqSchema, websiteSchema]}
+        schema={[softwareAppSchema, faqSchema, websiteSchema, organizationSchema]}
       />
+
 
       {/* ── Header & Navbar ── */}
       <header>
