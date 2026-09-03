@@ -570,16 +570,16 @@ input, textarea, select {
 .nav-brand {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 19px;
-  font-weight: 600;
-  letter-spacing: -0.4px;
+  gap: 12px;
+  font-size: 25px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
   color: var(--color-ink);
   text-decoration: none;
 }
 
 .brand-logo {
-  height: 28px;
+  height: 40px;
   width: auto;
   object-fit: contain;
   border-radius: 6px;
@@ -1306,7 +1306,7 @@ input, textarea, select {
 }
 
 .auth-logo-img {
-  height: 36px;
+  height: 46px;
   width: auto;
   object-fit: contain;
   border-radius: 8px;
@@ -1314,9 +1314,9 @@ input, textarea, select {
 }
 
 .auth-logo-text {
-  font-size: 22px;
-  font-weight: 600;
-  letter-spacing: -0.4px;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
   color: var(--color-ink);
 }
 
@@ -3035,7 +3035,7 @@ input, textarea, select {
 .sketch-nav-brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   text-decoration: none;
   color: var(--color-ink);
   transition: opacity 0.15s ease;
@@ -3046,15 +3046,15 @@ input, textarea, select {
 }
 
 .sketch-brand-logo {
-  width: 30px;
-  height: 30px;
+  width: 38px;
+  height: 38px;
   object-fit: contain;
 }
 
 .sketch-brand-text {
-  font-size: 19px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
   color: var(--color-ink);
 }
 

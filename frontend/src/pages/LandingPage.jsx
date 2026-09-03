@@ -822,9 +822,9 @@ export default function LandingPage() {
       <footer className="footer-band">
         <div className="footer-container">
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-              <img src={logoImg} alt="auoraa Logo" style={{ height: 26, width: 'auto', objectFit: 'contain' }} />
-              <span style={{ fontSize: 18, fontWeight: 600, color: 'var(--color-ink)' }}>auoraa</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
+              <img src={logoImg} alt="auoraa Logo" style={{ height: 38, width: 'auto', objectFit: 'contain', borderRadius: 6 }} />
+              <span style={{ fontSize: 24, fontWeight: 700, letterSpacing: '-0.5px', color: 'var(--color-ink)' }}>auoraa</span>
             </div>
             <p className="body-sm">The visual web development platform for developer portfolios.</p>
           </div>
