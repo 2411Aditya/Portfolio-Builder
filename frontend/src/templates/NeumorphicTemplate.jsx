@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Briefcase, Code2, Award, GraduationCap, Mail,
-  Globe, Phone, Sparkles, ExternalLink, ArrowRight
+  Globe, Phone, Sparkles, ExternalLink, ArrowRight, MessageCircle
 } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from '../components/Icons';
 
@@ -15,10 +15,16 @@ export default function NeumorphicTemplate({ data = {}, theme = 'dark', customSt
   const highlightedSkills = contentRefinements.highlightedSkills || [];
 
   const contact = data.contact || {};
+  const cleanPhone = (contact.phone || contact.whatsapp || '').replace(/[^0-9]/g, '');
+  const waUrl = cleanPhone
+    ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(`Hi ${candidateName}, I came across your portfolio and want to connect!`)}`
+    : `https://api.whatsapp.com/send?text=${encodeURIComponent(`Hi ${candidateName}, I came across your portfolio and want to connect!`)}`;
+
   const projects = data.projects || [];
   const experience = data.experience || [];
   const skills = data.skills || [];
   const education = data.education || [];
+  const certifications = data.certifications || [];
 
   const primaryColor = themeOverrides.primaryColor || (isDark ? '#818cf8' : '#4f46e5');
   const fontFamily = themeOverrides.fontFamily || "'Outfit', Inter, sans-serif";
@@ -68,8 +74,28 @@ export default function NeumorphicTemplate({ data = {}, theme = 'dark', customSt
               </div>
             </div>
 
-            {/* CTAs */}
-            <div style={{ display: 'flex', gap: 12 }}>
+            {/* WhatsApp CTA */}
+            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+              <a
+                href={waUrl}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  padding: '12px 22px',
+                  borderRadius: 14,
+                  background: '#25D366',
+                  boxShadow: neuSmall,
+                  color: '#ffffff',
+                  textDecoration: 'none',
+                  fontWeight: 800,
+                  fontSize: 14,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 8
+                }}
+              >
+                <MessageCircle size={18} /> WhatsApp Me
+              </a>
               {contact.email && (
                 <a href={`mailto:${contact.email}`} style={{
                   padding: '12px 20px', borderRadius: 14,
@@ -77,7 +103,7 @@ export default function NeumorphicTemplate({ data = {}, theme = 'dark', customSt
                   color: primaryColor, textDecoration: 'none',
                   fontWeight: 700, fontSize: 13, display: 'inline-flex', alignItems: 'center', gap: 8
                 }}>
-                  <Mail size={16} /> Contact Me
+                  <Mail size={16} /> Email
                 </a>
               )}
             </div>
@@ -109,6 +135,11 @@ export default function NeumorphicTemplate({ data = {}, theme = 'dark', customSt
               <a href={contact.website} target="_blank" rel="noreferrer" style={{ padding: '8px 16px', borderRadius: 12, background: bgColor, boxShadow: neuSmall, color: textColor, textDecoration: 'none', fontSize: 13, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
                 <Globe size={14} /> Website
               </a>
+            )}
+            {contact.phone && (
+              <span style={{ padding: '8px 16px', borderRadius: 12, background: bgColor, boxShadow: neuSmall, color: mutedColor, fontSize: 13, display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Phone size={14} /> {contact.phone}
+              </span>
             )}
           </div>
         </header>
@@ -202,6 +233,40 @@ export default function NeumorphicTemplate({ data = {}, theme = 'dark', customSt
             </div>
           </section>
         )}
+
+        {/* Education & Certifications Section */}
+        {(education.length > 0 || certifications.length > 0) && (
+          <section style={{ marginBottom: 40 }}>
+            <h2 style={{ fontSize: 22, fontWeight: 800, margin: '0 0 24px', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <GraduationCap size={22} style={{ color: primaryColor }} /> Education & Certifications
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
+              {education.map((edu, idx) => (
+                <div key={idx} style={{ background: bgColor, borderRadius: 20, padding: 24, boxShadow: neuExtrude }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', color: primaryColor, marginBottom: 4 }}>Degree / School</div>
+                  <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700 }}>{edu.degree || edu.institution}</h3>
+                  <div style={{ fontSize: 13, color: mutedColor, marginTop: 4 }}>{edu.institution} {edu.year ? `• ${edu.year}` : ''}</div>
+                </div>
+              ))}
+              {certifications.map((c, i) => (
+                <div key={i} style={{ background: bgColor, borderRadius: 20, padding: 24, boxShadow: neuExtrude }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', color: '#10b981', marginBottom: 4 }}>Certification</div>
+                  <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700 }}>{c}</h3>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Custom Sections */}
+        {customSections.map((sec, idx) => (
+          <section key={idx} style={{ marginBottom: 40 }}>
+            <div style={{ background: bgColor, borderRadius: 20, padding: 26, boxShadow: neuExtrude }}>
+              <h3 style={{ margin: '0 0 10px', fontSize: 18, fontWeight: 800, color: primaryColor }}>{sec.title}</h3>
+              <p style={{ margin: 0, fontSize: 14, lineHeight: 1.7, color: mutedColor }}>{sec.content}</p>
+            </div>
+          </section>
+        ))}
 
       </div>
     </div>

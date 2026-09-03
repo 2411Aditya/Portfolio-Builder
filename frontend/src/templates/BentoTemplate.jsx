@@ -15,10 +15,16 @@ export default function BentoTemplate({ data = {}, theme = 'dark', customStyles 
   const highlightedSkills = contentRefinements.highlightedSkills || [];
 
   const contact = data.contact || {};
+  const cleanPhone = (contact.phone || contact.whatsapp || '').replace(/[^0-9]/g, '');
+  const waUrl = cleanPhone
+    ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(`Hi ${candidateName}, I came across your portfolio and would like to connect!`)}`
+    : `https://api.whatsapp.com/send?text=${encodeURIComponent(`Hi ${candidateName}, I came across your portfolio and would like to connect!`)}`;
+
   const projects = data.projects || [];
   const experience = data.experience || [];
   const skills = data.skills || [];
   const education = data.education || [];
+  const certifications = data.certifications || [];
 
   const primaryColor = themeOverrides.primaryColor || (isDark ? '#6366f1' : '#4f46e5');
   const fontFamily = themeOverrides.fontFamily || "'Plus Jakarta Sans', Inter, sans-serif";
@@ -55,10 +61,30 @@ export default function BentoTemplate({ data = {}, theme = 'dark', customStyles 
               borderRadius: '50%', pointerEvents: 'none'
             }} />
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12, flexWrap: 'wrap', gap: 10 }}>
                 <span style={{ padding: '4px 12px', borderRadius: 9999, background: 'rgba(99, 102, 241, 0.15)', color: primaryColor, fontSize: 12, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 5 }}>
                   <Sparkles size={13} /> Available for Opportunities
                 </span>
+                <a
+                  href={waUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 6,
+                    padding: '8px 16px',
+                    borderRadius: 9999,
+                    background: '#25D366',
+                    color: '#ffffff',
+                    textDecoration: 'none',
+                    fontSize: 13,
+                    fontWeight: 700,
+                    boxShadow: '0 4px 12px rgba(37, 211, 102, 0.3)'
+                  }}
+                >
+                  <MessageCircle size={15} /> Chat on WhatsApp
+                </a>
               </div>
               <h1 style={{ fontSize: 36, fontWeight: 800, letterSpacing: '-0.03em', margin: '0 0 8px' }}>
                 {candidateName}
@@ -108,21 +134,32 @@ export default function BentoTemplate({ data = {}, theme = 'dark', customStyles 
               <div style={{ fontSize: 20, fontWeight: 700, marginBottom: 12 }}>Let's Build Something Together</div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 16 }}>
-              {contact.email && (
-                <a href={`mailto:${contact.email}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', background: primaryColor, color: '#fff', borderRadius: 12, textDecoration: 'none', fontWeight: 600, fontSize: 14 }}>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}><Mail size={16} /> Send Email</span>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 10 }}>
+                <a href={waUrl} target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 18px', background: '#25D366', color: '#fff', borderRadius: 12, textDecoration: 'none', fontWeight: 700, fontSize: 14, boxShadow: '0 4px 14px rgba(37, 211, 102, 0.35)' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}><MessageCircle size={18} /> WhatsApp</span>
                   <ArrowUpRight size={16} />
                 </a>
-              )}
+                {contact.email && (
+                  <a href={`mailto:${contact.email}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 18px', background: primaryColor, color: '#fff', borderRadius: 12, textDecoration: 'none', fontWeight: 600, fontSize: 14 }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}><Mail size={16} /> Send Email</span>
+                    <ArrowUpRight size={16} />
+                  </a>
+                )}
+              </div>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 {contact.linkedin && (
-                  <a href={contact.linkedin} target="_blank" rel="noreferrer" style={{ flex: 1, padding: '10px 14px', background: cardBg, border: `1px solid ${borderColor}`, color: textColor, borderRadius: 12, textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontSize: 13 }}>
+                  <a href={contact.linkedin} target="_blank" rel="noreferrer" style={{ flex: 1, padding: '10px 14px', background: cardBg, border: `1px solid ${borderColor}`, color: textColor, borderRadius: 12, textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontSize: 13, fontWeight: 600 }}>
                     <LinkedinIcon size={15} /> LinkedIn
                   </a>
                 )}
                 {contact.github && (
-                  <a href={contact.github} target="_blank" rel="noreferrer" style={{ flex: 1, padding: '10px 14px', background: cardBg, border: `1px solid ${borderColor}`, color: textColor, borderRadius: 12, textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontSize: 13 }}>
+                  <a href={contact.github} target="_blank" rel="noreferrer" style={{ flex: 1, padding: '10px 14px', background: cardBg, border: `1px solid ${borderColor}`, color: textColor, borderRadius: 12, textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontSize: 13, fontWeight: 600 }}>
                     <GithubIcon size={15} /> GitHub
+                  </a>
+                )}
+                {contact.website && (
+                  <a href={contact.website} target="_blank" rel="noreferrer" style={{ flex: 1, padding: '10px 14px', background: cardBg, border: `1px solid ${borderColor}`, color: textColor, borderRadius: 12, textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontSize: 13, fontWeight: 600 }}>
+                    <Globe size={15} /> Website
                   </a>
                 )}
               </div>
@@ -243,6 +280,54 @@ export default function BentoTemplate({ data = {}, theme = 'dark', customStyles 
                 ))}
               </div>
             </div>
+          )}
+
+          {/* Education Bento (6 Cols) & Certifications Bento (6 Cols) */}
+          {(education.length > 0 || certifications.length > 0) && (
+            <>
+              {education.length > 0 && (
+                <div style={{
+                  gridColumn: certifications.length > 0 ? 'span 6' : 'span 12',
+                  background: cardBg,
+                  border: `1px solid ${borderColor}`,
+                  borderRadius: 24,
+                  padding: '28px 24px'
+                }}>
+                  <h2 style={{ margin: '0 0 16px', fontSize: 18, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <GraduationCap size={18} style={{ color: primaryColor }} /> Education
+                  </h2>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                    {education.map((edu, idx) => (
+                      <div key={idx}>
+                        <div style={{ fontWeight: 700, fontSize: 15 }}>{edu.degree || edu.institution}</div>
+                        <div style={{ color: mutedColor, fontSize: 13 }}>{edu.institution} {edu.year ? `• ${edu.year}` : ''}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {certifications.length > 0 && (
+                <div style={{
+                  gridColumn: education.length > 0 ? 'span 6' : 'span 12',
+                  background: cardBg,
+                  border: `1px solid ${borderColor}`,
+                  borderRadius: 24,
+                  padding: '28px 24px'
+                }}>
+                  <h2 style={{ margin: '0 0 16px', fontSize: 18, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <Award size={18} style={{ color: primaryColor }} /> Certifications
+                  </h2>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                    {certifications.map((c, i) => (
+                      <div key={i} style={{ padding: '6px 12px', background: isDark ? 'rgba(255,255,255,0.04)' : '#f8fafc', border: `1px solid ${borderColor}`, borderRadius: 10, fontSize: 13, fontWeight: 600, color: primaryColor }}>
+                        {c}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
           )}
 
           {/* Custom Sections */}

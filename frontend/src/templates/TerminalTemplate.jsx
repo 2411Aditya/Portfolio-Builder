@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Terminal, Copy, Check, ExternalLink, Mail, Phone, Globe, MessageCircle, Sparkles } from 'lucide-react';
+import { Terminal, Copy, Check, ExternalLink, Mail, Phone, Globe, MessageCircle, Sparkles, GraduationCap, Award } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from '../components/Icons';
 
 export default function TerminalTemplate({ data = {}, theme = 'dark', customStyles = {}, meta = {} }) {
@@ -13,6 +13,11 @@ export default function TerminalTemplate({ data = {}, theme = 'dark', customStyl
   const highlightedSkills = contentRefinements.highlightedSkills || [];
 
   const contact = data.contact || {};
+  const cleanPhone = (contact.phone || contact.whatsapp || '').replace(/[^0-9]/g, '');
+  const waUrl = cleanPhone
+    ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(`Hi ${candidateName}, I came across your portfolio and would like to connect!`)}`
+    : `https://api.whatsapp.com/send?text=${encodeURIComponent(`Hi ${candidateName}, I came across your portfolio and would like to connect!`)}`;
+
   const projects = data.projects || [];
   const experience = data.experience || [];
   const skills = data.skills || [];
@@ -39,14 +44,33 @@ export default function TerminalTemplate({ data = {}, theme = 'dark', customStyl
         
         {/* Terminal Window Header */}
         <div style={{ background: cardBg, border: `1px solid ${borderColor}`, borderRadius: 12, overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.6)' }}>
-          <div style={{ background: '#070b09', padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: `1px solid ${borderColor}` }}>
+          <div style={{ background: '#070b09', padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: `1px solid ${borderColor}`, flexWrap: 'wrap', gap: 10 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <span style={{ width: 12, height: 12, borderRadius: '50%', background: '#ef4444', display: 'inline-block' }} />
               <span style={{ width: 12, height: 12, borderRadius: '50%', background: '#f59e0b', display: 'inline-block' }} />
               <span style={{ width: 12, height: 12, borderRadius: '50%', background: '#10b981', display: 'inline-block' }} />
               <span style={{ marginLeft: 12, fontSize: 12, color: '#6ee7b7', opacity: 0.8 }}>bash — {slugName}@portfolio:~</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <a
+                href={waUrl}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  padding: '4px 10px',
+                  borderRadius: 6,
+                  background: '#25D366',
+                  color: '#000000',
+                  textDecoration: 'none',
+                  fontSize: 12,
+                  fontWeight: 700
+                }}
+              >
+                <MessageCircle size={13} /> WhatsApp
+              </a>
               {contact.email && (
                 <button
                   type="button"
@@ -79,7 +103,10 @@ export default function TerminalTemplate({ data = {}, theme = 'dark', customStyl
                 )}
                 
                 {/* Contact row */}
-                <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginTop: 12, fontSize: 12 }}>
+                <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginTop: 14, fontSize: 12, alignItems: 'center' }}>
+                  <a href={waUrl} target="_blank" rel="noreferrer" style={{ color: '#25D366', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 5, fontWeight: 700 }}>
+                    <MessageCircle size={14} /> connect-whatsapp
+                  </a>
                   {contact.email && (
                     <a href={`mailto:${contact.email}`} style={{ color: primaryColor, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
                       <Mail size={13} /> {contact.email}
@@ -99,6 +126,11 @@ export default function TerminalTemplate({ data = {}, theme = 'dark', customStyl
                     <a href={contact.website} target="_blank" rel="noreferrer" style={{ color: '#6ee7b7', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
                       <Globe size={13} /> web
                     </a>
+                  )}
+                  {contact.phone && (
+                    <span style={{ color: '#9ca3af', display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <Phone size={13} /> {contact.phone}
+                    </span>
                   )}
                 </div>
               </div>
@@ -190,6 +222,44 @@ export default function TerminalTemplate({ data = {}, theme = 'dark', customStyl
               </div>
             )}
 
+            {/* Command 5: ./education.sh */}
+            {education.length > 0 && (
+              <div style={{ marginBottom: 28 }}>
+                <div style={{ color: primaryColor, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ color: '#34d399' }}>❯</span>
+                  <span style={{ fontWeight: 600 }}>./bin/list-education.sh</span>
+                </div>
+                <div style={{ marginTop: 12, paddingLeft: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {education.map((edu, idx) => (
+                    <div key={idx} style={{ background: '#070b09', border: `1px solid ${borderColor}`, borderRadius: 8, padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 6 }}>
+                      <div>
+                        <div style={{ color: '#ffffff', fontWeight: 600 }}>{edu.degree || edu.institution}</div>
+                        <div style={{ color: '#6ee7b7', fontSize: 12 }}>{edu.institution}</div>
+                      </div>
+                      {edu.year && <span style={{ color: '#9ca3af', fontSize: 11 }}>{edu.year}</span>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Command 6: cat certifications.txt */}
+            {certifications.length > 0 && (
+              <div style={{ marginBottom: 28 }}>
+                <div style={{ color: primaryColor, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ color: '#34d399' }}>❯</span>
+                  <span style={{ fontWeight: 600 }}>cat credentials/certifications.txt</span>
+                </div>
+                <div style={{ marginTop: 10, paddingLeft: 16, display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                  {certifications.map((c, i) => (
+                    <div key={i} style={{ background: '#070b09', border: `1px solid ${borderColor}`, padding: '6px 12px', borderRadius: 6, color: '#a7f3d0', fontSize: 12, display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <Award size={13} style={{ color: primaryColor }} /> {c}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Custom AI Sections if any */}
             {customSections.length > 0 && (
               <div style={{ marginBottom: 28 }}>
@@ -205,11 +275,32 @@ export default function TerminalTemplate({ data = {}, theme = 'dark', customStyl
               </div>
             )}
 
-            {/* Terminal prompt bottom cursor */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 24, color: primaryColor }}>
-              <span style={{ color: '#34d399' }}>❯</span>
-              <span>exit 0</span>
-              <span style={{ display: 'inline-block', width: 8, height: 16, background: primaryColor, animation: 'pulse 1s infinite' }} />
+            {/* Terminal prompt bottom cursor with direct WhatsApp callout */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 24, flexWrap: 'wrap', gap: 12 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: primaryColor }}>
+                <span style={{ color: '#34d399' }}>❯</span>
+                <span>exit 0</span>
+                <span style={{ display: 'inline-block', width: 8, height: 16, background: primaryColor, animation: 'pulse 1s infinite' }} />
+              </div>
+              <a
+                href={waUrl}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  padding: '6px 14px',
+                  borderRadius: 6,
+                  background: '#25D366',
+                  color: '#000000',
+                  textDecoration: 'none',
+                  fontSize: 12,
+                  fontWeight: 800
+                }}
+              >
+                <MessageCircle size={14} /> Send WhatsApp Message
+              </a>
             </div>
 
           </div>

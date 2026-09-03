@@ -18,8 +18,10 @@ export default function MinimalTemplate({ data = {}, theme = 'dark', customStyle
   const highlightedSkills = contentRefinements.highlightedSkills || [];
 
   const contact = data.contact || {};
-  const cleanPhone = contact.phone ? contact.phone.replace(/[^0-9]/g, '') : '';
-  const waUrl = cleanPhone ? `https://wa.me/${cleanPhone}` : null;
+  const cleanPhone = (contact.phone || contact.whatsapp || '').replace(/[^0-9]/g, '');
+  const waUrl = cleanPhone
+    ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(`Hi ${candidateName}, I came across your portfolio and would like to connect!`)}`
+    : `https://api.whatsapp.com/send?text=${encodeURIComponent(`Hi ${candidateName}, I came across your portfolio and would like to connect!`)}`;
 
   const projects = data.projects || [];
   const experience = data.experience || [];
@@ -65,14 +67,30 @@ export default function MinimalTemplate({ data = {}, theme = 'dark', customStyle
 
             {/* Quick CTAs */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+              <a
+                href={waUrl}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '10px 18px',
+                  borderRadius: 10,
+                  background: '#25D366',
+                  color: '#ffffff',
+                  textDecoration: 'none',
+                  fontSize: 14,
+                  fontWeight: 700,
+                  boxShadow: '0 4px 14px rgba(37, 211, 102, 0.35)',
+                  transition: 'transform 0.15s ease'
+                }}
+              >
+                <MessageCircle size={16} /> WhatsApp
+              </a>
               {contact.email && (
-                <a href={`mailto:${contact.email}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 8, background: primaryColor, color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 500 }}>
+                <a href={`mailto:${contact.email}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 16px', borderRadius: 10, background: primaryColor, color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 600 }}>
                   <Mail size={14} /> Email
-                </a>
-              )}
-              {waUrl && (
-                <a href={waUrl} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 8, background: '#22c55e', color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 500 }}>
-                  <MessageCircle size={14} /> WhatsApp
                 </a>
               )}
             </div>

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import {
   FileText, Briefcase, Code2, Award, GraduationCap,
-  ExternalLink, Mail, Globe, Sparkles, ChevronDown, ChevronRight, Hash
+  ExternalLink, Mail, Globe, Sparkles, ChevronDown, ChevronRight, Hash, MessageCircle
 } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from '../components/Icons';
 
 export default function NotionDocTemplate({ data = {}, theme = 'dark', customStyles = {}, meta = {} }) {
-  const [openSections, setOpenSections] = useState({ exp: true, proj: true, skills: true });
+  const [openSections, setOpenSections] = useState({ exp: true, proj: true, skills: true, edu: true, certs: true });
   const { themeOverrides = {}, contentRefinements = {}, customSections = [] } = customStyles;
   const isDark = theme === 'dark';
 
@@ -16,10 +16,16 @@ export default function NotionDocTemplate({ data = {}, theme = 'dark', customSty
   const highlightedSkills = contentRefinements.highlightedSkills || [];
 
   const contact = data.contact || {};
+  const cleanPhone = (contact.phone || contact.whatsapp || '').replace(/[^0-9]/g, '');
+  const waUrl = cleanPhone
+    ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(`Hi ${candidateName}, I came across your Notion portfolio and want to connect!`)}`
+    : `https://api.whatsapp.com/send?text=${encodeURIComponent(`Hi ${candidateName}, I came across your Notion portfolio and want to connect!`)}`;
+
   const projects = data.projects || [];
   const experience = data.experience || [];
   const skills = data.skills || [];
   const education = data.education || [];
+  const certifications = data.certifications || [];
 
   const primaryColor = themeOverrides.primaryColor || (isDark ? '#e2e8f0' : '#0f172a');
   const fontFamily = themeOverrides.fontFamily || "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif";
@@ -55,12 +61,34 @@ export default function NotionDocTemplate({ data = {}, theme = 'dark', customSty
           <span>Workspace</span> / <span>Portfolios</span> / <span style={{ color: textColor, fontWeight: 600 }}>{candidateName}</span>
         </div>
 
-        <h1 style={{ fontSize: 36, fontWeight: 700, margin: '0 0 8px', letterSpacing: '-0.02em', color: isDark ? '#ffffff' : '#000000' }}>
-          {candidateName}
-        </h1>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 12 }}>
+          <h1 style={{ fontSize: 36, fontWeight: 700, margin: 0, letterSpacing: '-0.02em', color: isDark ? '#ffffff' : '#000000' }}>
+            {candidateName}
+          </h1>
+          <a
+            href={waUrl}
+            target="_blank"
+            rel="noreferrer"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '8px 16px',
+              borderRadius: 6,
+              background: '#25D366',
+              color: '#ffffff',
+              textDecoration: 'none',
+              fontSize: 13,
+              fontWeight: 700,
+              boxShadow: '0 2px 8px rgba(37, 211, 102, 0.3)'
+            }}
+          >
+            <MessageCircle size={15} /> WhatsApp Contact
+          </a>
+        </div>
 
         {/* Subtitle / Role Callout */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: mutedColor, fontSize: 15, marginBottom: 24, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, color: mutedColor, fontSize: 14, marginBottom: 24, flexWrap: 'wrap' }}>
           <span>💼 {candidateTitle}</span>
           {contact.email && (
             <a href={`mailto:${contact.email}`} style={{ color: isDark ? '#93c5fd' : '#2563eb', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -178,7 +206,7 @@ export default function NotionDocTemplate({ data = {}, theme = 'dark', customSty
               style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 18, fontWeight: 700, cursor: 'pointer', padding: '6px 0', userSelect: 'none' }}
             >
               {openSections.skills ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
-              <span>Skills & Competencies</span>
+              <span>Skills & Competencies ({skills.length})</span>
             </div>
             {openSections.skills && (
               <div style={{ paddingLeft: 24, marginTop: 12, display: 'flex', flexWrap: 'wrap', gap: 8 }}>
@@ -192,17 +220,58 @@ export default function NotionDocTemplate({ data = {}, theme = 'dark', customSty
           </div>
         )}
 
-        {/* Education Section */}
+        {/* Toggle Section: Education */}
         {education.length > 0 && (
-          <div style={{ marginBottom: 28, paddingLeft: 24 }}>
-            <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 8 }}>🎓 Education</div>
-            {education.map((edu, idx) => (
-              <div key={idx} style={{ fontSize: 13.5, color: mutedColor, marginBottom: 4 }}>
-                <strong style={{ color: textColor }}>{edu.degree || edu.institution}</strong> — {edu.institution} {edu.year ? `(${edu.year})` : ''}
+          <div style={{ marginBottom: 28 }}>
+            <div
+              onClick={() => toggle('edu')}
+              style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 18, fontWeight: 700, cursor: 'pointer', padding: '6px 0', userSelect: 'none' }}
+            >
+              {openSections.edu ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+              <span>Education ({education.length})</span>
+            </div>
+            {openSections.edu && (
+              <div style={{ paddingLeft: 24, marginTop: 12, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {education.map((edu, idx) => (
+                  <div key={idx} style={{ background: cardBg, border: `1px solid ${borderColor}`, borderRadius: 8, padding: '12px 16px' }}>
+                    <div style={{ fontWeight: 600, fontSize: 14 }}>{edu.degree || edu.institution}</div>
+                    <div style={{ fontSize: 12.5, color: mutedColor, marginTop: 2 }}>{edu.institution} {edu.year ? `• ${edu.year}` : ''}</div>
+                  </div>
+                ))}
               </div>
-            ))}
+            )}
           </div>
         )}
+
+        {/* Toggle Section: Certifications */}
+        {certifications.length > 0 && (
+          <div style={{ marginBottom: 28 }}>
+            <div
+              onClick={() => toggle('certs')}
+              style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 18, fontWeight: 700, cursor: 'pointer', padding: '6px 0', userSelect: 'none' }}
+            >
+              {openSections.certs ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+              <span>Certifications & Accreditations ({certifications.length})</span>
+            </div>
+            {openSections.certs && (
+              <div style={{ paddingLeft: 24, marginTop: 12, display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                {certifications.map((c, i) => (
+                  <span key={i} style={{ padding: '6px 12px', background: cardBg, border: `1px solid ${borderColor}`, borderRadius: 6, fontSize: 13, fontWeight: 500, color: isDark ? '#93c5fd' : '#2563eb' }}>
+                    🏅 {c}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Custom Sections */}
+        {customSections.map((sec, idx) => (
+          <div key={idx} style={{ marginBottom: 28, paddingLeft: 24 }}>
+            <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 8 }}>{sec.title}</div>
+            <p style={{ margin: 0, fontSize: 14, lineHeight: 1.6, color: mutedColor }}>{sec.content}</p>
+          </div>
+        ))}
 
       </div>
     </div>

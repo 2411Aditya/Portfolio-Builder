@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   Sparkles, ExternalLink, ArrowRight, Mail,
-  Globe, Award, Briefcase, Code2
+  Globe, Award, Briefcase, Code2, GraduationCap, MessageCircle
 } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from '../components/Icons';
 
@@ -15,10 +15,16 @@ export default function CreativeBoldTemplate({ data = {}, theme = 'dark', custom
   const highlightedSkills = contentRefinements.highlightedSkills || [];
 
   const contact = data.contact || {};
+  const cleanPhone = (contact.phone || contact.whatsapp || '').replace(/[^0-9]/g, '');
+  const waUrl = cleanPhone
+    ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(`Hi ${candidateName}, I saw your creative portfolio and want to connect!`)}`
+    : `https://api.whatsapp.com/send?text=${encodeURIComponent(`Hi ${candidateName}, I saw your creative portfolio and want to connect!`)}`;
+
   const projects = data.projects || [];
   const experience = data.experience || [];
   const skills = data.skills || [];
   const education = data.education || [];
+  const certifications = data.certifications || [];
 
   const primaryColor = themeOverrides.primaryColor || '#ff0055'; // vibrant neon magenta/coral
   const fontFamily = themeOverrides.fontFamily || "'Space Grotesk', 'Outfit', sans-serif";
@@ -49,11 +55,31 @@ export default function CreativeBoldTemplate({ data = {}, theme = 'dark', custom
             </p>
           )}
 
-          {/* Social CTAs */}
-          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 24 }}>
+          {/* Social & WhatsApp CTAs */}
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 24, alignItems: 'center' }}>
+            <a
+              href={waUrl}
+              target="_blank"
+              rel="noreferrer"
+              style={{
+                background: '#25D366',
+                color: '#ffffff',
+                padding: '12px 24px',
+                fontWeight: 900,
+                textTransform: 'uppercase',
+                textDecoration: 'none',
+                fontSize: 14,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                boxShadow: '0 4px 16px rgba(37, 211, 102, 0.4)'
+              }}
+            >
+              <MessageCircle size={18} /> WhatsApp Me <ArrowRight size={16} />
+            </a>
             {contact.email && (
-              <a href={`mailto:${contact.email}`} style={{ background: primaryColor, color: '#fff', padding: '10px 20px', fontWeight: 800, textTransform: 'uppercase', textDecoration: 'none', fontSize: 13, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-                <Mail size={16} /> Contact Me <ArrowRight size={16} />
+              <a href={`mailto:${contact.email}`} style={{ background: primaryColor, color: '#fff', padding: '12px 20px', fontWeight: 800, textTransform: 'uppercase', textDecoration: 'none', fontSize: 13, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                <Mail size={16} /> Email
               </a>
             )}
             {contact.github && (
@@ -156,6 +182,42 @@ export default function CreativeBoldTemplate({ data = {}, theme = 'dark', custom
             </div>
           </section>
         )}
+
+        {/* Education & Certifications */}
+        {(education.length > 0 || certifications.length > 0) && (
+          <section style={{ marginBottom: 44 }}>
+            <h2 style={{ fontSize: 28, fontWeight: 900, textTransform: 'uppercase', letterSpacing: '-0.02em', borderLeft: `6px solid ${primaryColor}`, paddingLeft: 14, margin: '0 0 24px' }}>
+              Credentials & Education
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
+              {education.map((edu, idx) => (
+                <div key={idx} style={{ background: cardBg, border: `2px solid ${borderColor}`, padding: 20 }}>
+                  <div style={{ fontSize: 11, fontWeight: 800, textTransform: 'uppercase', color: primaryColor, marginBottom: 4 }}>Education</div>
+                  <div style={{ fontSize: 16, fontWeight: 800 }}>{edu.degree || edu.institution}</div>
+                  <div style={{ fontSize: 13, color: mutedColor, marginTop: 2 }}>{edu.institution} {edu.year ? `• ${edu.year}` : ''}</div>
+                </div>
+              ))}
+              {certifications.map((c, i) => (
+                <div key={i} style={{ background: cardBg, border: `2px solid ${borderColor}`, padding: 20 }}>
+                  <div style={{ fontSize: 11, fontWeight: 800, textTransform: 'uppercase', color: '#10b981', marginBottom: 4 }}>Certification</div>
+                  <div style={{ fontSize: 15, fontWeight: 800 }}>{c}</div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Custom Sections */}
+        {customSections.map((sec, idx) => (
+          <section key={idx} style={{ marginBottom: 44 }}>
+            <h2 style={{ fontSize: 28, fontWeight: 900, textTransform: 'uppercase', letterSpacing: '-0.02em', borderLeft: `6px solid ${primaryColor}`, paddingLeft: 14, margin: '0 0 24px' }}>
+              {sec.title}
+            </h2>
+            <div style={{ background: cardBg, border: `2px solid ${borderColor}`, padding: 24, fontSize: 15, lineHeight: 1.7, color: mutedColor }}>
+              {sec.content}
+            </div>
+          </section>
+        ))}
 
       </div>
     </div>

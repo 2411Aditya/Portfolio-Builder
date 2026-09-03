@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   Briefcase, Award, GraduationCap, Mail, Phone, Globe,
-  CheckCircle2, ChevronRight, Sparkles, Building, Calendar
+  CheckCircle2, ChevronRight, Sparkles, Building, Calendar, MessageCircle
 } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from '../components/Icons';
 
@@ -15,6 +15,11 @@ export default function ExecutiveTemplate({ data = {}, theme = 'dark', customSty
   const highlightedSkills = contentRefinements.highlightedSkills || [];
 
   const contact = data.contact || {};
+  const cleanPhone = (contact.phone || contact.whatsapp || '').replace(/[^0-9]/g, '');
+  const waUrl = cleanPhone
+    ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(`Hi ${candidateName}, I came across your executive portfolio and would like to connect!`)}`
+    : `https://api.whatsapp.com/send?text=${encodeURIComponent(`Hi ${candidateName}, I came across your executive portfolio and would like to connect!`)}`;
+
   const projects = data.projects || [];
   const experience = data.experience || [];
   const skills = data.skills || [];
@@ -32,10 +37,10 @@ export default function ExecutiveTemplate({ data = {}, theme = 'dark', customSty
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: bgColor, color: textColor, padding: '40px 20px 80px' }}>
-      <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: '320px 1fr', gap: 32 }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 32 }}>
         
-        {/* Left Sticky Executive Profile Sidebar */}
-        <aside style={{ background: cardBg, border: `1px solid ${borderColor}`, borderRadius: 16, padding: '36px 28px', height: 'fit-content', position: 'sticky', top: 32 }}>
+        {/* Left Executive Profile Sidebar */}
+        <aside style={{ background: cardBg, border: `1px solid ${borderColor}`, borderRadius: 16, padding: '36px 28px', height: 'fit-content' }}>
           <div style={{
             width: 80, height: 80, borderRadius: '50%',
             background: `linear-gradient(135deg, #0284c7, #0f172a)`,
@@ -45,12 +50,37 @@ export default function ExecutiveTemplate({ data = {}, theme = 'dark', customSty
           }}>
             {candidateName.charAt(0).toUpperCase()}
           </div>
-          <h1 style={{ fontFamily, fontSize: 24, fontWeight: 700, margin: '0 0 6px', letterSpacing: '-0.01em' }}>
+          <h1 style={{ fontFamily, fontSize: 26, fontWeight: 700, margin: '0 0 6px', letterSpacing: '-0.01em' }}>
             {candidateName}
           </h1>
-          <div style={{ fontSize: 13, color: primaryColor, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 16, fontFamily: bodyFont }}>
+          <div style={{ fontSize: 13, color: primaryColor, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 20, fontFamily: bodyFont }}>
             {candidateTitle}
           </div>
+
+          {/* Primary WhatsApp Action */}
+          <a
+            href={waUrl}
+            target="_blank"
+            rel="noreferrer"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              padding: '12px 18px',
+              borderRadius: 10,
+              background: '#25D366',
+              color: '#ffffff',
+              textDecoration: 'none',
+              fontFamily: bodyFont,
+              fontSize: 14,
+              fontWeight: 700,
+              boxShadow: '0 4px 14px rgba(37, 211, 102, 0.35)',
+              marginBottom: 20
+            }}
+          >
+            <MessageCircle size={17} /> Connect on WhatsApp
+          </a>
 
           <hr style={{ borderColor, margin: '16px 0' }} />
 
@@ -76,6 +106,11 @@ export default function ExecutiveTemplate({ data = {}, theme = 'dark', customSty
                 <GithubIcon size={15} style={{ color: primaryColor }} /> GitHub
               </a>
             )}
+            {contact.website && (
+              <a href={contact.website} target="_blank" rel="noreferrer" style={{ color: textColor, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Globe size={15} style={{ color: primaryColor }} /> Website
+              </a>
+            )}
           </div>
 
           {/* Executive Skills */}
@@ -96,11 +131,11 @@ export default function ExecutiveTemplate({ data = {}, theme = 'dark', customSty
         </aside>
 
         {/* Main Content Area */}
-        <main style={{ fontFamily: bodyFont }}>
+        <main style={{ fontFamily: bodyFont, display: 'flex', flexDirection: 'column', gap: 28 }}>
           
           {/* Executive Summary */}
           {candidateBio && (
-            <section style={{ background: cardBg, border: `1px solid ${borderColor}`, borderRadius: 16, padding: '32px 28px', marginBottom: 28 }}>
+            <section style={{ background: cardBg, border: `1px solid ${borderColor}`, borderRadius: 16, padding: '32px 28px' }}>
               <h2 style={{ fontFamily, fontSize: 20, fontWeight: 700, margin: '0 0 12px' }}>Executive Summary</h2>
               <p style={{ margin: 0, fontSize: 15, lineHeight: 1.7, color: isDark ? '#cbd5e1' : '#334155' }}>
                 {candidateBio}
@@ -110,7 +145,7 @@ export default function ExecutiveTemplate({ data = {}, theme = 'dark', customSty
 
           {/* AI Focus Highlight if set */}
           {highlightedSkills.length > 0 && (
-            <div style={{ background: 'rgba(56, 189, 248, 0.08)', border: `1px solid ${primaryColor}44`, borderRadius: 12, padding: '16px 20px', marginBottom: 28, display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ background: 'rgba(56, 189, 248, 0.08)', border: `1px solid ${primaryColor}44`, borderRadius: 12, padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
               <Sparkles size={16} style={{ color: primaryColor }} />
               <span style={{ fontSize: 13, fontWeight: 600, color: primaryColor }}>Strategic AI Focus:</span>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -125,7 +160,7 @@ export default function ExecutiveTemplate({ data = {}, theme = 'dark', customSty
 
           {/* Experience Timeline */}
           {experience.length > 0 && (
-            <section style={{ background: cardBg, border: `1px solid ${borderColor}`, borderRadius: 16, padding: '32px 28px', marginBottom: 28 }}>
+            <section style={{ background: cardBg, border: `1px solid ${borderColor}`, borderRadius: 16, padding: '32px 28px' }}>
               <h2 style={{ fontFamily, fontSize: 20, fontWeight: 700, margin: '0 0 24px', display: 'flex', alignItems: 'center', gap: 10 }}>
                 <Building size={20} style={{ color: primaryColor }} /> Leadership & Experience
               </h2>
@@ -150,7 +185,7 @@ export default function ExecutiveTemplate({ data = {}, theme = 'dark', customSty
 
           {/* Strategic Projects */}
           {projects.length > 0 && (
-            <section style={{ background: cardBg, border: `1px solid ${borderColor}`, borderRadius: 16, padding: '32px 28px', marginBottom: 28 }}>
+            <section style={{ background: cardBg, border: `1px solid ${borderColor}`, borderRadius: 16, padding: '32px 28px' }}>
               <h2 style={{ fontFamily, fontSize: 20, fontWeight: 700, margin: '0 0 20px' }}>Key Initiatives & Projects</h2>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 16 }}>
                 {projects.map((proj, idx) => (
@@ -182,13 +217,21 @@ export default function ExecutiveTemplate({ data = {}, theme = 'dark', customSty
                   </div>
                 ))}
                 {certifications.map((c, i) => (
-                  <div key={i} style={{ color: primaryColor, fontSize: 13, display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <div key={i} style={{ color: primaryColor, fontSize: 13, display: 'flex', alignItems: 'center', gap: 6, fontWeight: 600 }}>
                     <Award size={15} /> {c}
                   </div>
                 ))}
               </div>
             </section>
           )}
+
+          {/* Custom Sections */}
+          {customSections.map((sec, idx) => (
+            <section key={idx} style={{ background: cardBg, border: `1px solid ${borderColor}`, borderRadius: 16, padding: '32px 28px' }}>
+              <h3 style={{ fontFamily, fontSize: 20, fontWeight: 700, margin: '0 0 12px', color: primaryColor }}>{sec.title}</h3>
+              <p style={{ margin: 0, fontSize: 14.5, lineHeight: 1.7, color: mutedColor }}>{sec.content}</p>
+            </section>
+          ))}
 
         </main>
       </div>

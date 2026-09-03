@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   Mail, Globe, Phone, ExternalLink,
-  Briefcase, Code2, Award, GraduationCap, Sparkles, ArrowRight
+  Briefcase, Code2, Award, GraduationCap, Sparkles, ArrowRight, MessageCircle
 } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from '../components/Icons';
 
@@ -15,10 +15,16 @@ export default function SplitScreenTemplate({ data = {}, theme = 'dark', customS
   const highlightedSkills = contentRefinements.highlightedSkills || [];
 
   const contact = data.contact || {};
+  const cleanPhone = (contact.phone || contact.whatsapp || '').replace(/[^0-9]/g, '');
+  const waUrl = cleanPhone
+    ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(`Hi ${candidateName}, I came across your portfolio and would like to connect!`)}`
+    : `https://api.whatsapp.com/send?text=${encodeURIComponent(`Hi ${candidateName}, I came across your portfolio and would like to connect!`)}`;
+
   const projects = data.projects || [];
   const experience = data.experience || [];
   const skills = data.skills || [];
   const education = data.education || [];
+  const certifications = data.certifications || [];
 
   const primaryColor = themeOverrides.primaryColor || (isDark ? '#38bdf8' : '#0284c7');
   const fontFamily = themeOverrides.fontFamily || "'Plus Jakarta Sans', Inter, sans-serif";
@@ -67,16 +73,36 @@ export default function SplitScreenTemplate({ data = {}, theme = 'dark', customS
             )}
           </div>
 
-          {/* Contact Row */}
+          {/* Contact Row with WhatsApp prominent button */}
           <div>
-            <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginBottom: 20 }}>
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 20 }}>
+              <a
+                href={waUrl}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  background: '#25D366',
+                  color: '#ffffff',
+                  padding: '12px 20px',
+                  borderRadius: 10,
+                  textDecoration: 'none',
+                  fontWeight: 700,
+                  fontSize: 14,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  boxShadow: '0 4px 14px rgba(37, 211, 102, 0.35)'
+                }}
+              >
+                <MessageCircle size={16} /> WhatsApp
+              </a>
               {contact.email && (
-                <a href={`mailto:${contact.email}`} style={{ background: primaryColor, color: '#fff', padding: '10px 18px', borderRadius: 8, textDecoration: 'none', fontWeight: 600, fontSize: 13, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                  <Mail size={15} /> Get in touch
+                <a href={`mailto:${contact.email}`} style={{ background: primaryColor, color: '#fff', padding: '12px 18px', borderRadius: 10, textDecoration: 'none', fontWeight: 600, fontSize: 13, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                  <Mail size={15} /> Email
                 </a>
               )}
             </div>
-            <div style={{ display: 'flex', gap: 16, color: mutedColor, fontSize: 13 }}>
+            <div style={{ display: 'flex', gap: 16, color: mutedColor, fontSize: 13, flexWrap: 'wrap' }}>
               {contact.github && (
                 <a href={contact.github} target="_blank" rel="noreferrer" style={{ color: mutedColor, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
                   <GithubIcon size={15} /> GitHub
@@ -185,6 +211,34 @@ export default function SplitScreenTemplate({ data = {}, theme = 'dark', customS
               </div>
             </section>
           )}
+
+          {/* Certifications */}
+          {certifications.length > 0 && (
+            <section>
+              <h2 style={{ fontSize: 20, fontWeight: 700, margin: '0 0 20px', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Award size={20} style={{ color: primaryColor }} /> Certifications & Accreditations
+              </h2>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                {certifications.map((c, i) => (
+                  <div key={i} style={{ background: cardBg, border: `1px solid ${borderColor}`, borderRadius: 10, padding: '10px 16px', fontSize: 13, fontWeight: 600, color: primaryColor }}>
+                    {c}
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Custom Sections */}
+          {customSections.map((sec, idx) => (
+            <section key={idx}>
+              <h2 style={{ fontSize: 20, fontWeight: 700, margin: '0 0 20px', color: primaryColor }}>
+                {sec.title}
+              </h2>
+              <div style={{ background: cardBg, border: `1px solid ${borderColor}`, borderRadius: 16, padding: 24, fontSize: 14.5, lineHeight: 1.7, color: mutedColor }}>
+                {sec.content}
+              </div>
+            </section>
+          ))}
 
         </div>
       </div>

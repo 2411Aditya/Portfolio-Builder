@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   Sparkles, ExternalLink, Briefcase, Code2, Award,
-  GraduationCap, Mail, Globe, Phone, CheckCircle2
+  GraduationCap, Mail, Globe, Phone, CheckCircle2, MessageCircle
 } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from '../components/Icons';
 
@@ -15,10 +15,16 @@ export default function GlassmorphismTemplate({ data = {}, theme = 'dark', custo
   const highlightedSkills = contentRefinements.highlightedSkills || [];
 
   const contact = data.contact || {};
+  const cleanPhone = (contact.phone || contact.whatsapp || '').replace(/[^0-9]/g, '');
+  const waUrl = cleanPhone
+    ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(`Hi ${candidateName}, I came across your portfolio and would like to connect!`)}`
+    : `https://api.whatsapp.com/send?text=${encodeURIComponent(`Hi ${candidateName}, I came across your portfolio and would like to connect!`)}`;
+
   const projects = data.projects || [];
   const experience = data.experience || [];
   const skills = data.skills || [];
   const education = data.education || [];
+  const certifications = data.certifications || [];
 
   const primaryColor = themeOverrides.primaryColor || '#a855f7'; // iridescent purple/violet
   const fontFamily = themeOverrides.fontFamily || "'Outfit', 'Inter', sans-serif";
@@ -69,7 +75,27 @@ export default function GlassmorphismTemplate({ data = {}, theme = 'dark', custo
             </div>
 
             {/* CTAs */}
-            <div style={{ display: 'flex', gap: 10 }}>
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
+              <a
+                href={waUrl}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  background: '#25D366',
+                  color: '#ffffff',
+                  padding: '10px 18px',
+                  borderRadius: 12,
+                  fontWeight: 700,
+                  fontSize: 13,
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  boxShadow: '0 6px 18px rgba(37, 211, 102, 0.35)'
+                }}
+              >
+                <MessageCircle size={16} /> WhatsApp
+              </a>
               {contact.email && (
                 <a href={`mailto:${contact.email}`} style={{
                   background: `linear-gradient(135deg, ${primaryColor}, #6366f1)`,
@@ -78,7 +104,7 @@ export default function GlassmorphismTemplate({ data = {}, theme = 'dark', custo
                   display: 'inline-flex', alignItems: 'center', gap: 6,
                   boxShadow: `0 8px 16px ${primaryColor}44`
                 }}>
-                  <Mail size={15} /> Contact
+                  <Mail size={15} /> Email
                 </a>
               )}
             </div>
@@ -234,6 +260,58 @@ export default function GlassmorphismTemplate({ data = {}, theme = 'dark', custo
             </div>
           </section>
         )}
+
+        {/* Education & Certifications Glass Cards */}
+        {(education.length > 0 || certifications.length > 0) && (
+          <section style={{ marginBottom: 36 }}>
+            <h2 style={{ fontSize: 22, fontWeight: 800, margin: '0 0 20px', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <GraduationCap size={22} style={{ color: primaryColor }} /> Academics & Accreditations
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 18 }}>
+              {education.map((edu, idx) => (
+                <div key={idx} style={{
+                  background: glassBg,
+                  backdropFilter: 'blur(16px)',
+                  border: `1px solid ${glassBorder}`,
+                  borderRadius: 18,
+                  padding: 20
+                }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', color: primaryColor, marginBottom: 4 }}>Education</div>
+                  <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700 }}>{edu.degree || edu.institution}</h3>
+                  <div style={{ fontSize: 13, color: isDark ? '#cbd5e1' : '#475569', marginTop: 4 }}>{edu.institution} {edu.year ? `• ${edu.year}` : ''}</div>
+                </div>
+              ))}
+              {certifications.map((c, i) => (
+                <div key={i} style={{
+                  background: glassBg,
+                  backdropFilter: 'blur(16px)',
+                  border: `1px solid ${glassBorder}`,
+                  borderRadius: 18,
+                  padding: 20
+                }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', color: '#10b981', marginBottom: 4 }}>Certification</div>
+                  <h3 style={{ margin: 0, fontSize: 15, fontWeight: 600 }}>{c}</h3>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Custom Sections */}
+        {customSections.map((sec, idx) => (
+          <section key={idx} style={{ marginBottom: 36 }}>
+            <div style={{
+              background: glassBg,
+              backdropFilter: 'blur(16px)',
+              border: `1px solid ${glassBorder}`,
+              borderRadius: 20,
+              padding: 24
+            }}>
+              <h3 style={{ margin: '0 0 10px', fontSize: 18, fontWeight: 800, color: primaryColor }}>{sec.title}</h3>
+              <p style={{ margin: 0, fontSize: 14, lineHeight: 1.7, color: isDark ? '#cbd5e1' : '#475569' }}>{sec.content}</p>
+            </div>
+          </section>
+        ))}
 
       </div>
     </div>
