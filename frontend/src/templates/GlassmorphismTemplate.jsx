@@ -83,30 +83,19 @@ export default function GlassmorphismTemplate({ data = {}, theme = 'dark', custo
                 style={{
                   background: '#25D366',
                   color: '#ffffff',
-                  padding: '10px 18px',
+                  padding: '12px 22px',
                   borderRadius: 12,
                   fontWeight: 700,
-                  fontSize: 13,
+                  fontSize: 14,
                   textDecoration: 'none',
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: 6,
+                  gap: 8,
                   boxShadow: '0 6px 18px rgba(37, 211, 102, 0.35)'
                 }}
               >
-                <MessageCircle size={16} /> WhatsApp
+                <MessageCircle size={17} /> WhatsApp
               </a>
-              {contact.email && (
-                <a href={`mailto:${contact.email}`} style={{
-                  background: `linear-gradient(135deg, ${primaryColor}, #6366f1)`,
-                  color: '#fff', padding: '10px 18px', borderRadius: 12,
-                  fontWeight: 600, fontSize: 13, textDecoration: 'none',
-                  display: 'inline-flex', alignItems: 'center', gap: 6,
-                  boxShadow: `0 8px 16px ${primaryColor}44`
-                }}>
-                  <Mail size={15} /> Email
-                </a>
-              )}
             </div>
           </div>
 

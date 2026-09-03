@@ -64,7 +64,7 @@ export default function TimelineDocTemplate({ data = {}, theme = 'dark', customS
               style={{
                 background: '#25D366',
                 color: '#ffffff',
-                padding: '10px 20px',
+                padding: '12px 24px',
                 borderRadius: 10,
                 textDecoration: 'none',
                 fontWeight: 700,
@@ -77,11 +77,6 @@ export default function TimelineDocTemplate({ data = {}, theme = 'dark', customS
             >
               <MessageCircle size={16} /> Connect on WhatsApp
             </a>
-            {contact.email && (
-              <a href={`mailto:${contact.email}`} style={{ color: primaryColor, textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 18px', borderRadius: 10, border: `1px solid ${borderColor}`, background: cardBg, fontSize: 13 }}>
-                <Mail size={14} /> Email
-              </a>
-            )}
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'center', gap: 16, flexWrap: 'wrap', fontSize: 13 }}>

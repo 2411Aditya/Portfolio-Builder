@@ -86,11 +86,6 @@ export default function ExecutiveTemplate({ data = {}, theme = 'dark', customSty
 
           {/* Contact Details */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 13, fontFamily: bodyFont }}>
-            {contact.email && (
-              <a href={`mailto:${contact.email}`} style={{ color: textColor, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
-                <Mail size={15} style={{ color: primaryColor }} /> {contact.email}
-              </a>
-            )}
             {contact.phone && (
               <div style={{ color: mutedColor, display: 'flex', alignItems: 'center', gap: 8 }}>
                 <Phone size={15} style={{ color: primaryColor }} /> {contact.phone}

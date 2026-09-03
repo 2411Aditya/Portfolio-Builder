@@ -134,17 +134,11 @@ export default function BentoTemplate({ data = {}, theme = 'dark', customStyles 
               <div style={{ fontSize: 20, fontWeight: 700, marginBottom: 12 }}>Let's Build Something Together</div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 16 }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 10 }}>
-                <a href={waUrl} target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 18px', background: '#25D366', color: '#fff', borderRadius: 12, textDecoration: 'none', fontWeight: 700, fontSize: 14, boxShadow: '0 4px 14px rgba(37, 211, 102, 0.35)' }}>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}><MessageCircle size={18} /> WhatsApp</span>
-                  <ArrowUpRight size={16} />
+              <div>
+                <a href={waUrl} target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 20px', background: '#25D366', color: '#fff', borderRadius: 12, textDecoration: 'none', fontWeight: 700, fontSize: 15, boxShadow: '0 4px 14px rgba(37, 211, 102, 0.35)' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}><MessageCircle size={20} /> Chat on WhatsApp</span>
+                  <ArrowUpRight size={18} />
                 </a>
-                {contact.email && (
-                  <a href={`mailto:${contact.email}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 18px', background: primaryColor, color: '#fff', borderRadius: 12, textDecoration: 'none', fontWeight: 600, fontSize: 14 }}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}><Mail size={16} /> Send Email</span>
-                    <ArrowUpRight size={16} />
-                  </a>
-                )}
               </div>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 {contact.linkedin && (

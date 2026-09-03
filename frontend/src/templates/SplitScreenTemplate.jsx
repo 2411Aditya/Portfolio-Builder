@@ -83,7 +83,7 @@ export default function SplitScreenTemplate({ data = {}, theme = 'dark', customS
                 style={{
                   background: '#25D366',
                   color: '#ffffff',
-                  padding: '12px 20px',
+                  padding: '12px 24px',
                   borderRadius: 10,
                   textDecoration: 'none',
                   fontWeight: 700,
@@ -96,11 +96,6 @@ export default function SplitScreenTemplate({ data = {}, theme = 'dark', customS
               >
                 <MessageCircle size={16} /> WhatsApp
               </a>
-              {contact.email && (
-                <a href={`mailto:${contact.email}`} style={{ background: primaryColor, color: '#fff', padding: '12px 18px', borderRadius: 10, textDecoration: 'none', fontWeight: 600, fontSize: 13, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                  <Mail size={15} /> Email
-                </a>
-              )}
             </div>
             <div style={{ display: 'flex', gap: 16, color: mutedColor, fontSize: 13, flexWrap: 'wrap' }}>
               {contact.github && (

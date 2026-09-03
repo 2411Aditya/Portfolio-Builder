@@ -90,11 +90,6 @@ export default function NotionDocTemplate({ data = {}, theme = 'dark', customSty
         {/* Subtitle / Role Callout */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, color: mutedColor, fontSize: 14, marginBottom: 24, flexWrap: 'wrap' }}>
           <span>💼 {candidateTitle}</span>
-          {contact.email && (
-            <a href={`mailto:${contact.email}`} style={{ color: isDark ? '#93c5fd' : '#2563eb', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
-              <Mail size={14} /> {contact.email}
-            </a>
-          )}
           {contact.github && (
             <a href={contact.github} target="_blank" rel="noreferrer" style={{ color: mutedColor, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
               <GithubIcon size={14} /> GitHub

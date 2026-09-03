@@ -81,7 +81,7 @@ export default function NeumorphicTemplate({ data = {}, theme = 'dark', customSt
                 target="_blank"
                 rel="noreferrer"
                 style={{
-                  padding: '12px 22px',
+                  padding: '12px 24px',
                   borderRadius: 14,
                   background: '#25D366',
                   boxShadow: neuSmall,
@@ -96,16 +96,6 @@ export default function NeumorphicTemplate({ data = {}, theme = 'dark', customSt
               >
                 <MessageCircle size={18} /> WhatsApp Me
               </a>
-              {contact.email && (
-                <a href={`mailto:${contact.email}`} style={{
-                  padding: '12px 20px', borderRadius: 14,
-                  background: bgColor, boxShadow: neuSmall,
-                  color: primaryColor, textDecoration: 'none',
-                  fontWeight: 700, fontSize: 13, display: 'inline-flex', alignItems: 'center', gap: 8
-                }}>
-                  <Mail size={16} /> Email
-                </a>
-              )}
             </div>
           </div>
 

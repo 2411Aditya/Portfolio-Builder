@@ -75,7 +75,7 @@ export default function MinimalTemplate({ data = {}, theme = 'dark', customStyle
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: 8,
-                  padding: '10px 18px',
+                  padding: '10px 20px',
                   borderRadius: 10,
                   background: '#25D366',
                   color: '#ffffff',
@@ -88,11 +88,6 @@ export default function MinimalTemplate({ data = {}, theme = 'dark', customStyle
               >
                 <MessageCircle size={16} /> WhatsApp
               </a>
-              {contact.email && (
-                <a href={`mailto:${contact.email}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 16px', borderRadius: 10, background: primaryColor, color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 600 }}>
-                  <Mail size={14} /> Email
-                </a>
-              )}
             </div>
           </div>
 

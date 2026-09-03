@@ -60,27 +60,17 @@ export default function TerminalTemplate({ data = {}, theme = 'dark', customStyl
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: 6,
-                  padding: '4px 10px',
+                  padding: '5px 12px',
                   borderRadius: 6,
                   background: '#25D366',
                   color: '#000000',
                   textDecoration: 'none',
                   fontSize: 12,
-                  fontWeight: 700
+                  fontWeight: 800
                 }}
               >
-                <MessageCircle size={13} /> WhatsApp
+                <MessageCircle size={14} /> WhatsApp
               </a>
-              {contact.email && (
-                <button
-                  type="button"
-                  onClick={copyContact}
-                  style={{ background: 'transparent', border: 'none', color: primaryColor, cursor: 'pointer', fontSize: 12, display: 'flex', alignItems: 'center', gap: 4 }}
-                  title="Copy email command"
-                >
-                  {copied ? <Check size={13} /> : <Copy size={13} />} {copied ? 'copied!' : 'copy-email'}
-                </button>
-              )}
             </div>
           </div>
 
@@ -107,11 +97,6 @@ export default function TerminalTemplate({ data = {}, theme = 'dark', customStyl
                   <a href={waUrl} target="_blank" rel="noreferrer" style={{ color: '#25D366', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 5, fontWeight: 700 }}>
                     <MessageCircle size={14} /> connect-whatsapp
                   </a>
-                  {contact.email && (
-                    <a href={`mailto:${contact.email}`} style={{ color: primaryColor, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
-                      <Mail size={13} /> {contact.email}
-                    </a>
-                  )}
                   {contact.github && (
                     <a href={contact.github} target="_blank" rel="noreferrer" style={{ color: '#6ee7b7', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
                       <GithubIcon size={13} /> github

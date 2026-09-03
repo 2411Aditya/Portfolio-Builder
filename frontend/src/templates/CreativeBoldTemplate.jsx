@@ -77,11 +77,6 @@ export default function CreativeBoldTemplate({ data = {}, theme = 'dark', custom
             >
               <MessageCircle size={18} /> WhatsApp Me <ArrowRight size={16} />
             </a>
-            {contact.email && (
-              <a href={`mailto:${contact.email}`} style={{ background: primaryColor, color: '#fff', padding: '12px 20px', fontWeight: 800, textTransform: 'uppercase', textDecoration: 'none', fontSize: 13, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-                <Mail size={16} /> Email
-              </a>
-            )}
             {contact.github && (
               <a href={contact.github} target="_blank" rel="noreferrer" style={{ background: cardBg, border: `2px solid ${borderColor}`, color: textColor, padding: '10px 18px', fontWeight: 700, textDecoration: 'none', fontSize: 13, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
                 <GithubIcon size={15} /> GitHub
