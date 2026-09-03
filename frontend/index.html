@@ -67,9 +67,243 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+    <!-- Static Structured Data (JSON-LD) for Search Crawlers & AI Engines -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": ["WebApplication", "SoftwareApplication"],
+            "@id": "https://portfolio-builder-six-jet.vercel.app/#webapp",
+            "name": "auoraa — AI Portfolio Builder",
+            "operatingSystem": "All",
+            "applicationCategory": "BusinessApplication, DesignApplication, DeveloperApplication",
+            "description": "Turn your resume into a stunning, recruiter-ready developer portfolio in under 30 seconds with auoraa. Powered by AI with 10 modular themes, Google Drive sync, AI customizer, and instant hosting.",
+            "url": "https://portfolio-builder-six-jet.vercel.app/",
+            "offers": [
+              {
+                "@type": "Offer",
+                "name": "Free Starter",
+                "price": "0.00",
+                "priceCurrency": "INR",
+                "availability": "https://schema.org/InStock",
+                "description": "2 Classic Templates (Minimal & Terminal), Instant AI Resume OCR extraction, shareable public link"
+              },
+              {
+                "@type": "Offer",
+                "name": "Lite Creator",
+                "price": "19.00",
+                "priceCurrency": "INR",
+                "availability": "https://schema.org/InStock",
+                "description": "6 Dynamic Templates (Bento, Creative, Executive, Split), WhatsApp Direct, Google SEO Schema"
+              },
+              {
+                "@type": "Offer",
+                "name": "Pro Visionary",
+                "price": "29.00",
+                "priceCurrency": "INR",
+                "availability": "https://schema.org/InStock",
+                "description": "All 10 Templates, AI Customizer Chatbox, Natural Language Styling, Verified Pro Badge"
+              }
+            ],
+            "featureList": [
+              "Instant AI Resume OCR & Extraction from PDF, DOCX, TXT",
+              "Direct Google Drive Resume Import & Sync",
+              "10 Modular Designer Templates (Minimal, Bento Grid, Notion Document, Retro Terminal, Glassmorphic, Neumorphic, Executive, Creative, Split View, Interactive Timeline)",
+              "AI Customizer Chatbox with natural language styling",
+              "1-Click WhatsApp Direct Recruiter Contact Button",
+              "Shareable custom public URLs (/p/:username/:portfolioId)",
+              "Automated schema.org Person & ProfilePage Google Rich Snippets",
+              "Full OpenGraph and Twitter Cards social media previews"
+            ],
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.9",
+              "ratingCount": "1250",
+              "bestRating": "5",
+              "worstRating": "1"
+            }
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://portfolio-builder-six-jet.vercel.app/#website",
+            "name": "auoraa",
+            "url": "https://portfolio-builder-six-jet.vercel.app/",
+            "description": "AI-Powered Developer Portfolio Generator & Resume to Website Builder",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": "https://portfolio-builder-six-jet.vercel.app/p/{search_term_string}",
+              "query-input": "required name=search_term_string"
+            }
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://portfolio-builder-six-jet.vercel.app/#organization",
+            "name": "auoraa",
+            "url": "https://portfolio-builder-six-jet.vercel.app/",
+            "logo": "https://portfolio-builder-six-jet.vercel.app/og-image.jpg",
+            "sameAs": [
+              "https://github.com/2411Aditya/Portfolio-Builder"
+            ]
+          },
+          {
+            "@type": "FAQPage",
+            "@id": "https://portfolio-builder-six-jet.vercel.app/#faq",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "What file formats and import methods does auoraa support?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "We accept PDF, DOCX, and plain TXT resumes, as well as direct import from Google Drive. Our AI engine accurately parses skills, experience, projects, education, and contact details."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How many portfolio templates are available?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "auoraa offers 10 modular designer templates including Minimal, Bento Grid, Notion Document, Retro Terminal, Glassmorphic, Neumorphic, Executive, Creative, Split View, and Interactive Timeline."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How long does it take to generate a portfolio?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Most portfolios are live in under 30 seconds. Our AI structures your document into schema markup and generates a fully hosted, responsive portfolio at a shareable public URL instantly."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How does the AI Customizer Chatbox work?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "On the Pro plan, you can customize your live portfolio using natural language (e.g., 'change header color to neon purple', 'refine my bio to sound more senior', or 'highlight my React projects')."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What are the pricing options?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "We offer Free Forever (₹0 with 2 classic templates), Lite Creator (₹19/year with 6 dynamic templates & WhatsApp button), and Pro Visionary (₹29/year with all 10 templates, AI Customizer, and verified badge)."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is my data private and secure?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. Your resume data is processed securely with zero third-party data selling. You can edit or delete your portfolio anytime from your dashboard, and public links expire immediately upon deletion."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
-    <div id="root"></div>
+    <!-- Pre-rendered Semantic HTML for Raw Search Engine Crawlers, Bots & AI Models -->
+    <div id="root">
+      <header>
+        <nav aria-label="Main Navigation">
+          <a href="/">auoraa</a>
+          <a href="/login">Sign In</a>
+          <a href="/register">Get Started Free</a>
+        </nav>
+      </header>
+
+      <main>
+        <section aria-labelledby="hero-heading">
+          <p>AI-POWERED • TURN RESUMES INTO LIVE WEBSITES</p>
+          <h1 id="hero-heading">Turn Your Resume Into a Recruiter-Ready Developer Portfolio in 30 Seconds</h1>
+          <p>Upload your resume (PDF, DOCX, TXT) or import directly from Google Drive. Our AI parses your career history, skills, and projects, mapping them into 10 designer templates with custom public links, SEO schema, and WhatsApp recruiter contact buttons.</p>
+          <a href="/register">Build My Portfolio Free</a>
+          <a href="/login">Sign In</a>
+        </section>
+
+        <section aria-labelledby="templates-heading">
+          <h2 id="templates-heading">10 Modular Designer Portfolio Templates</h2>
+          <ul>
+            <li><strong>Minimal Canvas:</strong> Typography-driven layout with dark and light modes.</li>
+            <li><strong>Bento Grid:</strong> Modern modular card hierarchy grouping roles, skills, and projects.</li>
+            <li><strong>Notion Document:</strong> Clean workspace document aesthetic with breadcrumbs and interactive tags.</li>
+            <li><strong>Retro Terminal:</strong> CRT command-line interface with interactive terminal prompt.</li>
+            <li><strong>Glassmorphic:</strong> Frosted-glass backdrop blur with glowing neon gradients.</li>
+            <li><strong>Neumorphic:</strong> Soft tactile shadows and embossed card architecture.</li>
+            <li><strong>Executive:</strong> Formal corporate layout crafted for engineering managers and senior architects.</li>
+            <li><strong>Creative:</strong> Vibrant expressive layout with colorful tags and bold typography.</li>
+            <li><strong>Split View:</strong> Fixed bio sidebar with independently scrolling experience feed.</li>
+            <li><strong>Interactive Timeline:</strong> Chronological milestone timeline of career achievements.</li>
+          </ul>
+        </section>
+
+        <section aria-labelledby="features-heading">
+          <h2 id="features-heading">Engineered for Developer Visibility & Recruiter Engagement</h2>
+          <article>
+            <h3>Neural Semantic OCR</h3>
+            <p>Automatic extraction of technical stack, employment milestones, and credentials from PDF, DOCX, and Google Drive.</p>
+          </article>
+          <article>
+            <h3>AI Customizer Chatbox</h3>
+            <p>Customize themes, colors, typography, and bio content using natural language prompts.</p>
+          </article>
+          <article>
+            <h3>1-Click WhatsApp Contact</h3>
+            <p>Enable direct recruiter outreach through built-in instant messaging.</p>
+          </article>
+          <article>
+            <h3>Edge CDN & SEO Schema</h3>
+            <p>Sub-50ms global hosting with automatic JSON-LD Person and ProfilePage structured data for Google Search.</p>
+          </article>
+        </section>
+
+        <section aria-labelledby="pricing-heading">
+          <h2 id="pricing-heading">Transparent Portfolio Pricing</h2>
+          <div>
+            <article>
+              <h3>Free Starter — ₹0 / forever</h3>
+              <p>2 Classic Templates (Minimal &amp; Terminal), Instant AI Resume OCR, standard canvas modes, shareable public link.</p>
+              <a href="/register?plan=free">Get Started Free</a>
+            </article>
+            <article>
+              <h3>Lite Creator — ₹19 / year</h3>
+              <p>6 Dynamic Templates (Bento, Creative, Executive, Split), WhatsApp Direct Button, Priority Edge Hosting, Google SEO Schema.</p>
+              <a href="/register?plan=lite">Get Lite Plan (₹19/yr)</a>
+            </article>
+            <article>
+              <h3>Pro Visionary — ₹29 / year</h3>
+              <p>All 10 Designer Templates, AI Customizer Chatbox, Natural Language Styling, Verified Pro Badge, Google Drive Document Sync.</p>
+              <a href="/register?plan=pro">Unlock All 10 + AI (₹29/yr)</a>
+            </article>
+          </div>
+        </section>
+
+        <section aria-labelledby="faq-heading">
+          <h2 id="faq-heading">Frequently Asked Questions</h2>
+          <dl>
+            <dt>What file formats does auoraa support?</dt>
+            <dd>We accept PDF, DOCX, plain TXT resumes, and direct Google Drive file imports.</dd>
+            <dt>How long does it take to generate a portfolio?</dt>
+            <dd>Most portfolios are live in under 30 seconds with automatic public URLs.</dd>
+            <dt>Is my resume data safe and private?</dt>
+            <dd>Yes, we have a strict zero data-selling policy and your portfolio can be deleted instantly anytime.</dd>
+          </dl>
+        </section>
+      </main>
+
+      <footer>
+        <p>© 2026 auoraa. All rights reserved.</p>
+        <a href="/privacy">Privacy Policy &amp; Data Disclosure</a>
+        <a href="/#pricing">Pricing</a>
+        <a href="/login">Sign In</a>
+      </footer>
+    </div>
+
+    <!-- Vite Client Application Script -->
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

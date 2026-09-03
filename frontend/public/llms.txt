@@ -1,0 +1,52 @@
+# auoraa — AI Portfolio Builder & Developer Resume to Website
+
+> auoraa is an AI-powered visual web development platform that converts software developer resumes (PDF, DOCX, TXT, or Google Drive) into recruiter-ready, responsive, interactive web portfolios in under 30 seconds.
+
+## Website & Links
+- Website: https://portfolio-builder-six-jet.vercel.app/
+- Public Portfolios: https://portfolio-builder-six-jet.vercel.app/p/:username/:portfolioId
+- Pricing: https://portfolio-builder-six-jet.vercel.app/#pricing
+- Privacy Policy: https://portfolio-builder-six-jet.vercel.app/privacy
+- Source Code & GitHub: https://github.com/2411Aditya/Portfolio-Builder
+
+## Key Capabilities & Features
+- **Neural Semantic Resume Parsing**: Automatically extracts candidate name, title, bio, technical skills, employment history, featured projects, certifications, and contact details from uploaded resumes or Google Drive.
+- **10 Modular Designer Templates**:
+  1. *Minimal*: Clean typography-driven portfolio with dark and light canvas modes.
+  2. *Bento Grid*: Modern modular card hierarchy grouping roles, skills, and projects.
+  3. *Notion Document*: Clean workspace document aesthetic with breadcrumbs and toggles.
+  4. *Retro Terminal*: CRT command-line interface with interactive terminal prompt.
+  5. *Glassmorphic*: Frosted-glass backdrop blur with glowing neon gradients.
+  6. *Neumorphic*: Soft tactile shadows, clean embossed card architecture.
+  7. *Executive*: Formal corporate layout crafted for engineering managers and architects.
+  8. *Creative*: Vibrant expressive layout with colorful tags and bold headings.
+  9. *Split View*: Fixed bio left sidebar with independently scrolling experience feed.
+  10. *Interactive Timeline*: Chronological milestone timeline of career achievements.
+- **AI Customizer Chatbox (Pro Tier)**: Natural language visual tuning allowing users to adjust color palettes, typography, headline styling, and resume bio refinements using plain text prompts.
+- **1-Click WhatsApp Direct Contact**: Embedded direct messaging button for instant recruiter outreach.
+- **Global Edge CDN Hosting**: Every portfolio gets a shareable public URL at `/p/username/id` hosted with sub-50ms latency.
+- **Automated Technical SEO & Schema**: Pre-configured `schema.org/Person`, `schema.org/ProfilePage`, and `BreadcrumbList` JSON-LD rich snippets with complete OpenGraph social share cards.
+
+## Pricing Plans
+- **Free Starter (₹0 / forever)**:
+  - 2 Classic Templates (Minimal & Terminal)
+  - Instant AI Resume OCR & Extraction
+  - Dark & Light Canvas Modes
+  - Shareable Public URL (`/p/username/id`)
+  - Unlimited Profile Visits
+- **Lite Creator (₹19 / year)**:
+  - 6 Dynamic Templates (Bento Grid, Creative, Executive, Split View, Minimal, Terminal)
+  - WhatsApp Direct Recruiter Contact Button
+  - Priority Global Edge CDN Hosting
+  - Google SEO Schema & Rich Snippets
+- **Pro Visionary (₹29 / year)**:
+  - Full Access to All 10 Designer Templates
+  - AI Customizer Chatbox (Natural Language Styling & Bio Refinement)
+  - Custom Color & Typography Palette Tuning
+  - Verified Pro Badge on Live Public Link
+  - Google Drive Document Sync
+
+## Security & Data Governance
+- Zero third-party data selling or monetization of resume contents.
+- Portfolios can be updated or deleted instantly with permanent immediate link expiration.
+- Secure JWT authentication and automated HTTPS encryption.
