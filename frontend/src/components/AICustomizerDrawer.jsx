@@ -230,7 +230,7 @@ export default function AICustomizerDrawer({
               fontWeight: 700,
             }}
           >
-            <Sparkles size={16} /> Upgrade to Pro (₹299)
+            <Sparkles size={16} /> Upgrade to Pro (₹29/mo)
           </button>
         </div>
       ) : (

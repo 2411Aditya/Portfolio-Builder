@@ -68,7 +68,7 @@ export default function LoginPage() {
               {selectedPlan === 'pro' ? <Sparkles size={16} style={{ color: '#a855f7' }} /> : <ShieldCheck size={16} style={{ color: '#0284c7' }} />}
               <div>
                 <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--color-ink)' }}>
-                  Selected: {selectedPlan === 'pro' ? 'Pro Visionary (₹29/yr)' : 'Lite Creator (₹19/yr)'}
+                  Selected: {selectedPlan === 'pro' ? 'Pro Visionary (₹29/mo)' : 'Lite Creator (₹19/mo)'}
                 </div>
                 <div style={{ fontSize: 11, color: 'var(--color-mute)' }}>Proceed to Razorpay after sign in</div>
               </div>

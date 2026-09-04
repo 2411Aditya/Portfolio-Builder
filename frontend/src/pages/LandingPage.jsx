@@ -31,7 +31,7 @@ const faqs = [
   },
   {
     q: 'What are the pricing options?',
-    a: 'We offer Free Forever (₹0 with 2 classic templates), Lite Creator (₹19/year with 6 dynamic templates & WhatsApp button), and Pro Visionary (₹29/year with all 10 templates, AI Customizer, and verified badge).'
+    a: 'We offer Free Forever (₹0 with 2 classic templates), Lite Creator (₹19/month with 6 dynamic templates & WhatsApp button), and Pro Visionary (₹29/month with all 10 templates, AI Customizer, and verified badge).'
   },
   {
     q: 'Is my data private and secure?',
@@ -789,7 +789,7 @@ export default function LandingPage() {
                   <p className="pricing-desc">Dynamic modern layouts to captivate recruiters.</p>
                   <div className="pricing-price-wrap">
                     <span className="pricing-price">₹19</span>
-                    <span className="pricing-period">/ year</span>
+                    <span className="pricing-period">/ month</span>
                   </div>
                 </div>
                 <ul className="pricing-features" style={{ margin: '20px 0' }}>
@@ -805,7 +805,7 @@ export default function LandingPage() {
                   className="button-primary"
                   style={{ width: '100%', justifyContent: 'center', padding: '12px', background: '#0284c7', borderColor: '#0284c7' }}
                 >
-                  Get Lite Plan (₹19/yr)
+                  Get Lite Plan (₹19/mo)
                 </button>
               </div>
 
@@ -820,7 +820,7 @@ export default function LandingPage() {
                   <p className="pricing-desc">Full suite of 10 templates with AI Customizer Chatbox.</p>
                   <div className="pricing-price-wrap">
                     <span className="pricing-price">₹29</span>
-                    <span className="pricing-period">/ year</span>
+                    <span className="pricing-period">/ month</span>
                   </div>
                 </div>
                 <ul className="pricing-features" style={{ margin: '20px 0' }}>
@@ -836,7 +836,7 @@ export default function LandingPage() {
                   className="button-primary"
                   style={{ width: '100%', justifyContent: 'center', padding: '14px', fontSize: 15, background: 'linear-gradient(135deg, #a855f7, #6366f1)', border: 'none' }}
                 >
-                  <Sparkles size={16} /> Unlock All 10 + AI (₹29/yr)
+                  <Sparkles size={16} /> Unlock All 10 + AI (₹29/mo)
                 </button>
               </div>
 

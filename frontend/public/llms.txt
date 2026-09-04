@@ -34,12 +34,12 @@
   - Dark & Light Canvas Modes
   - Shareable Public URL (`/p/username/id`)
   - Unlimited Profile Visits
-- **Lite Creator (₹19 / year)**:
+- **Lite Creator (₹19 / month)**:
   - 6 Dynamic Templates (Bento Grid, Creative, Executive, Split View, Minimal, Terminal)
   - WhatsApp Direct Recruiter Contact Button
   - Priority Global Edge CDN Hosting
   - Google SEO Schema & Rich Snippets
-- **Pro Visionary (₹29 / year)**:
+- **Pro Visionary (₹29 / month)**:
   - Full Access to All 10 Designer Templates
   - AI Customizer Chatbox (Natural Language Styling & Bio Refinement)
   - Custom Color & Typography Palette Tuning
