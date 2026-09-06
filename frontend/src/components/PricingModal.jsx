@@ -20,6 +20,22 @@ export default function PricingModal({
 
   const currentTier = profile?.plan_tier || 'free';
 
+  // Always reset success state & errors whenever modal is freshly opened
+  useEffect(() => {
+    if (isOpen && !autoTrigger) {
+      setSuccessTier(null);
+      setError('');
+      setProcessingTier(null);
+    }
+  }, [isOpen, autoTrigger]);
+
+  const handleModalClose = () => {
+    setSuccessTier(null);
+    setError('');
+    setProcessingTier(null);
+    onClose();
+  };
+
   const PLANS = [
     {
       id: 'free',
@@ -34,7 +50,7 @@ export default function PricingModal({
         'Instant Public URL (/p/username/id)',
         'Unlimited Profile Views',
       ],
-      cta: currentTier === 'free' ? 'Current Plan' : 'Free Tier',
+      cta: currentTier === 'free' ? 'Current Plan' : 'Free Starter',
       disabled: true,
       popular: false,
     },
@@ -52,7 +68,7 @@ export default function PricingModal({
         'Priority Public CDN Hosting',
         'Direct WhatsApp & Social Links',
       ],
-      cta: currentTier === 'lite' ? 'Current Plan' : 'Upgrade to Lite (₹19/mo)',
+      cta: currentTier === 'lite' ? 'Current Plan' : currentTier === 'pro' ? 'Included in Pro' : 'Upgrade to Lite (₹19/mo)',
       disabled: currentTier === 'lite' || currentTier === 'pro',
       popular: false,
       badge: 'POPULAR CHOICE',
@@ -72,7 +88,7 @@ export default function PricingModal({
         'Verified Pro Badge on Live Link',
         'SEO Rich Snippets & JSON-LD Schemas',
       ],
-      cta: currentTier === 'pro' ? 'Current Plan' : 'Unlock All 10 + AI (₹29/mo)',
+      cta: currentTier === 'pro' ? 'Current Plan' : currentTier === 'lite' ? 'Upgrade to Pro (₹29/mo)' : 'Unlock All 10 + AI (₹29/mo)',
       disabled: currentTier === 'pro',
       popular: true,
       badge: 'BEST VALUE • UNLIMITED AI',
@@ -102,7 +118,7 @@ export default function PricingModal({
         amount: orderData.amount,
         currency: orderData.currency || 'INR',
         name: 'auoraa Builder',
-        description: `${tierId.toUpperCase()} Lifetime Plan Upgrade`,
+        description: `${tierId.toUpperCase()} 1-Month Plan Upgrade`,
         order_id: orderData.orderId.startsWith('order_mock') ? undefined : orderData.orderId,
         prefill: {
           name: userName,
@@ -160,20 +176,20 @@ export default function PricingModal({
 
   // Automatically trigger checkout popup if autoTrigger prop is passed
   useEffect(() => {
-    if (isOpen && autoTrigger && initialTier && initialTier !== 'free' && !processingTier && !successTier) {
+    if (isOpen && autoTrigger && initialTier && initialTier !== 'free' && initialTier !== currentTier && !processingTier && !successTier) {
       const timer = setTimeout(() => {
         handleCheckout(initialTier);
       }, 300);
       return () => clearTimeout(timer);
     }
-  }, [isOpen, autoTrigger, initialTier]);
+  }, [isOpen, autoTrigger, initialTier, currentTier]);
 
   if (!isOpen) return null;
 
   return (
     <div
       className="modal-overlay"
-      onClick={onClose}
+      onClick={handleModalClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="pricing-modal-title"
@@ -211,7 +227,7 @@ export default function PricingModal({
         {/* Close Button */}
         <button
           type="button"
-          onClick={onClose}
+          onClick={handleModalClose}
           style={{
             position: 'absolute',
             top: 20,
@@ -261,7 +277,7 @@ export default function PricingModal({
             <button
               type="button"
               className="button-primary"
-              onClick={onClose}
+              onClick={handleModalClose}
               style={{ padding: '12px 32px', fontSize: 15, borderRadius: 12 }}
             >
               Start Customizing

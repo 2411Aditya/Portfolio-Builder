@@ -29,6 +29,14 @@ export default function PersonalInfoView({ user, profile, portfoliosCount, onOpe
     );
   };
 
+  const expiryDate = profile?.subscription_expires_at
+    ? new Date(profile.subscription_expires_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    : null;
+
+  const daysRemaining = profile?.subscription_expires_at
+    ? Math.max(0, Math.ceil((new Date(profile.subscription_expires_at) - new Date()) / (1000 * 60 * 60 * 24)))
+    : null;
+
   return (
     <div style={{ maxWidth: 900, margin: '0 auto', animation: 'fadeIn 0.25s ease' }}>
       {/* Page Header */}
@@ -124,6 +132,14 @@ export default function PersonalInfoView({ user, profile, portfoliosCount, onOpe
                   {userTier === 'pro' ? 'Enabled' : 'Requires Pro'}
                 </span>
               </div>
+              {userTier !== 'free' && expiryDate && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 14px', background: '#faf5ff', borderRadius: 8, border: '1px solid #e9d5ff' }}>
+                  <span style={{ fontSize: 13, color: '#6b21a8', fontWeight: 600 }}>1-Month Plan Validity</span>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: '#7e22ce' }}>
+                    {daysRemaining > 0 ? `${daysRemaining} days left (until ${expiryDate})` : 'Expires today'}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 

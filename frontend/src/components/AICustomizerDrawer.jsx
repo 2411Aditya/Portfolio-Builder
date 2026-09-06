@@ -98,20 +98,14 @@ export default function AICustomizerDrawer({
 
   return (
     <div
+      className="ai-customizer-drawer"
       style={{
-        position: 'fixed',
-        top: 0,
-        right: 0,
-        bottom: 0,
         width: '100%',
-        maxWidth: 440,
+        height: '100%',
         backgroundColor: '#0f172a',
         color: '#f8fafc',
-        boxShadow: '-10px 0 30px rgba(0, 0, 0, 0.5)',
-        zIndex: 9998,
         display: 'flex',
         flexDirection: 'column',
-        borderLeft: '1px solid rgba(255, 255, 255, 0.1)',
         fontFamily: "'Inter', sans-serif",
       }}
     >

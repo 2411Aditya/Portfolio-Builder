@@ -10,14 +10,20 @@ import PricingModal from '../components/PricingModal';
 import logoImg from '../assets/Logo.png';
 
 /* ── Floating "Built with" badge ── */
-function BuiltWithBadge({ theme }) {
+function BuiltWithBadge({ theme, isDrawerOpen }) {
   return (
     <Link
       to="/"
       className={`built-with-badge${theme === 'dark' ? ' dark-theme' : ''}`}
       title="Built with auoraa"
       aria-label="Built with auoraa"
-      style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 6,
+        right: isDrawerOpen ? '460px' : '20px',
+        transition: 'right 0.35s cubic-bezier(0.4, 0, 0.2, 1), transform 0.15s ease, background-color 0.2s ease',
+      }}
     >
       <img src={logoImg} alt="auoraa Logo" style={{ height: 16, width: 'auto', objectFit: 'contain', borderRadius: 3 }} />
       <span>Built with auoraa</span>
@@ -165,7 +171,7 @@ export default function PortfolioViewerPage() {
   };
 
   return (
-    <>
+    <div className="portfolio-viewer-container">
       <SEO
         title={pageTitle}
         description={pageDescription}
@@ -184,17 +190,19 @@ export default function PortfolioViewerPage() {
         schema={[personSchema, profilePageSchema, breadcrumbSchema]}
       />
 
+      {/* Left Pane: Portfolio Website Viewport */}
+      <div className={`portfolio-viewer-layout ${drawerOpen ? 'drawer-open' : ''}`}>
+        <TemplateComponent
+          data={portfolio.data}
+          theme={portfolio.theme}
+          customStyles={customStyles}
+          meta={{ title: portfolio.title, owner: portfolio.owner }}
+        />
+        <BuiltWithBadge theme={portfolio.theme} isDrawerOpen={drawerOpen} />
+      </div>
 
-      {/* Render Selected Dynamic Template */}
-      <TemplateComponent
-        data={portfolio.data}
-        theme={portfolio.theme}
-        customStyles={customStyles}
-        meta={{ title: portfolio.title, owner: portfolio.owner }}
-      />
-
-      {/* Floating AI Customizer Button (if owner is viewing) */}
-      {isOwner && (
+      {/* Floating AI Customizer Button (when drawer is closed) */}
+      {isOwner && !drawerOpen && (
         <button
           type="button"
           onClick={() => setDrawerOpen(true)}
@@ -224,19 +232,23 @@ export default function PortfolioViewerPage() {
         </button>
       )}
 
-      {/* AI Customizer Drawer */}
-      <AICustomizerDrawer
-        isOpen={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        portfolioId={portfolio.id}
-        portfolioData={portfolio.data}
-        currentCustomStyles={customStyles}
-        onApplyStyles={handleApplyStyles}
-        onOpenPricing={(tier) => {
-          setPricingTier(tier || 'pro');
-          setPricingOpen(true);
-        }}
-      />
+      {/* Right Pane: AI Customizer Split Panel */}
+      {drawerOpen && (
+        <div className="portfolio-viewer-ai-panel">
+          <AICustomizerDrawer
+            isOpen={drawerOpen}
+            onClose={() => setDrawerOpen(false)}
+            portfolioId={portfolio.id}
+            portfolioData={portfolio.data}
+            currentCustomStyles={customStyles}
+            onApplyStyles={handleApplyStyles}
+            onOpenPricing={(tier) => {
+              setPricingTier(tier || 'pro');
+              setPricingOpen(true);
+            }}
+          />
+        </div>
+      )}
 
       {/* Pricing Modal */}
       <PricingModal
@@ -244,8 +256,6 @@ export default function PortfolioViewerPage() {
         onClose={() => setPricingOpen(false)}
         initialTier={pricingTier}
       />
-
-      <BuiltWithBadge theme={portfolio.theme} />
-    </>
+    </div>
   );
 }

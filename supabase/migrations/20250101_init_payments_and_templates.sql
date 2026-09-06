@@ -11,6 +11,8 @@ CREATE TABLE IF NOT EXISTS public.profiles (
     plan_tier TEXT NOT NULL DEFAULT 'free' CHECK (plan_tier IN ('free', 'lite', 'pro')),
     subscription_status TEXT NOT NULL DEFAULT 'inactive' CHECK (subscription_status IN ('inactive', 'active')),
     razorpay_customer_id TEXT,
+    subscribed_at TIMESTAMPTZ,
+    subscription_expires_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now()),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now())
 );
@@ -28,6 +30,14 @@ BEGIN
 
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='profiles' AND column_name='razorpay_customer_id') THEN
         ALTER TABLE public.profiles ADD COLUMN razorpay_customer_id TEXT;
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='profiles' AND column_name='subscribed_at') THEN
+        ALTER TABLE public.profiles ADD COLUMN subscribed_at TIMESTAMPTZ;
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='profiles' AND column_name='subscription_expires_at') THEN
+        ALTER TABLE public.profiles ADD COLUMN subscription_expires_at TIMESTAMPTZ;
     END IF;
 END $$;
 

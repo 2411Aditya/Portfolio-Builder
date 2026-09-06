@@ -73,15 +73,48 @@ serve(async (req) => {
       }
 
       if (userId && planTier) {
-        // Update User Profile with new plan tier
+        const now = new Date();
+        const expiresAt = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000); // 30 days validity
+
+        // Update User Profile with new plan tier and expiry dates
         await supabaseAdmin
           .from('profiles')
           .update({
             plan_tier: planTier,
             subscription_status: 'active',
+            subscribed_at: now.toISOString(),
+            subscription_expires_at: expiresAt.toISOString(),
+            updated_at: now.toISOString(),
+          })
+          .eq('id', userId);
+      }
+    } else if (
+      event === 'subscription.expired' ||
+      event === 'subscription.cancelled' ||
+      event === 'subscription.halted'
+    ) {
+      const subscriptionEntity = payload.payload?.subscription?.entity || {};
+      const customerId = subscriptionEntity.customer_id;
+      const userId = subscriptionEntity.notes?.userId;
+
+      if (userId) {
+        await supabaseAdmin
+          .from('profiles')
+          .update({
+            plan_tier: 'free',
+            subscription_status: 'inactive',
             updated_at: new Date().toISOString(),
           })
           .eq('id', userId);
+      } else if (customerId) {
+        await supabaseAdmin
+          .from('profiles')
+          .update({
+            plan_tier: 'free',
+            subscription_status: 'inactive',
+            updated_at: new Date().toISOString(),
+          })
+          .eq('razorpay_customer_id', customerId);
       }
     }
 

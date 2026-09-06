@@ -23,6 +23,34 @@ export function AuthProvider({ children }) {
         .single();
 
       if (data) {
+        // Automatic 1-month subscription expiry verification
+        if (data.subscription_status === 'active' && data.subscription_expires_at) {
+          const isExpired = new Date(data.subscription_expires_at) < new Date();
+          if (isExpired) {
+            // Downgrade locally to free tier
+            const downgraded = {
+              ...data,
+              plan_tier: 'free',
+              subscription_status: 'inactive',
+            };
+            setProfile(downgraded);
+
+            // Persist downgrade to Supabase
+            try {
+              await supabase
+                .from('profiles')
+                .update({
+                  plan_tier: 'free',
+                  subscription_status: 'inactive',
+                  updated_at: new Date().toISOString(),
+                })
+                .eq('id', userId);
+            } catch (updateErr) {
+              console.warn('Could not persist profile downgrade to Supabase:', updateErr);
+            }
+            return;
+          }
+        }
         setProfile(data);
       } else if (error && error.code === 'PGRST116') {
         // Profile doesn't exist yet, create default free starter profile

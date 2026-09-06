@@ -62,18 +62,23 @@ export async function createRazorpayOrder(planTier) {
 }
 
 /**
- * Handle successful payment verification and update user profile tier
+ * Handle successful payment verification and update user profile tier with 30-day expiry
  */
 export async function verifyAndUpgradeTier(planTier, paymentDetails = {}) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { success: true, planTier };
+
+  const now = new Date();
+  const expiresAt = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000); // 30 days validity
 
   const { error } = await supabase
     .from('profiles')
     .update({
       plan_tier: planTier,
       subscription_status: 'active',
-      updated_at: new Date().toISOString(),
+      subscribed_at: now.toISOString(),
+      subscription_expires_at: expiresAt.toISOString(),
+      updated_at: now.toISOString(),
     })
     .eq('id', user.id);
 
@@ -81,5 +86,10 @@ export async function verifyAndUpgradeTier(planTier, paymentDetails = {}) {
     console.warn('Could not update profile directly (RLS or table):', error.message);
   }
 
-  return { success: true, planTier };
+  return {
+    success: true,
+    planTier,
+    subscribed_at: now.toISOString(),
+    subscription_expires_at: expiresAt.toISOString(),
+  };
 }
