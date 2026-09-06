@@ -423,9 +423,9 @@ export default function PrivacyPage() {
               <Mail size={18} style={{ color: 'var(--color-ink)', flexShrink: 0, marginTop: 2 }} />
               <div>
                 <strong>auoraa Privacy & Data Compliance Office</strong><br />
-                Email: <a href="mailto:privacy@portfolio-builder.app" style={{ color: 'var(--color-brand)' }}>privacy@portfolio-builder.app</a><br />
-                Support & Billing: <a href="mailto:support@portfolio-builder.app" style={{ color: 'var(--color-brand)' }}>support@portfolio-builder.app</a><br />
-                Location: Bangalore, India / Global Cloud Infrastructure
+                Email: <a href="mailto:adityakulkarni2411@gmail.com" style={{ color: 'var(--color-brand)' }}>adityakulkarni2411@gmail.com</a><br />
+                Support & Billing: <a href="mailto:adityakulkarni2411@gmail.com" style={{ color: 'var(--color-brand)' }}>adityakulkarni2411@gmail.com</a><br />
+                Location: Pune, Maharashtra, India / Global Cloud Infrastructure
               </div>
             </div>
           </section>
