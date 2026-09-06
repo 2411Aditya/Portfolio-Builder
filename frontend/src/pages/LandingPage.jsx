@@ -886,7 +886,7 @@ export default function LandingPage() {
             <p className="body-sm">The visual web development platform for developer portfolios.</p>
           </div>
           <div className="footer-links">
-            <a href="#pricing">Pricing & Free Trial</a>
+            <a href="#pricing">Pricing & Plans</a>
             <Link to="/privacy">Privacy Policy & Disclosures</Link>
             <button
               type="button"
