@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
-  Upload, HardDrive, Monitor, Zap, Moon, Sun, Copy, ExternalLink,
+  Upload, Zap, Moon, Sun, Copy, ExternalLink,
   CheckCircle, AlertCircle, Loader2, X, Check, Lock, Palette, FileText
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -9,7 +9,6 @@ import * as api from '../api/client';
 import SEO from '../components/SEO';
 import PricingModal from '../components/PricingModal';
 import DashboardNavbar from '../components/DashboardNavbar';
-import GoogleDriveModal from '../components/GoogleDriveModal';
 import PersonalInfoView from './dashboard/PersonalInfoView';
 import ActiveLinksView from './dashboard/ActiveLinksView';
 import AboutUsView from './dashboard/AboutUsView';
@@ -54,7 +53,6 @@ export default function DashboardPage() {
   const [pricingOpen, setPricingOpen] = useState(false);
   const [targetTierForUpgrade, setTargetTierForUpgrade] = useState('pro');
   const [autoTriggerCheckout, setAutoTriggerCheckout] = useState(false);
-  const [googleDriveOpen, setGoogleDriveOpen] = useState(false);
   const autoCheckoutTriggeredRef = useRef(false);
 
   const fileInputRef = useRef(null);
@@ -235,7 +233,7 @@ export default function DashboardPage() {
               <div className="sketch-upload-header">
                 <h2 className="sketch-upload-title">Upload</h2>
                 <p className="sketch-upload-subtitle">
-                  Select your resume from PC or Google Drive to generate your instant portfolio.
+                  Select or drop your resume file to generate your instant portfolio.
                 </p>
               </div>
 
@@ -280,7 +278,7 @@ export default function DashboardPage() {
                 </div>
               )}
 
-              {/* Upload Source Buttons Row: [From Pc] [Google drive] */}
+              {/* Hidden File Input */}
               <input
                 ref={fileInputRef}
                 id="resume-file-input"
@@ -289,28 +287,6 @@ export default function DashboardPage() {
                 style={{ display: 'none' }}
                 onChange={onFileChange}
               />
-
-              <div className="sketch-source-buttons-row">
-                <button
-                  type="button"
-                  id="upload-from-pc-btn"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="sketch-source-btn"
-                >
-                  <Monitor size={18} />
-                  <span>From Pc</span>
-                </button>
-
-                <button
-                  type="button"
-                  id="upload-from-gdrive-btn"
-                  onClick={() => setGoogleDriveOpen(true)}
-                  className="sketch-source-btn gdrive"
-                >
-                  <HardDrive size={18} />
-                  <span>Google drive</span>
-                </button>
-              </div>
 
               {/* Drag & Drop Zone or Selected File Preview */}
               <div
@@ -539,15 +515,6 @@ export default function DashboardPage() {
           />
         )}
       </main>
-
-      {/* ── Google Drive Import Modal ── */}
-      <GoogleDriveModal
-        isOpen={googleDriveOpen}
-        onClose={() => setGoogleDriveOpen(false)}
-        onFileSelect={(importedFile) => {
-          validateAndSetFile(importedFile);
-        }}
-      />
 
       {/* ── Razorpay Pricing & Upgrade Modal ── */}
       <PricingModal
