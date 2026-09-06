@@ -70,12 +70,26 @@ export async function getHistory() {
     throw new Error(`Database error: ${error.message}`);
   }
 
-  const portfolios = (data || []).map((p) => ({
-    ...p,
-    template_id: p.template_id || 'minimal',
-    custom_styles: p.custom_styles || {},
-    public_url: `/p/${p.username}/${p.id}`,
-  }));
+  const portfolios = (data || []).map((p) => {
+    let styles = p.custom_styles || {};
+    let resumeData = p.data;
+    try {
+      const cachedStr = localStorage.getItem(`auoraa_portfolio_${p.id}`);
+      if (cachedStr) {
+        const cached = JSON.parse(cachedStr);
+        if (cached.custom_styles) styles = cached.custom_styles;
+        if (cached.data) resumeData = cached.data;
+      }
+    } catch (e) {}
+
+    return {
+      ...p,
+      template_id: p.template_id || 'minimal',
+      custom_styles: styles,
+      data: resumeData,
+      public_url: `/p/${p.username}/${p.id}`,
+    };
+  });
 
   return { data: { portfolios } };
 }
@@ -84,6 +98,9 @@ export async function getHistory() {
  * Delete a portfolio from Supabase
  */
 export async function deletePortfolio(id) {
+  try {
+    localStorage.removeItem(`auoraa_portfolio_${id}`);
+  } catch (e) {}
   const { error } = await supabase.from('portfolios').delete().eq('id', id);
   if (error) {
     throw new Error(`Database error: ${error.message}`);
@@ -95,27 +112,69 @@ export async function deletePortfolio(id) {
  * Get public portfolio by ID (with fallback to minimal template_id and custom_styles)
  */
 export async function getPublicPortfolio(username, portfolioId) {
-  const { data, error } = await supabase
-    .from('portfolios')
-    .select('*')
-    .eq('id', portfolioId)
-    .single();
+  let dbData = null;
 
-  if (error || !data) {
-    throw new Error(error?.message || 'Portfolio not found.');
+  try {
+    const { data, error } = await supabase
+      .from('portfolios')
+      .select('*')
+      .eq('id', portfolioId)
+      .single();
+
+    if (!error && data) {
+      dbData = data;
+    }
+  } catch (e) {
+    console.warn('Database fetch warning:', e.message);
+  }
+
+  // Check LocalStorage cache fallback
+  let localCached = null;
+  try {
+    const cachedStr = localStorage.getItem(`auoraa_portfolio_${portfolioId}`);
+    if (cachedStr) {
+      localCached = JSON.parse(cachedStr);
+    }
+  } catch (e) {
+    console.warn('LocalStorage read warning:', e);
+  }
+
+  if (!dbData && !localCached) {
+    throw new Error('Portfolio not found.');
+  }
+
+  const base = dbData || {};
+
+  // Extract custom_styles with multiple fallbacks:
+  // 1. localCached.custom_styles
+  // 2. base.custom_styles
+  // 3. base.data?._custom_styles
+  let resolvedStyles = {};
+  if (localCached && localCached.custom_styles && Object.keys(localCached.custom_styles).length > 0) {
+    resolvedStyles = localCached.custom_styles;
+  } else if (base.custom_styles && Object.keys(base.custom_styles).length > 0) {
+    resolvedStyles = base.custom_styles;
+  } else if (base.data?._custom_styles && Object.keys(base.data._custom_styles).length > 0) {
+    resolvedStyles = base.data._custom_styles;
+  }
+
+  // Extract resume data
+  let resolvedData = base.data || {};
+  if (localCached && localCached.data) {
+    resolvedData = localCached.data;
   }
 
   return {
     data: {
-      id: data.id,
-      user_id: data.user_id,
-      title: data.title,
-      theme: data.theme || 'dark',
-      template_id: data.template_id || 'minimal',
-      custom_styles: data.custom_styles || {},
-      data: data.data,
-      created_at: data.created_at,
-      owner: data.username,
+      id: base.id || portfolioId,
+      user_id: base.user_id,
+      title: base.title,
+      theme: base.theme || 'dark',
+      template_id: base.template_id || 'minimal',
+      custom_styles: resolvedStyles,
+      data: resolvedData,
+      created_at: base.created_at,
+      owner: base.username || username,
     },
   };
 }
@@ -124,21 +183,70 @@ export async function getPublicPortfolio(username, portfolioId) {
  * Update portfolio custom styles
  */
 export async function updatePortfolioStyles(portfolioId, customStyles) {
-  const { data, error } = await supabase
-    .from('portfolios')
-    .update({
-      custom_styles: customStyles,
-      updated_at: new Date().toISOString(),
-    })
-    .eq('id', portfolioId)
-    .select()
-    .single();
+  return updatePortfolioStylesAndData(portfolioId, customStyles, undefined);
+}
 
-  if (error) {
-    throw new Error(`Failed to update custom styles: ${error.message}`);
+/**
+ * Update portfolio custom styles and/or resume JSON data
+ */
+export async function updatePortfolioStylesAndData(portfolioId, customStyles, resumeData) {
+  if (!portfolioId) return null;
+
+  // 1. Instant local persistence caching
+  try {
+    const cachedStr = localStorage.getItem(`auoraa_portfolio_${portfolioId}`);
+    const cached = cachedStr ? JSON.parse(cachedStr) : {};
+    if (customStyles !== undefined) cached.custom_styles = customStyles;
+    if (resumeData !== undefined) cached.data = resumeData;
+    localStorage.setItem(`auoraa_portfolio_${portfolioId}`, JSON.stringify(cached));
+  } catch (e) {
+    console.warn('LocalStorage save notice:', e);
   }
 
-  return data;
+  // 2. Prepare merged data with embedded _custom_styles fallback
+  let payloadData = resumeData;
+  if (customStyles !== undefined) {
+    payloadData = {
+      ...(resumeData || {}),
+      _custom_styles: customStyles,
+    };
+  }
+
+  // 3. Persistent Supabase cloud update
+  const payload = {
+    updated_at: new Date().toISOString(),
+  };
+  if (customStyles !== undefined) {
+    payload.custom_styles = customStyles;
+  }
+  if (payloadData !== undefined) {
+    payload.data = payloadData;
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('portfolios')
+      .update(payload)
+      .eq('id', portfolioId);
+
+    if (error) {
+      console.warn('Supabase update with custom_styles column notice:', error.message);
+      // Fallback: If custom_styles column is missing in Supabase, update data JSON only
+      if (payloadData !== undefined) {
+        await supabase
+          .from('portfolios')
+          .update({
+            data: payloadData,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', portfolioId);
+      }
+    }
+    return data;
+  } catch (err) {
+    console.warn('Supabase update exception:', err.message);
+  }
+  return null;
 }
 
 /**
@@ -161,3 +269,4 @@ export async function updatePortfolioTemplate(portfolioId, templateId) {
 
   return data;
 }
+

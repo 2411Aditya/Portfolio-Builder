@@ -1,70 +1,53 @@
 import { supabase } from '../lib/supabase';
+import { updatePortfolioStylesAndData } from '../api/client';
 
 const SYSTEM_PROMPT = `You are an elite portfolio designer and copywriter AI.
-Given a user's current portfolio data, current custom styles, and natural language instructions, generate strict JSON modifications that refine their portfolio aesthetic and copy.
+Given a user's current portfolio data, current custom styles, and natural language instructions, generate strict JSON modifications.
 
-CRITICAL CONSTRAINTS:
-1. Output MUST be ONLY valid JSON matching this exact schema:
+CRITICAL PRECISION RULES:
+1. THEME & COLOR PRESERVATION (CRITICAL!):
+   - DO NOT change theme colors, background colors, or fonts unless the user EXPLICITLY asks to change colors/theme (e.g. "make it dark", "make theme emerald green", "change background to light blue").
+   - If the user asks to change DATA, TEXT, BIO, SKILLS, or CONTACT INFO:
+     * Leave "themeOverrides": {} completely EMPTY!
+     * DO NOT provide "backgroundColor", "cardBackground", or "primaryColor"!
+   - Only populate "themeOverrides" if the user prompt explicitly asks for visual color/font styling changes.
+
+2. CONTENT & DATA UPDATES:
+   - If user asks to change or remove DATA (e.g. "remove my contact number", "change my name", "add skill Docker", "rewrite my bio"):
+     * Put all resume data edits inside "dataUpdates".
+     * To remove phone/whatsapp: set "contact": { "phone": "", "whatsapp": "" } in "dataUpdates".
+     * To remove a contact link: set that key to "" in "dataUpdates.contact".
+     * To remove or update skills: provide the updated array in "dataUpdates.skills".
+     * To update name/title/bio: provide "name", "title", "bio" in "dataUpdates".
+
+3. STRICT JSON SCHEMA:
 {
-  "themeOverrides": {
-    "primaryColor": "hex string (e.g. #10b981)",
-    "fontFamily": "font family string (e.g. 'Space Grotesk', 'Outfit', 'Inter', 'Playfair Display', 'Plus Jakarta Sans')",
-    "accentGlow": "glow color (e.g. rgba(16,185,129,0.35))",
-    "backgroundColor": "dark or light hex color (e.g. #090d16 or #f8fafc)",
-    "cardBackground": "card hex color (e.g. #131b2e or #ffffff)"
+  "themeOverrides": {}, 
+  "contentRefinements": {}, 
+  "customSections": [], 
+  "dataUpdates": {
+    "name": "optional",
+    "title": "optional",
+    "bio": "optional",
+    "skills": ["optional"],
+    "projects": [ ... ],
+    "experience": [ ... ],
+    "education": [ ... ],
+    "certifications": [ ... ],
+    "contact": { "phone": "", "whatsapp": "", "email": "", "github": "", "linkedin": "", "website": "" }
   },
-  "contentRefinements": {
-    "headline": "Elevated punchy headline or full name",
-    "bio": "Compelling, refined 2-3 sentence bio tailored to the request",
-    "highlightedSkills": ["skill1", "skill2", "skill3"]
-  },
-  "customSections": [
-    {
-      "title": "Section Title (e.g. Strategic Impact, Cloud Architecture)",
-      "content": "Detailed custom paragraph or achievements."
-    }
-  ]
+  "summary": "Short 1-sentence friendly confirmation of what was changed"
 }
 
-2. STRICTLY NO raw HTML tags, NO raw CSS strings, NO markdown code blocks, NO text commentary outside the JSON.
-3. If the prompt is vague (e.g. "make it look cool" or "upgrade it"), make tasteful modern enhancements suited to a senior engineer.`;
+4. STRICTLY NO raw HTML tags, NO raw CSS strings, NO markdown blocks, NO commentary outside JSON.`;
 
 /**
- * Execute AI Portfolio Customization with Strict JSON Schema
+ * Execute AI Portfolio Customization with Strict JSON Schema and Guaranteed Auto-Save
  */
 export async function customizePortfolioWithAI({ portfolioId, currentData, currentCustomStyles, prompt }) {
-  const { data: { session } } = await supabase.auth.getSession();
-  const token = session?.access_token;
-
-  // 1. Try Supabase Edge Function first
-  if (token) {
-    try {
-      const { data, error } = await supabase.functions.invoke('ai-customize-portfolio', {
-        body: {
-          portfolioId,
-          currentData,
-          currentCustomStyles,
-          prompt,
-        },
-        headers: { Authorization: `Bearer ${token}` }
-      });
-
-      if (!error && data?.customStyles) {
-        return data.customStyles;
-      }
-      if (data?.requiresUpgrade) {
-        throw new Error('AI Customizer requires a Pro Tier plan.');
-      }
-    } catch (err) {
-      if (err.message?.includes('Pro Tier')) throw err;
-      console.warn('Edge function invoke fallback to direct Gemini API:', err);
-    }
-  }
-
-  // 2. Client Gemini Fallback
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
   if (!apiKey) {
-    throw new Error('VITE_GEMINI_API_KEY is not configured.');
+    throw new Error('VITE_GEMINI_API_KEY is not configured in .env');
   }
 
   const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
@@ -77,7 +60,7 @@ export async function customizePortfolioWithAI({ portfolioId, currentData, curre
         {
           parts: [
             {
-              text: `${SYSTEM_PROMPT}\n\nPortfolio Data:\n${JSON.stringify(currentData || {})}\n\nCurrent Custom Styles:\n${JSON.stringify(currentCustomStyles || {})}\n\nUser Request:\n"${prompt}"`,
+              text: `${SYSTEM_PROMPT}\n\nPortfolio Base Data:\n${JSON.stringify(currentData || {})}\n\nCurrent Custom Styles:\n${JSON.stringify(currentCustomStyles || {})}\n\nUser Request:\n"${prompt}"`,
             },
           ],
         },
@@ -104,31 +87,81 @@ export async function customizePortfolioWithAI({ portfolioId, currentData, curre
     rawText = rawText.substring(start, end + 1);
   }
 
-  const generatedCustomStyles = JSON.parse(rawText);
+  const generatedOutput = JSON.parse(rawText);
 
-  // Merge safely
-  const merged = {
+  // Merge Custom Styles safely
+  const newTheme = (generatedOutput.themeOverrides && typeof generatedOutput.themeOverrides === 'object')
+    ? generatedOutput.themeOverrides
+    : {};
+  const newRefinements = (generatedOutput.contentRefinements && typeof generatedOutput.contentRefinements === 'object')
+    ? generatedOutput.contentRefinements
+    : {};
+
+  const mergedStyles = {
     themeOverrides: {
       ...(currentCustomStyles?.themeOverrides || {}),
-      ...(generatedCustomStyles.themeOverrides || {}),
+      ...newTheme,
     },
     contentRefinements: {
       ...(currentCustomStyles?.contentRefinements || {}),
-      ...(generatedCustomStyles.contentRefinements || {}),
+      ...newRefinements,
     },
-    customSections: generatedCustomStyles.customSections || currentCustomStyles?.customSections || [],
+    customSections: Array.isArray(generatedOutput.customSections) && generatedOutput.customSections.length > 0
+      ? generatedOutput.customSections
+      : (currentCustomStyles?.customSections || []),
   };
 
-  // If portfolioId is present, persist in Supabase
-  if (portfolioId) {
-    await supabase
-      .from('portfolios')
-      .update({
-        custom_styles: merged,
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', portfolioId);
+  // Merge Base Data safely with explicit deletion support
+  let mergedData = { ...(currentData || {}) };
+  if (generatedOutput.dataUpdates && typeof generatedOutput.dataUpdates === 'object') {
+    const updates = generatedOutput.dataUpdates;
+    if (updates.name !== undefined) mergedData.name = updates.name;
+    if (updates.title !== undefined) mergedData.title = updates.title;
+    if (updates.bio !== undefined) mergedData.bio = updates.bio;
+
+    if (Array.isArray(updates.skills)) {
+      mergedData.skills = updates.skills.filter(Boolean);
+    }
+    if (Array.isArray(updates.projects)) {
+      mergedData.projects = updates.projects;
+    }
+    if (Array.isArray(updates.experience)) {
+      mergedData.experience = updates.experience;
+    }
+    if (Array.isArray(updates.education)) {
+      mergedData.education = updates.education;
+    }
+    if (Array.isArray(updates.certifications)) {
+      mergedData.certifications = updates.certifications;
+    }
+
+    // Handle contact deletions and updates
+    if (updates.contact && typeof updates.contact === 'object') {
+      mergedData.contact = { ...(mergedData.contact || {}) };
+      for (const [key, val] of Object.entries(updates.contact)) {
+        if (val === '' || val === null || val === false) {
+          delete mergedData.contact[key];
+        } else {
+          mergedData.contact[key] = val;
+        }
+      }
+    }
   }
 
-  return merged;
+  // Guaranteed Auto-Save to Supabase
+  if (portfolioId) {
+    try {
+      await updatePortfolioStylesAndData(portfolioId, mergedStyles, mergedData);
+    } catch (err) {
+      console.warn('Auto-save database write notice:', err.message);
+    }
+  }
+
+  return {
+    customStyles: mergedStyles,
+    portfolioData: mergedData,
+    summary: generatedOutput.summary,
+  };
 }
+
+

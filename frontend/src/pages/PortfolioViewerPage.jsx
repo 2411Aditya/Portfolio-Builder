@@ -162,11 +162,14 @@ export default function PortfolioViewerPage() {
   // Check if current logged-in user is the owner of this portfolio
   const isOwner = user && (user.id === portfolio.user_id || user.username === portfolio.owner || user.username === username);
 
-  const handleApplyStyles = (newStyles) => {
-    setCustomStyles(newStyles);
+  const handleApplyStylesAndData = (newStyles, newData) => {
+    if (newStyles !== undefined) {
+      setCustomStyles(newStyles);
+    }
     setPortfolio(prev => ({
       ...prev,
-      custom_styles: newStyles
+      custom_styles: newStyles !== undefined ? newStyles : prev.custom_styles,
+      data: newData !== undefined ? newData : prev.data,
     }));
   };
 
@@ -238,10 +241,10 @@ export default function PortfolioViewerPage() {
           <AICustomizerDrawer
             isOpen={drawerOpen}
             onClose={() => setDrawerOpen(false)}
-            portfolioId={portfolio.id}
+            portfolioId={portfolio?.id || portfolioId}
             portfolioData={portfolio.data}
             currentCustomStyles={customStyles}
-            onApplyStyles={handleApplyStyles}
+            onApplyStylesAndData={handleApplyStylesAndData}
             onOpenPricing={(tier) => {
               setPricingTier(tier || 'pro');
               setPricingOpen(true);

@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import {
   X, Sparkles, Send, Loader2, Lock, CheckCircle2,
-  RefreshCw, Palette, MessageSquare, AlertCircle, Zap
+  RefreshCw, Palette, MessageSquare, AlertCircle, Zap,
+  Undo2, Copy, Check, Cloud, CloudCheck, CheckCheck
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { customizePortfolioWithAI } from '../utils/aiCustomizer';
+import { updatePortfolioStylesAndData } from '../api/client';
 
 const SUGGESTIONS = [
   'Make the theme emerald green and tone my bio for a Senior Cloud Architect',
@@ -21,16 +23,19 @@ export default function AICustomizerDrawer({
   portfolioData,
   currentCustomStyles,
   onApplyStyles,
+  onApplyStylesAndData,
   onOpenPricing,
 }) {
   const { profile } = useAuth();
   const [prompt, setPrompt] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [syncStatus, setSyncStatus] = useState('saved'); // 'saving' | 'saved' | 'error'
+  const [copiedIndex, setCopiedIndex] = useState(null);
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      text: 'Hello! I am your AI Design Architect. Ask me to change your theme colors, refine your bio, highlight key skills, or add custom sections.',
+      text: 'Hello! I am your AI Design Architect. Ask me to change your theme colors, refine your bio, highlight key skills, update your resume content, or add custom sections.',
     },
   ]);
 
@@ -38,35 +43,75 @@ export default function AICustomizerDrawer({
 
   const isPro = profile?.plan_tier === 'pro';
 
+  const applyChanges = (styles, data) => {
+    if (onApplyStylesAndData) {
+      onApplyStylesAndData(styles, data);
+    } else if (onApplyStyles) {
+      onApplyStyles(styles);
+    }
+  };
+
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
     if (!prompt.trim() || loading) return;
 
     const userMessage = prompt.trim();
+    const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    // Capture state snapshot before this prompt is executed for reliable Revert/Undo
+    const preSnapshot = {
+      customStyles: JSON.parse(JSON.stringify(currentCustomStyles || {})),
+      portfolioData: JSON.parse(JSON.stringify(portfolioData || {})),
+    };
+
     setPrompt('');
     setError('');
-    setMessages((prev) => [...prev, { role: 'user', text: userMessage }]);
+    setMessages((prev) => [
+      ...prev,
+      {
+        role: 'user',
+        text: userMessage,
+        time: nowTime,
+        snapshot: preSnapshot,
+      },
+    ]);
+
     setLoading(true);
+    setSyncStatus('saving');
 
     try {
-      const updatedStyles = await customizePortfolioWithAI({
+      const result = await customizePortfolioWithAI({
         portfolioId,
         currentData: portfolioData,
         currentCustomStyles,
         prompt: userMessage,
       });
 
-      onApplyStyles(updatedStyles);
+      const updatedStyles = result.customStyles;
+      const updatedData = result.portfolioData || portfolioData;
+
+      applyChanges(updatedStyles, updatedData);
+
+      if (portfolioId) {
+        try {
+          await updatePortfolioStylesAndData(portfolioId, updatedStyles, updatedData);
+        } catch (e) {
+          console.warn('Auto-save error:', e);
+        }
+      }
+
+      setSyncStatus('saved');
 
       setMessages((prev) => [
         ...prev,
         {
           role: 'assistant',
-          text: `Done! I've updated your layout & theme palette (${updatedStyles.themeOverrides?.primaryColor || 'customized'}). What else would you like to refine?`,
+          text: result.summary || `Done! I've updated and saved your changes. What else would you like to refine?`,
           styles: updatedStyles,
         },
       ]);
     } catch (err) {
+      setSyncStatus('error');
       setError(err.message || 'AI Customization failed. Please try again.');
       setMessages((prev) => [
         ...prev,
@@ -81,19 +126,76 @@ export default function AICustomizerDrawer({
     }
   };
 
+  const handleRevertToSnapshot = async (snapshot, promptText) => {
+    if (!snapshot || loading) return;
+
+    // 1. Immediately apply rollback to UI
+    applyChanges(snapshot.customStyles, snapshot.portfolioData);
+
+    setLoading(true);
+    setSyncStatus('saving');
+    setError('');
+
+    try {
+      if (portfolioId) {
+        await updatePortfolioStylesAndData(portfolioId, snapshot.customStyles, snapshot.portfolioData);
+      }
+
+      setSyncStatus('saved');
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: 'assistant',
+          text: `↩️ Reverted changes back to state before: "${promptText}"`,
+        },
+      ]);
+    } catch (err) {
+      console.warn('Revert cloud sync error:', err);
+      setSyncStatus('error');
+      setError(err.message || 'Failed to revert changes to cloud.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCopyPrompt = (text, idx) => {
+    navigator.clipboard.writeText(text);
+    setCopiedIndex(idx);
+    setTimeout(() => setCopiedIndex(null), 2000);
+  };
+
   const handleSuggestionClick = (sug) => {
     setPrompt(sug);
   };
 
-  const handleResetStyles = () => {
-    onApplyStyles({});
-    setMessages((prev) => [
-      ...prev,
-      {
-        role: 'assistant',
-        text: 'Reset all custom style overrides back to original template defaults.',
-      },
-    ]);
+  const handleResetStyles = async () => {
+    if (loading) return;
+
+    // 1. Immediately apply reset to UI
+    applyChanges({}, portfolioData);
+
+    setLoading(true);
+    setSyncStatus('saving');
+
+    try {
+      if (portfolioId) {
+        await updatePortfolioStylesAndData(portfolioId, {}, portfolioData);
+      }
+      setSyncStatus('saved');
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: 'assistant',
+          text: 'Reset all custom style overrides back to original template defaults and saved to cloud.',
+        },
+      ]);
+    } catch (err) {
+      console.warn('Reset cloud sync warning:', err);
+      setSyncStatus('error');
+      setError(err.message || 'Failed to reset styles in database.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -231,7 +333,7 @@ export default function AICustomizerDrawer({
         /* Pro Active Chat Interface */
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
           
-          {/* Action Bar (Reset / Info) */}
+          {/* Action Bar (Cloud Sync / Reset) */}
           <div
             style={{
               padding: '10px 16px',
@@ -243,20 +345,41 @@ export default function AICustomizerDrawer({
               fontSize: 12,
             }}
           >
-            <span style={{ color: '#94a3b8' }}>Live Layout Sync Active</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11.5 }}>
+              {syncStatus === 'saving' ? (
+                <span style={{ color: '#c084fc', display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+                  <Loader2 size={12} style={{ animation: 'spin 0.6s linear infinite' }} />
+                  Saving to Cloud…
+                </span>
+              ) : syncStatus === 'error' ? (
+                <span style={{ color: '#f87171', display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+                  <AlertCircle size={12} />
+                  Cloud Sync Failed
+                </span>
+              ) : (
+                <span style={{ color: '#34d399', display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+                  <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#10b981', display: 'inline-block' }} />
+                  Live Cloud Sync Active
+                </span>
+              )}
+            </div>
+
             <button
               type="button"
               onClick={handleResetStyles}
+              disabled={loading}
               style={{
                 background: 'transparent',
                 border: 'none',
                 color: '#f87171',
-                cursor: 'pointer',
+                cursor: loading ? 'default' : 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 gap: 4,
                 fontSize: 11,
+                opacity: loading ? 0.6 : 1,
               }}
+              title="Reset all styles and resume overrides"
             >
               <RefreshCw size={12} /> Reset Styles
             </button>
@@ -278,16 +401,84 @@ export default function AICustomizerDrawer({
                 key={i}
                 style={{
                   alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start',
-                  maxWidth: '88%',
-                  padding: '12px 16px',
+                  maxWidth: '90%',
+                  padding: msg.role === 'user' ? '12px 14px 8px 16px' : '12px 16px',
                   borderRadius: msg.role === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
-                  background: msg.role === 'user' ? '#4f46e5' : msg.isError ? '#7f1d1d' : '#1e293b',
+                  background: msg.role === 'user' ? '#4338ca' : msg.isError ? '#7f1d1d' : '#1e293b',
                   fontSize: 13,
                   lineHeight: 1.5,
                   border: msg.role === 'assistant' ? '1px solid rgba(255,255,255,0.08)' : 'none',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 6,
                 }}
               >
-                {msg.text}
+                <div>{msg.text}</div>
+
+                {/* User Prompt Controls: Time, Copy, Undo/Revert Button */}
+                {msg.role === 'user' && (
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'flex-end',
+                      gap: 8,
+                      fontSize: 10,
+                      color: 'rgba(255, 255, 255, 0.6)',
+                      borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+                      paddingTop: 4,
+                      marginTop: 2,
+                    }}
+                  >
+                    <span>{msg.time || ''}</span>
+
+                    {/* Copy Prompt */}
+                    <button
+                      type="button"
+                      onClick={() => handleCopyPrompt(msg.text, i)}
+                      style={{
+                        background: 'transparent',
+                        border: 'none',
+                        color: 'rgba(255, 255, 255, 0.7)',
+                        cursor: 'pointer',
+                        padding: '2px',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        transition: 'color 0.15s',
+                      }}
+                      title={copiedIndex === i ? 'Copied!' : 'Copy prompt'}
+                    >
+                      {copiedIndex === i ? <Check size={12} style={{ color: '#34d399' }} /> : <Copy size={12} />}
+                    </button>
+
+                    {/* Undo / Revert Button */}
+                    {msg.snapshot && (
+                      <button
+                        type="button"
+                        onClick={() => handleRevertToSnapshot(msg.snapshot, msg.text)}
+                        disabled={loading}
+                        style={{
+                          background: 'rgba(255, 255, 255, 0.12)',
+                          border: 'none',
+                          borderRadius: 4,
+                          color: '#ffffff',
+                          cursor: loading ? 'default' : 'pointer',
+                          padding: '3px 6px',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: 4,
+                          fontSize: 10,
+                          fontWeight: 600,
+                          transition: 'background 0.15s',
+                        }}
+                        title="Undo changes up to this point"
+                      >
+                        <Undo2 size={12} />
+                        <span>Revert</span>
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
             ))}
             {loading && (

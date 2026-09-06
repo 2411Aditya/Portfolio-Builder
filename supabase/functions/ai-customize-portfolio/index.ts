@@ -7,33 +7,44 @@ const corsHeaders = {
 };
 
 const SYSTEM_PROMPT = `You are an elite portfolio designer and copywriter AI.
-Given a user's current portfolio data, current custom styles, and natural language instructions, generate strict JSON modifications that refine their portfolio aesthetic and copy.
+Given a user's current portfolio data, current custom styles, and natural language instructions, generate strict JSON modifications.
 
-CRITICAL CONSTRAINTS:
-1. Output MUST be ONLY valid JSON matching this exact schema:
+CRITICAL PRECISION RULES:
+1. THEME & COLOR PRESERVATION (CRITICAL!):
+   - DO NOT change theme colors, background colors, or fonts unless the user EXPLICITLY asks to change colors/theme (e.g. "make it dark", "make theme emerald green", "change background to light blue").
+   - If the user asks to change DATA, TEXT, BIO, SKILLS, or CONTACT INFO:
+     * Leave "themeOverrides": {} completely EMPTY!
+     * DO NOT provide "backgroundColor", "cardBackground", or "primaryColor"!
+   - Only populate "themeOverrides" if the user prompt explicitly asks for visual color/font styling changes.
+
+2. CONTENT & DATA UPDATES:
+   - If user asks to change or remove DATA (e.g. "remove my contact number", "change my name", "add skill Docker", "rewrite my bio"):
+     * Put all resume data edits inside "dataUpdates".
+     * To remove phone/whatsapp: set "contact": { "phone": "", "whatsapp": "" } in "dataUpdates".
+     * To remove a contact link: set that key to "" in "dataUpdates.contact".
+     * To remove or update skills: provide the updated array in "dataUpdates.skills".
+     * To update name/title/bio: provide "name", "title", "bio" in "dataUpdates".
+
+3. STRICT JSON SCHEMA:
 {
-  "themeOverrides": {
-    "primaryColor": "hex or hsl string (e.g. #10b981)",
-    "fontFamily": "font family string (e.g. 'Space Grotesk', 'Outfit', 'Inter', 'Playfair Display')",
-    "accentGlow": "glow color (e.g. rgba(16,185,129,0.3))",
-    "backgroundColor": "dark/light hex color",
-    "cardBackground": "card hex color"
+  "themeOverrides": {}, 
+  "contentRefinements": {}, 
+  "customSections": [], 
+  "dataUpdates": {
+    "name": "optional",
+    "title": "optional",
+    "bio": "optional",
+    "skills": ["optional"],
+    "projects": [ ... ],
+    "experience": [ ... ],
+    "education": [ ... ],
+    "certifications": [ ... ],
+    "contact": { "phone": "", "whatsapp": "", "email": "", "github": "", "linkedin": "", "website": "" }
   },
-  "contentRefinements": {
-    "headline": "Elevated punchy headline or full name",
-    "bio": "Compelling, refined 2-3 sentence bio tailored to the request",
-    "highlightedSkills": ["skill1", "skill2", "skill3"]
-  },
-  "customSections": [
-    {
-      "title": "Section Title (e.g. Strategic Impact, Cloud Architecture)",
-      "content": "Detailed custom paragraph or achievements."
-    }
-  ]
+  "summary": "Short 1-sentence friendly confirmation of what was changed"
 }
 
-2. STRICTLY NO raw HTML tags, NO raw CSS strings, NO markdown code blocks, NO text commentary outside the JSON.
-3. If the prompt is vague (e.g. "make it look cool" or "upgrade it"), make tasteful, modern, high-contrast enhancements suited to a top-tier software engineer or professional.`;
+4. STRICTLY NO raw HTML tags, NO raw CSS strings, NO markdown code blocks, NO text commentary outside the JSON.`;
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -138,20 +149,35 @@ serve(async (req) => {
       rawOutput = rawOutput.substring(start, end + 1);
     }
 
-    const generatedCustomStyles = JSON.parse(rawOutput);
+    const generatedOutput = JSON.parse(rawOutput);
 
     // Merge with existing custom styles
     const mergedCustomStyles = {
       themeOverrides: {
         ...(currentCustomStyles?.themeOverrides || {}),
-        ...(generatedCustomStyles.themeOverrides || {}),
+        ...(generatedOutput.themeOverrides || {}),
       },
       contentRefinements: {
         ...(currentCustomStyles?.contentRefinements || {}),
-        ...(generatedCustomStyles.contentRefinements || {}),
+        ...(generatedOutput.contentRefinements || {}),
       },
-      customSections: generatedCustomStyles.customSections || currentCustomStyles?.customSections || [],
+      customSections: generatedOutput.customSections || currentCustomStyles?.customSections || [],
     };
+
+    // Merge base data
+    let mergedData = { ...(currentData || {}) };
+    if (generatedOutput.dataUpdates && typeof generatedOutput.dataUpdates === 'object') {
+      const updates = generatedOutput.dataUpdates;
+      if (updates.name) mergedData.name = updates.name;
+      if (updates.title) mergedData.title = updates.title;
+      if (updates.bio) mergedData.bio = updates.bio;
+      if (Array.isArray(updates.skills) && updates.skills.length > 0) {
+        mergedData.skills = updates.skills;
+      }
+      if (updates.contact && typeof updates.contact === 'object') {
+        mergedData.contact = { ...(mergedData.contact || {}), ...updates.contact };
+      }
+    }
 
     // Save to database if portfolioId is provided
     if (portfolioId) {
@@ -159,6 +185,7 @@ serve(async (req) => {
         .from('portfolios')
         .update({
           custom_styles: mergedCustomStyles,
+          data: mergedData,
           updated_at: new Date().toISOString(),
         })
         .eq('id', portfolioId)
@@ -168,6 +195,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         customStyles: mergedCustomStyles,
+        portfolioData: mergedData,
         success: true,
       }),
       {
@@ -181,3 +209,4 @@ serve(async (req) => {
     });
   }
 });
+
