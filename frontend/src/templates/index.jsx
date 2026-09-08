@@ -145,3 +145,6 @@ export function canAccessTemplate(userTier = 'free', templateTier = 'free') {
   const reqLevel = TIER_ORDER[templateTier] || 0;
   return userLevel >= reqLevel;
 }
+
+export { SAMPLE_PORTFOLIO_DATA } from './sampleData';
+

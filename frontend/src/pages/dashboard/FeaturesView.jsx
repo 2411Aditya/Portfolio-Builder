@@ -1,11 +1,11 @@
 import React from 'react';
 import {
   Sparkles, Zap, ShieldCheck, Palette, FileText, CheckCircle2,
-  Lock, Globe, Sliders, ArrowRight, Code2, Layers, Cpu, Compass
+  Lock, Globe, Sliders, ArrowRight, Code2, Layers, Cpu, Compass, Eye
 } from 'lucide-react';
 import { TEMPLATE_REGISTRY } from '../../templates';
 
-export default function FeaturesView({ userTier, onSelectTemplate, onOpenPricing, onNavigateHome }) {
+export default function FeaturesView({ userTier, onSelectTemplate, onPreviewTemplate, onOpenPricing, onNavigateHome }) {
   return (
     <div style={{ maxWidth: 1060, margin: '0 auto', animation: 'fadeIn 0.25s ease' }}>
       {/* Header */}
@@ -152,14 +152,28 @@ export default function FeaturesView({ userTier, onSelectTemplate, onOpenPricing
                   </p>
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 12, borderTop: '1px solid var(--color-hairline)' }}>
-                  <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-                    {tMeta.tags?.slice(0, 2).map((tg, i) => (
-                      <span key={i} style={{ fontSize: 10, padding: '2px 5px', borderRadius: 3, background: '#f1f5f9', color: '#475569' }}>
-                        {tg}
-                      </span>
-                    ))}
-                  </div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 12, borderTop: '1px solid var(--color-hairline)', gap: 8 }}>
+                  <button
+                    type="button"
+                    onClick={() => onPreviewTemplate && onPreviewTemplate(tKey)}
+                    style={{
+                      background: '#f1f5f9',
+                      border: '1px solid #e2e8f0',
+                      borderRadius: 6,
+                      color: 'var(--color-ink)',
+                      fontSize: 11,
+                      fontWeight: 600,
+                      padding: '4px 8px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 4,
+                      transition: 'all 0.15s ease',
+                    }}
+                    title={`Live preview ${tMeta.name}`}
+                  >
+                    <Eye size={12} /> Preview
+                  </button>
 
                   <button
                     type="button"

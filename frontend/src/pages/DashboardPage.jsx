@@ -2,12 +2,13 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Upload, Zap, Moon, Sun, Copy, ExternalLink,
-  CheckCircle, AlertCircle, Loader2, X, Check, Lock, Palette, FileText
+  CheckCircle, AlertCircle, Loader2, X, Check, Lock, Palette, FileText, Eye
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import * as api from '../api/client';
 import SEO from '../components/SEO';
 import PricingModal from '../components/PricingModal';
+import TemplatePreviewModal from '../components/TemplatePreviewModal';
 import DashboardNavbar from '../components/DashboardNavbar';
 import PersonalInfoView from './dashboard/PersonalInfoView';
 import ActiveLinksView from './dashboard/ActiveLinksView';
@@ -54,6 +55,10 @@ export default function DashboardPage() {
   const [targetTierForUpgrade, setTargetTierForUpgrade] = useState('pro');
   const [autoTriggerCheckout, setAutoTriggerCheckout] = useState(false);
   const autoCheckoutTriggeredRef = useRef(false);
+
+  // Template Preview Modal
+  const [previewModalOpen, setPreviewModalOpen] = useState(false);
+  const [previewTemplateKey, setPreviewTemplateKey] = useState('minimal');
 
   const fileInputRef = useRef(null);
 
@@ -146,6 +151,12 @@ export default function DashboardPage() {
       return;
     }
     setSelectedTemplate(templateKey);
+  };
+
+  const handleOpenPreview = (e, templateKey) => {
+    if (e) e.stopPropagation();
+    setPreviewTemplateKey(templateKey || selectedTemplate || 'minimal');
+    setPreviewModalOpen(true);
   };
 
   const handleGenerate = async () => {
@@ -401,8 +412,19 @@ export default function DashboardPage() {
                   <Palette size={18} style={{ color: 'var(--color-ink)' }} />
                   <h3 className="sketch-templates-title">Choose Template (10 Available)</h3>
                 </div>
-                <div className="sketch-current-template-tag">
-                  Selected: <strong>{TEMPLATE_REGISTRY[selectedTemplate]?.name}</strong>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <button
+                    type="button"
+                    onClick={(e) => handleOpenPreview(e, selectedTemplate)}
+                    className="sketch-preview-all-btn"
+                    title="Open live interactive preview of all templates"
+                  >
+                    <Eye size={13} />
+                    <span>Preview Templates</span>
+                  </button>
+                  <div className="sketch-current-template-tag">
+                    Selected: <strong>{TEMPLATE_REGISTRY[selectedTemplate]?.name}</strong>
+                  </div>
                 </div>
               </div>
 
@@ -442,7 +464,7 @@ export default function DashboardPage() {
                         />
                       </div>
 
-                      {/* Status indicator */}
+                      {/* Status indicator & preview button */}
                       <div className="sketch-template-card-bottom">
                         {isSelected ? (
                           <span className="sketch-selected-label">
@@ -455,6 +477,15 @@ export default function DashboardPage() {
                         ) : (
                           <span className="sketch-select-prompt">Click to select</span>
                         )}
+
+                        <button
+                          type="button"
+                          onClick={(e) => handleOpenPreview(e, tKey)}
+                          className="sketch-card-preview-text-btn"
+                          title={`Preview ${tMeta.name}`}
+                        >
+                          <Eye size={11} /> Preview
+                        </button>
                       </div>
                     </div>
                   );
@@ -507,6 +538,7 @@ export default function DashboardPage() {
           <FeaturesView
             userTier={userTier}
             onSelectTemplate={(tKey) => setSelectedTemplate(tKey)}
+            onPreviewTemplate={(tKey) => handleOpenPreview(null, tKey)}
             onOpenPricing={() => {
               setTargetTierForUpgrade('pro');
               setPricingOpen(true);
@@ -515,6 +547,22 @@ export default function DashboardPage() {
           />
         )}
       </main>
+
+      {/* ── Template Full-Fidelity Preview Modal ── */}
+      <TemplatePreviewModal
+        isOpen={previewModalOpen}
+        onClose={() => setPreviewModalOpen(false)}
+        initialTemplateKey={previewTemplateKey}
+        userTier={userTier}
+        defaultTheme={theme}
+        onSelectTemplate={(tKey) => {
+          setSelectedTemplate(tKey);
+        }}
+        onOpenPricing={(tier) => {
+          setTargetTierForUpgrade(tier || 'pro');
+          setPricingOpen(true);
+        }}
+      />
 
       {/* ── Razorpay Pricing & Upgrade Modal ── */}
       <PricingModal
