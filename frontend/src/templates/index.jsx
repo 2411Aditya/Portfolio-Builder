@@ -28,24 +28,24 @@ export const TEMPLATE_REGISTRY = {
   terminal: {
     id: 'terminal',
     name: 'Developer Terminal',
-    description: 'Monospace CLI shell with command syntax highlighting and hacker aesthetic.',
+    description: 'Multi-page interactive CLI shell with tabbed directories, command execution, and dual-mode theme.',
     tier: 'free',
     component: TerminalTemplate,
     thumbnailColor: '#10b981',
     previewGradient: 'linear-gradient(135deg, #064e3b, #022c22)',
-    tags: ['Monospace', 'CLI', 'Code'],
+    tags: ['Multi-Page', 'Interactive CLI', 'Monospace', 'Dual Mode'],
   },
 
   // ─── Lite Tier (4) ───
   bento: {
     id: 'bento',
     name: 'Bento Grid',
-    description: 'Modern rounded bento cards with dynamic grid hierarchy and stat pills.',
+    description: 'Multi-page modern rounded bento cards with dynamic grid hierarchy, stat pills, and dual-mode theme.',
     tier: 'lite',
     component: BentoTemplate,
     thumbnailColor: '#6366f1',
     previewGradient: 'linear-gradient(135deg, #4338ca, #312e81)',
-    tags: ['Bento Grid', 'Modern', 'Dynamic'],
+    tags: ['Multi-Page', 'Bento Grid', 'Modern', 'Dynamic', 'Dual Mode'],
   },
   executive: {
     id: 'executive',
