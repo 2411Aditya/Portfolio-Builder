@@ -1267,14 +1267,42 @@ input, textarea, select {
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 24px;
+}
+
+.footer-brand-column {
+  display: flex;
+  flex-direction: column;
 }
 
 .footer-links {
   display: flex;
   align-items: center;
-  gap: 24px;
+  flex-wrap: wrap;
+  gap: 14px 20px;
   font-size: 13px;
+}
+
+.footer-links a,
+.footer-links button {
+  color: var(--color-body);
+  text-decoration: none;
+  transition: color 0.15s ease;
+  white-space: nowrap;
+}
+
+.footer-links a:hover,
+.footer-links button:hover {
+  color: var(--color-ink);
+}
+
+.footer-separator {
+  color: var(--color-mute);
+}
+
+.footer-copyright {
+  color: var(--color-mute);
+  white-space: nowrap;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -2230,24 +2258,66 @@ input, textarea, select {
 
 @media (max-width: 767px) {
   .nav-bar {
-    padding: 14px 20px;
+    padding: 10px 14px;
+  }
+  .nav-container {
+    gap: 8px;
+  }
+  .nav-brand {
+    font-size: 18px;
+    gap: 8px;
+  }
+  .brand-logo {
+    height: 28px;
   }
   .nav-links {
     display: none; /* Mobile collapse */
   }
+  .nav-actions {
+    gap: 6px;
+  }
+  .nav-signin-link {
+    font-size: 12px !important;
+    padding: 6px 8px !important;
+    white-space: nowrap !important;
+  }
+  .nav-cta-btn {
+    font-size: 12px !important;
+    padding: 6px 10px !important;
+    white-space: nowrap !important;
+  }
   .hero-band {
-    padding: 48px 20px 40px;
+    padding: 40px 16px 32px;
   }
   .category-section, .preview-section, .workflow-section, .faq-section {
-    padding: 56px 20px;
+    padding: 44px 16px;
   }
   .category-card-purple, .category-card-pink, .category-card-blue,
   .category-card-orange, .category-card-green, .card-feature {
-    padding: 24px;
+    padding: 20px;
+  }
+  .footer-band {
+    padding: 32px 16px 40px;
   }
   .footer-container {
     flex-direction: column;
     align-items: flex-start;
+    gap: 18px;
+  }
+  .footer-links {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 12px;
+    width: 100%;
+  }
+  .footer-separator {
+    display: none;
+  }
+  .footer-copyright {
+    margin-top: 6px;
+    font-size: 11px;
   }
   
   /* Responsive Dashboard Header */
@@ -2863,7 +2933,15 @@ input, textarea, select {
 
 .privacy-hero {
   text-align: center;
-  margin-bottom: 48px;
+  margin-bottom: 40px;
+}
+
+.privacy-hero-title {
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+  line-height: 1.2;
 }
 
 .privacy-highlights-grid {
@@ -2876,9 +2954,10 @@ input, textarea, select {
 .privacy-highlight-card {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
-  border-radius: 6px;
+  border-radius: 8px;
   padding: 18px 16px;
   text-align: left;
+  transition: all 0.15s ease;
 }
 
 .privacy-highlight-icon {
@@ -2888,7 +2967,7 @@ input, textarea, select {
 
 .privacy-highlight-title {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--color-ink);
   margin-bottom: 4px;
 }
@@ -2896,7 +2975,52 @@ input, textarea, select {
 .privacy-highlight-desc {
   font-size: 12px;
   color: var(--color-body);
-  line-height: 1.45;
+  line-height: 1.5;
+}
+
+/* Quick Navigation TOC */
+.privacy-toc-container {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-bottom: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.privacy-toc-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-mute);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.privacy-toc-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.privacy-toc-pill {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: var(--color-ink);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.privacy-toc-pill:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+  background: #eff6ff;
 }
 
 .privacy-article {
@@ -2914,12 +3038,15 @@ input, textarea, select {
   margin-bottom: 14px;
   border-bottom: 1px solid #e5e5e5;
   padding-bottom: 8px;
+  letter-spacing: -0.01em;
 }
 
 .privacy-section p {
   font-size: 14px;
   color: #374151;
   margin-bottom: 14px;
+  line-height: 1.65;
+  word-break: break-word;
 }
 
 .privacy-section ul {
@@ -2931,12 +3058,14 @@ input, textarea, select {
   font-size: 14px;
   color: #374151;
   margin-bottom: 8px;
+  line-height: 1.6;
+  word-break: break-word;
 }
 
 .privacy-sub-box {
   background: #ffffff;
   border: 1px solid #e5e5e5;
-  border-radius: 6px;
+  border-radius: 8px;
   padding: 16px 20px;
   margin-bottom: 16px;
 }
@@ -2950,7 +3079,7 @@ input, textarea, select {
 
 .privacy-sub-box p {
   margin: 0 0 6px 0;
-  font-size: 13px;
+  font-size: 13.5px;
 }
 
 .privacy-sub-box ul {
@@ -2965,11 +3094,15 @@ input, textarea, select {
 
 .privacy-table-wrap {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   margin: 16px 0;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
 }
 
 .privacy-table {
   width: 100%;
+  min-width: 580px;
   border-collapse: collapse;
   font-size: 13px;
 }
@@ -2993,13 +3126,67 @@ input, textarea, select {
 .privacy-contact-box {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
-  border-radius: 6px;
+  border-radius: 8px;
   padding: 16px 20px;
   display: flex;
   align-items: flex-start;
   gap: 14px;
   font-size: 14px;
   line-height: 1.6;
+  word-break: break-word;
+}
+
+/* Mobile Overrides for Privacy Page */
+@media (max-width: 768px) {
+  .privacy-page-container {
+    padding: 24px 16px 60px;
+  }
+
+  .privacy-hero-title {
+    font-size: 24px !important;
+  }
+
+  .privacy-hero {
+    margin-bottom: 28px;
+  }
+
+  .privacy-highlights-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .privacy-toc-container {
+    padding: 12px 14px;
+    margin-bottom: 28px;
+  }
+
+  .privacy-toc-pill {
+    font-size: 11px;
+    padding: 3px 8px;
+  }
+
+  .privacy-section {
+    margin-bottom: 28px;
+  }
+
+  .privacy-section h2 {
+    font-size: 17px;
+  }
+
+  .privacy-section p, .privacy-section li {
+    font-size: 13px;
+  }
+
+  .privacy-sub-box {
+    padding: 14px 14px;
+  }
+
+  .privacy-contact-box {
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px;
+  }
 }
 
 /* ==========================================================================

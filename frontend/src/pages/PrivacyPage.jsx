@@ -65,10 +65,12 @@ export default function PrivacyPage() {
               <span>auoraa</span>
             </Link>
             <div className="nav-links">
-              <Link to="/" className="button-secondary" style={{ padding: '7px 14px', fontSize: 13, gap: 6 }}>
-                <ArrowLeft size={14} /> Back to Home
+              <Link to="/" className="button-secondary" style={{ padding: '6px 12px', fontSize: 13, gap: 6 }}>
+                <ArrowLeft size={14} />
+                <span className="hide-on-mobile">Back to Home</span>
+                <span className="show-on-mobile">Home</span>
               </Link>
-              <Link to="/register" className="button-primary" style={{ padding: '7px 14px', fontSize: 13 }}>
+              <Link to="/register" className="button-primary" style={{ padding: '6px 12px', fontSize: 13 }}>
                 Get Started
               </Link>
             </div>
@@ -81,7 +83,7 @@ export default function PrivacyPage() {
         {/* Header Hero */}
         <div className="privacy-hero">
           <div className="eyebrow-uppercase" style={{ marginBottom: 12 }}>LEGAL & DATA GOVERNANCE</div>
-          <h1 className="display-lg" style={{ marginBottom: 16 }}>
+          <h1 className="display-lg privacy-hero-title" style={{ marginBottom: 16 }}>
             Privacy Policy & Data Disclosure
           </h1>
           <p className="body-lg" style={{ maxWidth: 780, margin: '0 auto 24px', color: 'var(--color-body)' }}>
@@ -113,41 +115,22 @@ export default function PrivacyPage() {
         </div>
 
         {/* Quick Table of Contents Bar */}
-        <div style={{
-          background: '#f8fafc',
-          border: '1px solid #e2e8f0',
-          borderRadius: 8,
-          padding: '16px 20px',
-          marginBottom: 36,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 8
-        }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--color-ink)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+        <div className="privacy-toc-container">
+          <div className="privacy-toc-title">
             Quick Navigation
           </div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, fontSize: 13 }}>
-            <a href="#overview" style={{ color: 'var(--color-brand)', textDecoration: 'none' }}>1. Overview</a>
-            <span style={{ color: '#cbd5e1' }}>•</span>
-            <a href="#data-collection" style={{ color: 'var(--color-brand)', textDecoration: 'none' }}>2. Information Collected</a>
-            <span style={{ color: '#cbd5e1' }}>•</span>
-            <a href="#ai-processing" style={{ color: 'var(--color-brand)', textDecoration: 'none' }}>3. AI & Google Gemini Disclosure</a>
-            <span style={{ color: '#cbd5e1' }}>•</span>
-            <a href="#cloud-imports" style={{ color: 'var(--color-brand)', textDecoration: 'none' }}>4. Google Drive Imports</a>
-            <span style={{ color: '#cbd5e1' }}>•</span>
-            <a href="#billing-terms" style={{ color: 'var(--color-brand)', textDecoration: 'none' }}>5. Pricing & Razorpay Billing</a>
-            <span style={{ color: '#cbd5e1' }}>•</span>
-            <a href="#subscription-terms" style={{ color: 'var(--color-brand)', textDecoration: 'none' }}>6. Subscriptions & Cancellation</a>
-            <span style={{ color: '#cbd5e1' }}>•</span>
-            <a href="#tracking-cookies" style={{ color: 'var(--color-brand)', textDecoration: 'none' }}>7. Tracking & Cookies</a>
-            <span style={{ color: '#cbd5e1' }}>•</span>
-            <a href="#subprocessors" style={{ color: 'var(--color-brand)', textDecoration: 'none' }}>8. Subprocessors</a>
-            <span style={{ color: '#cbd5e1' }}>•</span>
-            <a href="#user-rights" style={{ color: 'var(--color-brand)', textDecoration: 'none' }}>9. Your Rights & Erasure</a>
-            <span style={{ color: '#cbd5e1' }}>•</span>
-            <a href="#security" style={{ color: 'var(--color-brand)', textDecoration: 'none' }}>10. Security Safeguards</a>
-            <span style={{ color: '#cbd5e1' }}>•</span>
-            <a href="#contact" style={{ color: 'var(--color-brand)', textDecoration: 'none' }}>11. Contact Us</a>
+          <div className="privacy-toc-links">
+            <a href="#overview" className="privacy-toc-pill">1. Overview</a>
+            <a href="#data-collection" className="privacy-toc-pill">2. Information Collected</a>
+            <a href="#ai-processing" className="privacy-toc-pill">3. AI & Google Gemini</a>
+            <a href="#cloud-imports" className="privacy-toc-pill">4. Google Drive</a>
+            <a href="#billing-terms" className="privacy-toc-pill">5. Pricing & Billing</a>
+            <a href="#subscription-terms" className="privacy-toc-pill">6. Subscriptions</a>
+            <a href="#tracking-cookies" className="privacy-toc-pill">7. Cookies</a>
+            <a href="#subprocessors" className="privacy-toc-pill">8. Subprocessors</a>
+            <a href="#user-rights" className="privacy-toc-pill">9. Your Rights</a>
+            <a href="#security" className="privacy-toc-pill">10. Security</a>
+            <a href="#contact" className="privacy-toc-pill">11. Contact Us</a>
           </div>
         </div>
 

@@ -557,8 +557,11 @@ export default function LandingPage() {
               <a href="#faq" className="nav-link">FAQ</a>
             </div>
             <div className="nav-actions">
-              <Link to="/login" className="nav-link" style={{ padding: '8px 12px' }}>Sign In</Link>
-              <Link to="/register" id="nav-get-started-btn" className="button-primary">Get Started Free</Link>
+              <Link to="/login" className="nav-link nav-signin-link">Sign In</Link>
+              <Link to="/register" id="nav-get-started-btn" className="button-primary nav-cta-btn">
+                <span className="hide-on-mobile">Get Started Free</span>
+                <span className="show-on-mobile">Get Started</span>
+              </Link>
             </div>
           </div>
         </nav>
@@ -878,16 +881,16 @@ export default function LandingPage() {
       {/* ── Footer with Complete Legal & Consent Links ── */}
       <footer className="footer-band">
         <div className="footer-container">
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
-              <img src={logoImg} alt="auoraa Logo" style={{ height: 38, width: 'auto', objectFit: 'contain', borderRadius: 6 }} />
-              <span style={{ fontSize: 24, fontWeight: 700, letterSpacing: '-0.5px', color: 'var(--color-ink)' }}>auoraa</span>
+          <div className="footer-brand-column">
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+              <img src={logoImg} alt="auoraa Logo" style={{ height: 32, width: 'auto', objectFit: 'contain', borderRadius: 6 }} />
+              <span style={{ fontSize: 22, fontWeight: 700, letterSpacing: '-0.5px', color: 'var(--color-ink)' }}>auoraa</span>
             </div>
-            <p className="body-sm">The visual web development platform for developer portfolios.</p>
+            <p className="body-sm" style={{ margin: 0, color: 'var(--color-body)' }}>The visual web development platform for developer portfolios.</p>
           </div>
           <div className="footer-links">
             <a href="#pricing">Pricing & Plans</a>
-            <Link to="/privacy">Privacy Policy & Disclosures</Link>
+            <Link to="/privacy">Privacy Policy</Link>
             <button
               type="button"
               onClick={() => window.dispatchEvent(new CustomEvent('openCookieSettings'))}
@@ -896,8 +899,8 @@ export default function LandingPage() {
               Cookie Settings
             </button>
             <Link to="/login">Sign In</Link>
-            <span style={{ color: 'var(--color-mute)' }}>•</span>
-            <span style={{ color: 'var(--color-mute)' }}>© 2026 auoraa. All rights reserved.</span>
+            <span className="footer-separator">•</span>
+            <span className="footer-copyright">© 2026 auoraa. All rights reserved.</span>
           </div>
         </div>
       </footer>
