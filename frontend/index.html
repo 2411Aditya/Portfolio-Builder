@@ -204,10 +204,56 @@
         ]
       }
     </script>
+
+    <!-- Critical Baseline Styles to Prevent Flash of Unstyled Content (FOUC) -->
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        background-color: #080808;
+        color: #f8fafc;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      #root {
+        min-height: 100vh;
+        background-color: #080808;
+        display: flex;
+        flex-direction: column;
+      }
+      .initial-app-loader {
+        min-height: 100vh;
+        width: 100%;
+        background-color: #080808;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+      }
+      .initial-app-spinner {
+        width: 26px;
+        height: 26px;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-top-color: #3b82f6;
+        border-radius: 50%;
+        animation: initialAppSpin 0.7s linear infinite;
+      }
+      @keyframes initialAppSpin {
+        to { transform: rotate(360deg); }
+      }
+    </style>
   </head>
   <body>
-    <!-- Pre-rendered Semantic HTML for Raw Search Engine Crawlers, Bots & AI Models -->
+    <!-- Main React Mount Root -->
     <div id="root">
+      <div class="initial-app-loader">
+        <div class="initial-app-spinner"></div>
+      </div>
+    </div>
+
+    <!-- Semantic HTML Fallback for Raw Crawlers & AI Bots Without JavaScript -->
+    <noscript>
       <header>
         <nav aria-label="Main Navigation">
           <a href="/">auoraa</a>
@@ -301,7 +347,7 @@
         <a href="/#pricing">Pricing</a>
         <a href="/login">Sign In</a>
       </footer>
-    </div>
+    </noscript>
 
     <!-- Vite Client Application Script -->
     <script type="module" src="/src/main.jsx"></script>
