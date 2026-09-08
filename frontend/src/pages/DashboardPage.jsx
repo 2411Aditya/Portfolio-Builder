@@ -37,7 +37,7 @@ export default function DashboardPage() {
 
   // Generator states
   const [file, setFile] = useState(null);
-  const [theme, setTheme] = useState('dark');
+  const [theme, setTheme] = useState('light');
   const [selectedTemplate, setSelectedTemplate] = useState('minimal');
   const [dragging, setDragging] = useState(false);
   const [generating, setGenerating] = useState(false);

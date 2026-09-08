@@ -74,7 +74,7 @@ const STEPS = [
 function UploadCard() {
   const [file, setFile] = useState(null);
   const [dragging, setDragging] = useState(false);
-  const [theme, setTheme] = useState('dark');
+  const [theme, setTheme] = useState('light');
   const [generating, setGenerating] = useState(false);
   const [step, setStep] = useState(-1);
   const fileInputRef = useRef(null);
