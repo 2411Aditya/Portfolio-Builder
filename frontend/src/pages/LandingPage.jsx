@@ -3,11 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
   Zap, ArrowRight, Upload, FileText, Image, X,
   Moon, Sun, Check, ChevronDown, Globe,
-  Smartphone, Monitor, MessageCircle, Sparkles
+  Smartphone, Monitor, MessageCircle, Sparkles, Eye
 } from 'lucide-react';
 import SEO from '../components/SEO';
 import DotField from '../components/DotField';
 import PricingModal from '../components/PricingModal';
+import TemplatePreviewModal from '../components/TemplatePreviewModal';
 import { useAuth } from '../contexts/AuthContext';
 import logoImg from '../assets/Logo.png';
 
@@ -404,6 +405,8 @@ export default function LandingPage() {
   const { user } = useAuth();
   const [pricingOpen, setPricingOpen] = useState(false);
   const [pricingTier, setPricingTier] = useState('pro');
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewTemplateKey, setPreviewTemplateKey] = useState('minimal');
 
   const handlePlanSelect = (tier) => {
     if (tier === 'free') {
@@ -606,9 +609,16 @@ export default function LandingPage() {
               <Link to="/register" id="hero-cta-primary" className="button-primary" aria-label="Build My Portfolio">
                 Build My Portfolio <ArrowRight size={16} strokeWidth={2} aria-hidden="true" />
               </Link>
-              <a href="#preview" id="hero-cta-secondary" className="button-secondary" aria-label="Explore Live Demo">
-                Explore Live Demo
-              </a>
+              <button
+                type="button"
+                id="hero-cta-preview"
+                onClick={() => { setPreviewTemplateKey('minimal'); setPreviewOpen(true); }}
+                className="button-secondary hero-preview-btn"
+                aria-label="Preview Templates"
+              >
+                <Eye size={16} strokeWidth={2} aria-hidden="true" />
+                <span>Preview Templates</span>
+              </button>
             </div>
 
             {/* Centerpiece Upload Card */}
@@ -910,6 +920,25 @@ export default function LandingPage() {
         isOpen={pricingOpen}
         onClose={() => setPricingOpen(false)}
         initialTier={pricingTier}
+      />
+
+      {/* ── Global 10-Template Live Preview Modal ── */}
+      <TemplatePreviewModal
+        isOpen={previewOpen}
+        onClose={() => setPreviewOpen(false)}
+        initialTemplateKey={previewTemplateKey}
+        userTier={user ? (user.plan_tier || 'free') : 'free'}
+        onSelectTemplate={(tKey) => {
+          if (user) {
+            navigate('/dashboard');
+          } else {
+            navigate(`/register?template=${tKey}`);
+          }
+        }}
+        onOpenPricing={(tier) => {
+          setPricingTier(tier || 'pro');
+          setPricingOpen(true);
+        }}
       />
     </div>
   );

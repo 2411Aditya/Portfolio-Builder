@@ -17,7 +17,7 @@ export default function TemplatePreviewModal({
   userTier = 'free',
   onSelectTemplate,
   onOpenPricing,
-  defaultTheme = 'dark',
+  defaultTheme = 'light',
 }) {
   const templateKeys = useMemo(() => Object.keys(TEMPLATE_REGISTRY), []);
   const [currentKey, setCurrentKey] = useState(initialTemplateKey);
@@ -28,7 +28,7 @@ export default function TemplatePreviewModal({
   useEffect(() => {
     if (isOpen && initialTemplateKey && TEMPLATE_REGISTRY[initialTemplateKey]) {
       setCurrentKey(initialTemplateKey);
-      setPreviewTheme(defaultTheme || 'dark');
+      setPreviewTheme(defaultTheme || 'light');
       setViewport('desktop');
     }
   }, [isOpen, initialTemplateKey, defaultTheme]);
@@ -67,6 +67,15 @@ export default function TemplatePreviewModal({
       onClose();
     } else {
       if (onOpenPricing) onOpenPricing(currentTemplate.tier);
+    }
+  };
+
+  // Prevent mock links from navigating away during live template preview
+  const handlePreviewClickCapture = (e) => {
+    const anchor = e.target.closest('a');
+    if (anchor) {
+      e.preventDefault();
+      e.stopPropagation();
     }
   };
 
@@ -253,7 +262,10 @@ export default function TemplatePreviewModal({
         )}
 
         {/* ── Main Preview Viewport ── */}
-        <main className={`template-preview-viewport-frame viewport-${viewport}`}>
+        <main
+          className={`template-preview-viewport-frame viewport-${viewport}`}
+          onClickCapture={handlePreviewClickCapture}
+        >
           {viewport === 'desktop' ? (
             <div className="template-preview-scroll-viewport desktop-mode">
               <TemplateComponent
