@@ -207,7 +207,7 @@ export default function TemplatePreviewModal({
 
             {/* Action CTA & Desktop Close Button */}
             <div className="template-preview-nav-right">
-              {isAccessible ? (
+              {isAccessible && (
                 <button
                   type="button"
                   onClick={handleUseTemplate}
@@ -216,16 +216,6 @@ export default function TemplatePreviewModal({
                 >
                   <Check size={14} strokeWidth={3} />
                   <span>Use Template</span>
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={handleUseTemplate}
-                  className="template-preview-unlock-btn"
-                  title={`Upgrade to ${currentTemplate.tier.toUpperCase()} to use this template`}
-                >
-                  <Sparkles size={14} />
-                  <span>Unlock {currentTemplate.tier.toUpperCase()}</span>
                 </button>
               )}
 

@@ -936,6 +936,7 @@ export default function LandingPage() {
           }
         }}
         onOpenPricing={(tier) => {
+          setPreviewOpen(false);
           setPricingTier(tier || 'pro');
           setPricingOpen(true);
         }}

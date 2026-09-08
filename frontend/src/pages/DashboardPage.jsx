@@ -559,6 +559,7 @@ export default function DashboardPage() {
           setSelectedTemplate(tKey);
         }}
         onOpenPricing={(tier) => {
+          setPreviewModalOpen(false);
           setTargetTierForUpgrade(tier || 'pro');
           setPricingOpen(true);
         }}

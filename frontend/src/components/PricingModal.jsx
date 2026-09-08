@@ -201,7 +201,7 @@ export default function PricingModal({
         bottom: 0,
         backgroundColor: 'rgba(0, 0, 0, 0.65)',
         backdropFilter: 'blur(8px)',
-        zIndex: 9999,
+        zIndex: 100001,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
