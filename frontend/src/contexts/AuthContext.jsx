@@ -87,10 +87,11 @@ export function AuthProvider({ children }) {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       if (session?.user) {
+        const meta = session.user.user_metadata || {};
         const u = {
           id: session.user.id,
           email: session.user.email,
-          username: session.user.user_metadata?.username || session.user.email?.split('@')[0],
+          username: meta.username || meta.user_name || meta.full_name || meta.name || session.user.email?.split('@')[0],
         };
         setUser(u);
         fetchProfile(u.id, u.email, u.username);
@@ -107,10 +108,11 @@ export function AuthProvider({ children }) {
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       if (session?.user) {
+        const meta = session.user.user_metadata || {};
         const u = {
           id: session.user.id,
           email: session.user.email,
-          username: session.user.user_metadata?.username || session.user.email?.split('@')[0],
+          username: meta.username || meta.user_name || meta.full_name || meta.name || session.user.email?.split('@')[0],
         };
         setUser(u);
         fetchProfile(u.id, u.email, u.username);
@@ -123,6 +125,25 @@ export function AuthProvider({ children }) {
 
     return () => subscription.unsubscribe();
   }, [fetchProfile]);
+
+  const loginWithGoogle = async ({ plan } = {}) => {
+    if (plan && plan !== 'free') {
+      sessionStorage.setItem('pendingCheckoutPlan', plan);
+    }
+    const redirectUrl = `${window.location.origin}/dashboard${plan && plan !== 'free' ? `?plan=${plan}&autoCheckout=true` : ''}`;
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: redirectUrl,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        },
+      },
+    });
+    if (error) throw error;
+    return data;
+  };
 
   const register = async ({ email, password, username }) => {
     const { data, error } = await supabase.auth.signUp({
@@ -154,7 +175,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, profile, session, loading, register, login, logout, refreshProfile }}>
+    <AuthContext.Provider value={{ user, profile, session, loading, register, login, loginWithGoogle, logout, refreshProfile }}>
       {children}
     </AuthContext.Provider>
   );

@@ -119,18 +119,30 @@ CREATE POLICY "Users can insert their own orders"
 -- 5. Trigger for automatic profile creation on user signup
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger AS $$
+DECLARE
+    derived_username TEXT;
 BEGIN
+    derived_username := COALESCE(
+        new.raw_user_meta_data->>'username',
+        split_part(new.email, '@', 1)
+    );
+
+    -- If another user already claimed this username, append a short unique suffix
+    IF EXISTS (SELECT 1 FROM public.profiles WHERE username = derived_username AND id != new.id) THEN
+        derived_username := derived_username || '_' || substr(replace(new.id::text, '-', ''), 1, 4);
+    END IF;
+
     INSERT INTO public.profiles (id, email, username, plan_tier, subscription_status)
     VALUES (
         new.id,
         new.email,
-        COALESCE(new.raw_user_meta_data->>'username', split_part(new.email, '@', 1)),
+        derived_username,
         'free',
         'inactive'
     )
     ON CONFLICT (id) DO UPDATE
     SET email = EXCLUDED.email,
-        username = COALESCE(EXCLUDED.username, profiles.username);
+        username = COALESCE(profiles.username, EXCLUDED.username);
     RETURN new;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;

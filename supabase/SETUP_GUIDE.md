@@ -61,3 +61,44 @@ VITE_SUPABASE_ANON_KEY=eyJhbGciOi...
 VITE_RAZORPAY_KEY_ID=rzp_test_...
 VITE_GEMINI_API_KEY=AIzaSy...
 ```
+
+---
+
+## 5. Google Sign-In / OAuth Setup (100% Free on Supabase)
+
+Supabase includes OAuth authentication for Google on its **Free Plan** with up to 50,000 monthly active users.
+
+### Step 1: Create OAuth Credentials in Google Cloud Console
+1. Go to [Google Cloud Console](https://console.cloud.google.com/).
+2. Create a new project (e.g. `Auoraa Portfolio Builder`) or select an existing one.
+3. In the left navigation, go to **APIs & Services** > **OAuth consent screen**:
+   - User Type: **External** -> Click **Create**.
+   - Fill in **App Name** (`auoraa`), **User support email**, and **Developer contact email**.
+   - Click **Save and Continue** through the scopes and test users steps.
+   - Under **Publishing status**, click **Publish App** (or add your test Google account if in testing mode).
+4. Go to **APIs & Services** > **Credentials** > **+ Create Credentials** > **OAuth client ID**:
+   - Application type: **Web application**.
+   - Name: `Auoraa Web App`.
+   - **Authorized JavaScript origins**:
+     - `http://localhost:5173` (for local dev)
+     - `https://your-production-domain.com` (for production)
+   - **Authorized redirect URIs**:
+     - `https://<YOUR_SUPABASE_PROJECT_REF>.supabase.co/auth/v1/callback`
+   - Click **Create**.
+5. Copy your **Client ID** and **Client Secret**.
+
+### Step 2: Enable Google Provider in Supabase
+1. Open your [Supabase Dashboard](https://supabase.com/dashboard).
+2. Go to **Authentication** > **Providers** > click **Google**.
+3. Toggle **Enable Sign in with Google** to ON.
+4. Paste your **Client ID** and **Client Secret** copied from Google Cloud Console.
+5. Click **Save**.
+
+### Step 3: Configure URL Redirects in Supabase
+1. In Supabase Dashboard, go to **Authentication** > **URL Configuration**.
+2. Set **Site URL** to `http://localhost:5173` (or your production URL).
+3. Under **Redirect URLs**, add:
+   - `http://localhost:5173/**`
+   - `https://your-production-domain.com/**`
+4. Click **Save**.
+
