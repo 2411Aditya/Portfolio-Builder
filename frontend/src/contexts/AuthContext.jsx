@@ -126,6 +126,28 @@ export function AuthProvider({ children }) {
     return () => subscription.unsubscribe();
   }, [fetchProfile]);
 
+  const loginWithGoogleIdToken = async (idToken, { plan } = {}) => {
+    if (plan && plan !== 'free') {
+      sessionStorage.setItem('pendingCheckoutPlan', plan);
+    }
+    const { data, error } = await supabase.auth.signInWithIdToken({
+      provider: 'google',
+      token: idToken,
+    });
+    if (error) throw error;
+    if (data?.user) {
+      const meta = data.user.user_metadata || {};
+      const u = {
+        id: data.user.id,
+        email: data.user.email,
+        username: meta.username || meta.user_name || meta.full_name || meta.name || data.user.email?.split('@')[0],
+      };
+      setUser(u);
+      await fetchProfile(u.id, u.email, u.username);
+    }
+    return data;
+  };
+
   const loginWithGoogle = async ({ plan } = {}) => {
     if (plan && plan !== 'free') {
       sessionStorage.setItem('pendingCheckoutPlan', plan);
@@ -175,7 +197,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, profile, session, loading, register, login, loginWithGoogle, logout, refreshProfile }}>
+    <AuthContext.Provider value={{ user, profile, session, loading, register, login, loginWithGoogle, loginWithGoogleIdToken, logout, refreshProfile }}>
       {children}
     </AuthContext.Provider>
   );
