@@ -118,8 +118,8 @@ export default function CreativeBoldTemplate({ data = {}, theme = 'dark', custom
                   <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
                       <h3 style={{ margin: 0, fontSize: 20, fontWeight: 800 }}>{proj.name}</h3>
-                      {proj.url && (
-                        <a href={proj.url} target="_blank" rel="noreferrer" style={{ color: primaryColor }}>
+                      {(proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect) && (
+                        <a href={proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect} target="_blank" rel="noreferrer" style={{ color: primaryColor }}>
                           <ExternalLink size={18} />
                         </a>
                       )}

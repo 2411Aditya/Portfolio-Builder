@@ -162,8 +162,8 @@ export default function NeumorphicTemplate({ data = {}, theme = 'dark', customSt
                   <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
                       <h3 style={{ margin: 0, fontSize: 17, fontWeight: 700 }}>{proj.name}</h3>
-                      {proj.url && (
-                        <a href={proj.url} target="_blank" rel="noreferrer" style={{ color: primaryColor, padding: 4, borderRadius: '50%', boxShadow: neuSmall, display: 'flex' }}>
+                      {(proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect) && (
+                        <a href={proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect} target="_blank" rel="noreferrer" style={{ color: primaryColor, padding: 4, borderRadius: '50%', boxShadow: neuSmall, display: 'flex' }}>
                           <ExternalLink size={14} />
                         </a>
                       )}

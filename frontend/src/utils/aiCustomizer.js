@@ -7,14 +7,18 @@ Given a user's current portfolio data, current custom styles, and natural langua
 CRITICAL PRECISION RULES:
 1. THEME & COLOR PRESERVATION (CRITICAL!):
    - DO NOT change theme colors, background colors, or fonts unless the user EXPLICITLY asks to change colors/theme (e.g. "make it dark", "make theme emerald green", "change background to light blue").
-   - If the user asks to change DATA, TEXT, BIO, SKILLS, or CONTACT INFO:
+   - If the user asks to change DATA, TEXT, BIO, SKILLS, PROJECTS, LINKS, or CONTACT INFO:
      * Leave "themeOverrides": {} completely EMPTY!
      * DO NOT provide "backgroundColor", "cardBackground", or "primaryColor"!
    - Only populate "themeOverrides" if the user prompt explicitly asks for visual color/font styling changes.
 
 2. CONTENT & DATA UPDATES:
-   - If user asks to change or remove DATA (e.g. "remove my contact number", "change my name", "add skill Docker", "rewrite my bio"):
+   - If user asks to change or remove DATA:
      * Put all resume data edits inside "dataUpdates".
+     * To update project redirect links / demo links / URLs (e.g. "change redirect link of project auoraa to https://www.auoraa.com"):
+       Provide the updated projects list in "dataUpdates.projects". Each project MUST have:
+       { "name": "...", "description": "...", "tech": [...], "url": "https://..." }
+       Ensure the link field is strictly named "url".
      * To remove phone/whatsapp: set "contact": { "phone": "", "whatsapp": "" } in "dataUpdates".
      * To remove a contact link: set that key to "" in "dataUpdates.contact".
      * To remove or update skills: provide the updated array in "dataUpdates.skills".
@@ -30,7 +34,14 @@ CRITICAL PRECISION RULES:
     "title": "optional",
     "bio": "optional",
     "skills": ["optional"],
-    "projects": [ ... ],
+    "projects": [
+      {
+        "name": "Project Name",
+        "description": "Project summary",
+        "tech": ["React", "AI"],
+        "url": "https://www.example.com"
+      }
+    ],
     "experience": [ ... ],
     "education": [ ... ],
     "certifications": [ ... ],
@@ -111,7 +122,7 @@ export async function customizePortfolioWithAI({ portfolioId, currentData, curre
       : (currentCustomStyles?.customSections || []),
   };
 
-  // Merge Base Data safely with explicit deletion support
+  // Merge Base Data safely with explicit deletion and project URL normalization
   let mergedData = { ...(currentData || {}) };
   if (generatedOutput.dataUpdates && typeof generatedOutput.dataUpdates === 'object') {
     const updates = generatedOutput.dataUpdates;
@@ -122,9 +133,47 @@ export async function customizePortfolioWithAI({ portfolioId, currentData, curre
     if (Array.isArray(updates.skills)) {
       mergedData.skills = updates.skills.filter(Boolean);
     }
+
     if (Array.isArray(updates.projects)) {
-      mergedData.projects = updates.projects;
+      const existingProjects = [...(currentData?.projects || [])];
+      if (updates.projects.length < existingProjects.length && updates.projects.length > 0) {
+        // AI returned subset of modified projects; merge onto existing list
+        updates.projects.forEach(upProj => {
+          const matchIdx = existingProjects.findIndex(
+            (p) => p.name && upProj.name && p.name.trim().toLowerCase() === upProj.name.trim().toLowerCase()
+          );
+          const resolvedUrl = upProj.url || upProj.link || upProj.redirect || upProj.liveUrl || upProj.website || upProj.demo || '';
+          if (matchIdx !== -1) {
+            existingProjects[matchIdx] = {
+              ...existingProjects[matchIdx],
+              ...upProj,
+              ...(resolvedUrl ? { url: resolvedUrl } : {}),
+            };
+          } else {
+            existingProjects.push({
+              ...upProj,
+              ...(resolvedUrl ? { url: resolvedUrl } : {}),
+            });
+          }
+        });
+        mergedData.projects = existingProjects;
+      } else {
+        mergedData.projects = updates.projects.map((proj, idx) => {
+          const existing = existingProjects.find(
+            (p) => p.name && proj.name && p.name.trim().toLowerCase() === proj.name.trim().toLowerCase()
+          ) || existingProjects[idx] || {};
+
+          const resolvedUrl = proj.url || proj.link || proj.redirect || proj.liveUrl || proj.website || proj.demo || existing.url || existing.link || '';
+          
+          return {
+            ...existing,
+            ...proj,
+            url: resolvedUrl,
+          };
+        });
+      }
     }
+
     if (Array.isArray(updates.experience)) {
       mergedData.experience = updates.experience;
     }

@@ -658,9 +658,9 @@ export default function TerminalTemplate({ data = {}, theme = 'dark', customStyl
                                 <span style={{ color: primaryColor, fontSize: 11, fontWeight: 700 }}>[repo_{idx + 1}]</span>
                                 <div style={{ color: colors.textPrimary, fontWeight: 700, fontSize: 14, marginTop: 2 }}>{proj.name}</div>
                               </div>
-                              {proj.url && (
+                              {(proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect) && (
                                 <a
-                                  href={proj.url}
+                                  href={proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect}
                                   target="_blank"
                                   rel="noreferrer"
                                   style={{

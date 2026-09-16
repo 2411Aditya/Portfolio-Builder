@@ -655,9 +655,9 @@ export default function BentoTemplate({ data = {}, theme = 'dark', customStyles 
                             )}
                             <h3 style={{ margin: 0, fontSize: isFeatured ? 20 : 17, fontWeight: 800 }}>{proj.name}</h3>
                           </div>
-                          {proj.url && (
+                          {(proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect) && (
                             <a
-                              href={proj.url}
+                              href={proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect}
                               target="_blank"
                               rel="noreferrer"
                               style={{

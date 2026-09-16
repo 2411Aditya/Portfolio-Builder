@@ -93,11 +93,7 @@ export default function AICustomizerDrawer({
       applyChanges(updatedStyles, updatedData);
 
       if (portfolioId) {
-        try {
-          await updatePortfolioStylesAndData(portfolioId, updatedStyles, updatedData);
-        } catch (e) {
-          console.warn('Auto-save error:', e);
-        }
+        await updatePortfolioStylesAndData(portfolioId, updatedStyles, updatedData);
       }
 
       setSyncStatus('saved');

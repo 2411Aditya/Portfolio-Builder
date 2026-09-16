@@ -146,21 +146,22 @@ export async function getPublicPortfolio(username, portfolioId) {
   const base = dbData || {};
 
   // Extract custom_styles with multiple fallbacks:
-  // 1. localCached.custom_styles
-  // 2. base.custom_styles
-  // 3. base.data?._custom_styles
+  // 1. base.custom_styles (authoritative from Supabase DB)
+  // 2. base.data?._custom_styles (embedded backup in Supabase DB)
+  // 3. localCached.custom_styles (fallback only if offline / db unreachable)
   let resolvedStyles = {};
-  if (localCached && localCached.custom_styles && Object.keys(localCached.custom_styles).length > 0) {
-    resolvedStyles = localCached.custom_styles;
-  } else if (base.custom_styles && Object.keys(base.custom_styles).length > 0) {
+  if (base.custom_styles && Object.keys(base.custom_styles).length > 0) {
     resolvedStyles = base.custom_styles;
   } else if (base.data?._custom_styles && Object.keys(base.data._custom_styles).length > 0) {
     resolvedStyles = base.data._custom_styles;
+  } else if (localCached && localCached.custom_styles && Object.keys(localCached.custom_styles).length > 0) {
+    resolvedStyles = localCached.custom_styles;
   }
 
-  // Extract resume data
+  // Extract resume data:
+  // Authoritative cloud data from dbData is used when available
   let resolvedData = base.data || {};
-  if (localCached && localCached.data) {
+  if (!dbData && localCached && localCached.data) {
     resolvedData = localCached.data;
   }
 
@@ -192,18 +193,7 @@ export async function updatePortfolioStyles(portfolioId, customStyles) {
 export async function updatePortfolioStylesAndData(portfolioId, customStyles, resumeData) {
   if (!portfolioId) return null;
 
-  // 1. Instant local persistence caching
-  try {
-    const cachedStr = localStorage.getItem(`auoraa_portfolio_${portfolioId}`);
-    const cached = cachedStr ? JSON.parse(cachedStr) : {};
-    if (customStyles !== undefined) cached.custom_styles = customStyles;
-    if (resumeData !== undefined) cached.data = resumeData;
-    localStorage.setItem(`auoraa_portfolio_${portfolioId}`, JSON.stringify(cached));
-  } catch (e) {
-    console.warn('LocalStorage save notice:', e);
-  }
-
-  // 2. Prepare merged data with embedded _custom_styles fallback
+  // 1. Prepare merged data with embedded _custom_styles fallback
   let payloadData = resumeData;
   if (customStyles !== undefined) {
     payloadData = {
@@ -212,7 +202,7 @@ export async function updatePortfolioStylesAndData(portfolioId, customStyles, re
     };
   }
 
-  // 3. Persistent Supabase cloud update
+  // 2. Persistent Supabase cloud update
   const payload = {
     updated_at: new Date().toISOString(),
   };
@@ -227,26 +217,54 @@ export async function updatePortfolioStylesAndData(portfolioId, customStyles, re
     const { data, error } = await supabase
       .from('portfolios')
       .update(payload)
-      .eq('id', portfolioId);
+      .eq('id', portfolioId)
+      .select();
 
     if (error) {
       console.warn('Supabase update with custom_styles column notice:', error.message);
       // Fallback: If custom_styles column is missing in Supabase, update data JSON only
       if (payloadData !== undefined) {
-        await supabase
+        const { data: fallbackData, error: fallbackError } = await supabase
           .from('portfolios')
           .update({
             data: payloadData,
             updated_at: new Date().toISOString(),
           })
-          .eq('id', portfolioId);
+          .eq('id', portfolioId)
+          .select();
+
+        if (fallbackError) {
+          throw new Error(`Database save failed: ${fallbackError.message}`);
+        }
+        
+        // Synchronize local cache on successful save
+        try {
+          const cachedStr = localStorage.getItem(`auoraa_portfolio_${portfolioId}`);
+          const cached = cachedStr ? JSON.parse(cachedStr) : {};
+          if (customStyles !== undefined) cached.custom_styles = customStyles;
+          if (resumeData !== undefined) cached.data = resumeData;
+          localStorage.setItem(`auoraa_portfolio_${portfolioId}`, JSON.stringify(cached));
+        } catch (e) {}
+
+        return fallbackData;
       }
+      throw new Error(`Database save failed: ${error.message}`);
     }
+
+    // Synchronize local cache on successful save
+    try {
+      const cachedStr = localStorage.getItem(`auoraa_portfolio_${portfolioId}`);
+      const cached = cachedStr ? JSON.parse(cachedStr) : {};
+      if (customStyles !== undefined) cached.custom_styles = customStyles;
+      if (resumeData !== undefined) cached.data = resumeData;
+      localStorage.setItem(`auoraa_portfolio_${portfolioId}`, JSON.stringify(cached));
+    } catch (e) {}
+
     return data;
   } catch (err) {
-    console.warn('Supabase update exception:', err.message);
+    console.error('Supabase update exception:', err.message);
+    throw err;
   }
-  return null;
 }
 
 /**

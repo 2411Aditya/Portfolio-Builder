@@ -58,6 +58,38 @@ export default function PortfolioViewerPage() {
     fetch();
   }, [username, portfolioId]);
 
+  // Automatically sync any previously cached local changes to Supabase cloud when owner visits
+  useEffect(() => {
+    if (!user || !portfolio || !portfolioId) return;
+    const isOwner = user.id === portfolio.user_id || user.username === portfolio.owner || user.username === username;
+    if (!isOwner) return;
+
+    try {
+      const cachedStr = localStorage.getItem(`auoraa_portfolio_${portfolioId}`);
+      if (cachedStr) {
+        const cached = JSON.parse(cachedStr);
+        if (cached.data || cached.custom_styles) {
+          api.updatePortfolioStylesAndData(
+            portfolioId,
+            cached.custom_styles || portfolio.custom_styles,
+            cached.data || portfolio.data
+          ).then((saved) => {
+            if (saved) {
+              if (cached.custom_styles) setCustomStyles(cached.custom_styles);
+              setPortfolio((prev) => ({
+                ...prev,
+                data: cached.data || prev.data,
+                custom_styles: cached.custom_styles || prev.custom_styles,
+              }));
+            }
+          }).catch((err) => {
+            console.warn('Auto-sync notice:', err);
+          });
+        }
+      }
+    } catch (e) {}
+  }, [user, portfolio?.id, portfolioId, username]);
+
   if (loading) {
     return (
       <div className="pv-loading" role="status" aria-live="polite">

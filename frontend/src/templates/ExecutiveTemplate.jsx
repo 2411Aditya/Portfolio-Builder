@@ -187,8 +187,8 @@ export default function ExecutiveTemplate({ data = {}, theme = 'dark', customSty
                   <div key={idx} style={{ padding: 18, borderRadius: 10, background: isDark ? 'rgba(255,255,255,0.03)' : '#f8fafc', border: `1px solid ${borderColor}` }}>
                     <h3 style={{ margin: '0 0 6px', fontSize: 15, fontWeight: 600 }}>{proj.name}</h3>
                     <p style={{ margin: '0 0 10px', fontSize: 12.5, lineHeight: 1.5, color: mutedColor }}>{proj.description}</p>
-                    {proj.url && (
-                      <a href={proj.url} target="_blank" rel="noreferrer" style={{ color: primaryColor, fontSize: 12, fontWeight: 600, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                    {(proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect) && (
+                      <a href={proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect} target="_blank" rel="noreferrer" style={{ color: primaryColor, fontSize: 12, fontWeight: 600, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                         View Initiative <ChevronRight size={13} />
                       </a>
                     )}

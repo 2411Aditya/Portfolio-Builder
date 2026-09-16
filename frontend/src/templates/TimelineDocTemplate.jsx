@@ -158,8 +158,8 @@ export default function TimelineDocTemplate({ data = {}, theme = 'dark', customS
                     <div key={idx} style={{ padding: 16, borderRadius: 12, background: isDark ? 'rgba(255,255,255,0.03)' : '#fef3c7', border: `1px solid ${borderColor}` }}>
                       <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 4 }}>{proj.name}</div>
                       <p style={{ fontSize: 12.5, lineHeight: 1.5, color: mutedColor, margin: '0 0 8px' }}>{proj.description}</p>
-                      {proj.url && (
-                        <a href={proj.url} target="_blank" rel="noreferrer" style={{ color: primaryColor, fontSize: 12, fontWeight: 600, textDecoration: 'none' }}>
+                      {(proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect) && (
+                        <a href={proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect} target="_blank" rel="noreferrer" style={{ color: primaryColor, fontSize: 12, fontWeight: 600, textDecoration: 'none' }}>
                           Explore project →
                         </a>
                       )}

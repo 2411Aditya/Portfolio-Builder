@@ -170,8 +170,8 @@ export default function NotionDocTemplate({ data = {}, theme = 'dark', customSty
                   <div key={idx} style={{ background: cardBg, border: `1px solid ${borderColor}`, borderRadius: 8, padding: 16 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
                       <div style={{ fontWeight: 600, fontSize: 14 }}>{proj.name}</div>
-                      {proj.url && (
-                        <a href={proj.url} target="_blank" rel="noreferrer" style={{ color: isDark ? '#93c5fd' : '#2563eb' }}>
+                      {(proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect) && (
+                        <a href={proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect} target="_blank" rel="noreferrer" style={{ color: isDark ? '#93c5fd' : '#2563eb' }}>
                           <ExternalLink size={14} />
                         </a>
                       )}
