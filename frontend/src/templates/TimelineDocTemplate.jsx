@@ -4,6 +4,7 @@ import {
   Mail, Globe, Sparkles, ChevronRight, Check, MessageCircle
 } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from '../components/Icons';
+import { formatExternalUrl } from '../utils/url';
 
 export default function TimelineDocTemplate({ data = {}, theme = 'dark', customStyles = {}, meta = {} }) {
   const { themeOverrides = {}, contentRefinements = {}, customSections = [] } = customStyles;
@@ -81,17 +82,17 @@ export default function TimelineDocTemplate({ data = {}, theme = 'dark', customS
 
           <div style={{ display: 'flex', justifyContent: 'center', gap: 16, flexWrap: 'wrap', fontSize: 13 }}>
             {contact.linkedin && (
-              <a href={contact.linkedin} target="_blank" rel="noreferrer" style={{ color: mutedColor, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 5 }}>
+              <a href={formatExternalUrl(contact.linkedin)} target="_blank" rel="noreferrer" style={{ color: mutedColor, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 5 }}>
                 <LinkedinIcon size={14} /> LinkedIn
               </a>
             )}
             {contact.github && (
-              <a href={contact.github} target="_blank" rel="noreferrer" style={{ color: mutedColor, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 5 }}>
+              <a href={formatExternalUrl(contact.github)} target="_blank" rel="noreferrer" style={{ color: mutedColor, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 5 }}>
                 <GithubIcon size={14} /> GitHub
               </a>
             )}
             {contact.website && (
-              <a href={contact.website} target="_blank" rel="noreferrer" style={{ color: mutedColor, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 5 }}>
+              <a href={formatExternalUrl(contact.website)} target="_blank" rel="noreferrer" style={{ color: mutedColor, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 5 }}>
                 <Globe size={14} /> Website
               </a>
             )}
@@ -159,7 +160,7 @@ export default function TimelineDocTemplate({ data = {}, theme = 'dark', customS
                       <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 4 }}>{proj.name}</div>
                       <p style={{ fontSize: 12.5, lineHeight: 1.5, color: mutedColor, margin: '0 0 8px' }}>{proj.description}</p>
                       {(proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect) && (
-                        <a href={proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect} target="_blank" rel="noreferrer" style={{ color: primaryColor, fontSize: 12, fontWeight: 600, textDecoration: 'none' }}>
+                        <a href={formatExternalUrl(proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect)} target="_blank" rel="noreferrer" style={{ color: primaryColor, fontSize: 12, fontWeight: 600, textDecoration: 'none' }}>
                           Explore project →
                         </a>
                       )}

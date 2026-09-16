@@ -4,6 +4,7 @@ import {
   Globe, Award, Briefcase, Code2, GraduationCap, MessageCircle
 } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from '../components/Icons';
+import { formatExternalUrl } from '../utils/url';
 
 export default function CreativeBoldTemplate({ data = {}, theme = 'dark', customStyles = {}, meta = {} }) {
   const { themeOverrides = {}, contentRefinements = {}, customSections = [] } = customStyles;
@@ -78,12 +79,12 @@ export default function CreativeBoldTemplate({ data = {}, theme = 'dark', custom
               <MessageCircle size={18} /> WhatsApp Me <ArrowRight size={16} />
             </a>
             {contact.github && (
-              <a href={contact.github} target="_blank" rel="noreferrer" style={{ background: cardBg, border: `2px solid ${borderColor}`, color: textColor, padding: '10px 18px', fontWeight: 700, textDecoration: 'none', fontSize: 13, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+              <a href={formatExternalUrl(contact.github)} target="_blank" rel="noreferrer" style={{ background: cardBg, border: `2px solid ${borderColor}`, color: textColor, padding: '10px 18px', fontWeight: 700, textDecoration: 'none', fontSize: 13, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
                 <GithubIcon size={15} /> GitHub
               </a>
             )}
             {contact.linkedin && (
-              <a href={contact.linkedin} target="_blank" rel="noreferrer" style={{ background: cardBg, border: `2px solid ${borderColor}`, color: textColor, padding: '10px 18px', fontWeight: 700, textDecoration: 'none', fontSize: 13, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+              <a href={formatExternalUrl(contact.linkedin)} target="_blank" rel="noreferrer" style={{ background: cardBg, border: `2px solid ${borderColor}`, color: textColor, padding: '10px 18px', fontWeight: 700, textDecoration: 'none', fontSize: 13, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
                 <LinkedinIcon size={15} /> LinkedIn
               </a>
             )}
@@ -119,7 +120,7 @@ export default function CreativeBoldTemplate({ data = {}, theme = 'dark', custom
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
                       <h3 style={{ margin: 0, fontSize: 20, fontWeight: 800 }}>{proj.name}</h3>
                       {(proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect) && (
-                        <a href={proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect} target="_blank" rel="noreferrer" style={{ color: primaryColor }}>
+                        <a href={formatExternalUrl(proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect)} target="_blank" rel="noreferrer" style={{ color: primaryColor }}>
                           <ExternalLink size={18} />
                         </a>
                       )}

@@ -6,6 +6,7 @@ import {
   CornerDownLeft, Send, CheckCircle2, ArrowRight
 } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from '../components/Icons';
+import { formatExternalUrl } from '../utils/url';
 
 export default function TerminalTemplate({ data = {}, theme = 'dark', customStyles = {}, meta = {} }) {
   const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'projects' | 'experience' | 'skills' | 'education' | 'contact'
@@ -660,7 +661,7 @@ export default function TerminalTemplate({ data = {}, theme = 'dark', customStyl
                               </div>
                               {(proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect) && (
                                 <a
-                                  href={proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect}
+                                  href={formatExternalUrl(proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect)}
                                   target="_blank"
                                   rel="noreferrer"
                                   style={{

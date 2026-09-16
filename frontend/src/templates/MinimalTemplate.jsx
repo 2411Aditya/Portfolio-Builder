@@ -4,6 +4,7 @@ import {
   CheckCircle2, MessageCircle, Mail, Globe, Phone, Sparkles
 } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from '../components/Icons';
+import { formatExternalUrl } from '../utils/url';
 
 export default function MinimalTemplate({ data = {}, theme = 'dark', customStyles = {}, meta = {} }) {
   const [activeTab, setActiveTab] = useState('all');
@@ -100,17 +101,17 @@ export default function MinimalTemplate({ data = {}, theme = 'dark', customStyle
           {/* Social Links */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginTop: 20, flexWrap: 'wrap', fontSize: 13 }}>
             {contact.github && (
-              <a href={contact.github} target="_blank" rel="noreferrer" style={{ color: mutedColor, display: 'inline-flex', alignItems: 'center', gap: 5, textDecoration: 'none' }}>
+              <a href={formatExternalUrl(contact.github)} target="_blank" rel="noreferrer" style={{ color: mutedColor, display: 'inline-flex', alignItems: 'center', gap: 5, textDecoration: 'none' }}>
                 <GithubIcon size={14} /> GitHub
               </a>
             )}
             {contact.linkedin && (
-              <a href={contact.linkedin} target="_blank" rel="noreferrer" style={{ color: mutedColor, display: 'inline-flex', alignItems: 'center', gap: 5, textDecoration: 'none' }}>
+              <a href={formatExternalUrl(contact.linkedin)} target="_blank" rel="noreferrer" style={{ color: mutedColor, display: 'inline-flex', alignItems: 'center', gap: 5, textDecoration: 'none' }}>
                 <LinkedinIcon size={14} /> LinkedIn
               </a>
             )}
             {contact.website && (
-              <a href={contact.website} target="_blank" rel="noreferrer" style={{ color: mutedColor, display: 'inline-flex', alignItems: 'center', gap: 5, textDecoration: 'none' }}>
+              <a href={formatExternalUrl(contact.website)} target="_blank" rel="noreferrer" style={{ color: mutedColor, display: 'inline-flex', alignItems: 'center', gap: 5, textDecoration: 'none' }}>
                 <Globe size={14} /> Website
               </a>
             )}
@@ -195,7 +196,7 @@ export default function MinimalTemplate({ data = {}, theme = 'dark', customStyle
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                       <h3 style={{ margin: 0, fontSize: 15, fontWeight: 600 }}>{proj.name}</h3>
                       {(proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect) && (
-                        <a href={proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect} target="_blank" rel="noreferrer" style={{ color: primaryColor }}>
+                        <a href={formatExternalUrl(proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect)} target="_blank" rel="noreferrer" style={{ color: primaryColor }}>
                           <ExternalLink size={14} />
                         </a>
                       )}

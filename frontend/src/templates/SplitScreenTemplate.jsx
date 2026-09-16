@@ -4,6 +4,7 @@ import {
   Briefcase, Code2, Award, GraduationCap, Sparkles, ArrowRight, MessageCircle
 } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from '../components/Icons';
+import { formatExternalUrl } from '../utils/url';
 
 export default function SplitScreenTemplate({ data = {}, theme = 'dark', customStyles = {}, meta = {} }) {
   const { themeOverrides = {}, contentRefinements = {}, customSections = [] } = customStyles;
@@ -99,17 +100,17 @@ export default function SplitScreenTemplate({ data = {}, theme = 'dark', customS
             </div>
             <div style={{ display: 'flex', gap: 16, color: mutedColor, fontSize: 13, flexWrap: 'wrap' }}>
               {contact.github && (
-                <a href={contact.github} target="_blank" rel="noreferrer" style={{ color: mutedColor, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
+                <a href={formatExternalUrl(contact.github)} target="_blank" rel="noreferrer" style={{ color: mutedColor, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
                   <GithubIcon size={15} /> GitHub
                 </a>
               )}
               {contact.linkedin && (
-                <a href={contact.linkedin} target="_blank" rel="noreferrer" style={{ color: mutedColor, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
+                <a href={formatExternalUrl(contact.linkedin)} target="_blank" rel="noreferrer" style={{ color: mutedColor, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
                   <LinkedinIcon size={15} /> LinkedIn
                 </a>
               )}
               {contact.website && (
-                <a href={contact.website} target="_blank" rel="noreferrer" style={{ color: mutedColor, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
+                <a href={formatExternalUrl(contact.website)} target="_blank" rel="noreferrer" style={{ color: mutedColor, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
                   <Globe size={15} /> Website
                 </a>
               )}
@@ -153,7 +154,7 @@ export default function SplitScreenTemplate({ data = {}, theme = 'dark', customS
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                       <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700 }}>{proj.name}</h3>
                       {(proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect) && (
-                        <a href={proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect} target="_blank" rel="noreferrer" style={{ color: primaryColor }}>
+                        <a href={formatExternalUrl(proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect)} target="_blank" rel="noreferrer" style={{ color: primaryColor }}>
                           <ExternalLink size={15} />
                         </a>
                       )}

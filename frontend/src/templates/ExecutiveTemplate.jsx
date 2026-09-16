@@ -4,6 +4,7 @@ import {
   CheckCircle2, ChevronRight, Sparkles, Building, Calendar, MessageCircle
 } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from '../components/Icons';
+import { formatExternalUrl } from '../utils/url';
 
 export default function ExecutiveTemplate({ data = {}, theme = 'dark', customStyles = {}, meta = {} }) {
   const { themeOverrides = {}, contentRefinements = {}, customSections = [] } = customStyles;
@@ -92,17 +93,17 @@ export default function ExecutiveTemplate({ data = {}, theme = 'dark', customSty
               </div>
             )}
             {contact.linkedin && (
-              <a href={contact.linkedin} target="_blank" rel="noreferrer" style={{ color: textColor, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <a href={formatExternalUrl(contact.linkedin)} target="_blank" rel="noreferrer" style={{ color: textColor, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
                 <LinkedinIcon size={15} style={{ color: primaryColor }} /> LinkedIn Profile
               </a>
             )}
             {contact.github && (
-              <a href={contact.github} target="_blank" rel="noreferrer" style={{ color: textColor, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <a href={formatExternalUrl(contact.github)} target="_blank" rel="noreferrer" style={{ color: textColor, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
                 <GithubIcon size={15} style={{ color: primaryColor }} /> GitHub
               </a>
             )}
             {contact.website && (
-              <a href={contact.website} target="_blank" rel="noreferrer" style={{ color: textColor, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <a href={formatExternalUrl(contact.website)} target="_blank" rel="noreferrer" style={{ color: textColor, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
                 <Globe size={15} style={{ color: primaryColor }} /> Website
               </a>
             )}
@@ -188,7 +189,7 @@ export default function ExecutiveTemplate({ data = {}, theme = 'dark', customSty
                     <h3 style={{ margin: '0 0 6px', fontSize: 15, fontWeight: 600 }}>{proj.name}</h3>
                     <p style={{ margin: '0 0 10px', fontSize: 12.5, lineHeight: 1.5, color: mutedColor }}>{proj.description}</p>
                     {(proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect) && (
-                      <a href={proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect} target="_blank" rel="noreferrer" style={{ color: primaryColor, fontSize: 12, fontWeight: 600, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                      <a href={formatExternalUrl(proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect)} target="_blank" rel="noreferrer" style={{ color: primaryColor, fontSize: 12, fontWeight: 600, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                         View Initiative <ChevronRight size={13} />
                       </a>
                     )}

@@ -146,5 +146,6 @@ export function canAccessTemplate(userTier = 'free', templateTier = 'free') {
   return userLevel >= reqLevel;
 }
 
+export { formatExternalUrl } from '../utils/url';
 export { SAMPLE_PORTFOLIO_DATA } from './sampleData';
 

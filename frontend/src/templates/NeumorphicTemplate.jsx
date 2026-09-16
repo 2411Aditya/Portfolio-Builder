@@ -4,6 +4,7 @@ import {
   Globe, Phone, Sparkles, ExternalLink, ArrowRight, MessageCircle
 } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from '../components/Icons';
+import { formatExternalUrl } from '../utils/url';
 
 export default function NeumorphicTemplate({ data = {}, theme = 'dark', customStyles = {}, meta = {} }) {
   const { themeOverrides = {}, contentRefinements = {}, customSections = [] } = customStyles;
@@ -112,17 +113,17 @@ export default function NeumorphicTemplate({ data = {}, theme = 'dark', customSt
           {/* Social Links */}
           <div style={{ display: 'flex', gap: 14, marginTop: 24, flexWrap: 'wrap' }}>
             {contact.github && (
-              <a href={contact.github} target="_blank" rel="noreferrer" style={{ padding: '8px 16px', borderRadius: 12, background: bgColor, boxShadow: neuSmall, color: textColor, textDecoration: 'none', fontSize: 13, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+              <a href={formatExternalUrl(contact.github)} target="_blank" rel="noreferrer" style={{ padding: '8px 16px', borderRadius: 12, background: bgColor, boxShadow: neuSmall, color: textColor, textDecoration: 'none', fontSize: 13, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
                 <GithubIcon size={14} /> GitHub
               </a>
             )}
             {contact.linkedin && (
-              <a href={contact.linkedin} target="_blank" rel="noreferrer" style={{ padding: '8px 16px', borderRadius: 12, background: bgColor, boxShadow: neuSmall, color: textColor, textDecoration: 'none', fontSize: 13, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+              <a href={formatExternalUrl(contact.linkedin)} target="_blank" rel="noreferrer" style={{ padding: '8px 16px', borderRadius: 12, background: bgColor, boxShadow: neuSmall, color: textColor, textDecoration: 'none', fontSize: 13, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
                 <LinkedinIcon size={14} /> LinkedIn
               </a>
             )}
             {contact.website && (
-              <a href={contact.website} target="_blank" rel="noreferrer" style={{ padding: '8px 16px', borderRadius: 12, background: bgColor, boxShadow: neuSmall, color: textColor, textDecoration: 'none', fontSize: 13, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+              <a href={formatExternalUrl(contact.website)} target="_blank" rel="noreferrer" style={{ padding: '8px 16px', borderRadius: 12, background: bgColor, boxShadow: neuSmall, color: textColor, textDecoration: 'none', fontSize: 13, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
                 <Globe size={14} /> Website
               </a>
             )}
@@ -163,7 +164,7 @@ export default function NeumorphicTemplate({ data = {}, theme = 'dark', customSt
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
                       <h3 style={{ margin: 0, fontSize: 17, fontWeight: 700 }}>{proj.name}</h3>
                       {(proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect) && (
-                        <a href={proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect} target="_blank" rel="noreferrer" style={{ color: primaryColor, padding: 4, borderRadius: '50%', boxShadow: neuSmall, display: 'flex' }}>
+                        <a href={formatExternalUrl(proj.url || proj.link || proj.liveUrl || proj.website || proj.redirect)} target="_blank" rel="noreferrer" style={{ color: primaryColor, padding: 4, borderRadius: '50%', boxShadow: neuSmall, display: 'flex' }}>
                           <ExternalLink size={14} />
                         </a>
                       )}
