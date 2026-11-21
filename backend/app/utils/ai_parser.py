@@ -106,7 +106,7 @@ def parse_resume_with_gemini(text: str) -> dict:
 
     client = genai.Client(api_key=api_key)
     response = client.models.generate_content(
-        model='gemini-2.5-flash',
+        model='gemini-3.1-flash-lite',
         contents=RESUME_PROMPT + text
     )
     raw = response.text.strip()
@@ -143,7 +143,7 @@ def parse_image_with_gemini(file_bytes: bytes, mime_type: str) -> dict:
     image_part = types.Part.from_bytes(data=file_bytes, mime_type=mime_type)
 
     response = client.models.generate_content(
-        model='gemini-2.5-flash',
+        model='gemini-3.1-flash-lite',
         contents=[prompt, image_part]
     )
     raw = response.text.strip()

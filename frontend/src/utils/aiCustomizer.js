@@ -61,7 +61,7 @@ export async function customizePortfolioWithAI({ portfolioId, currentData, curre
     throw new Error('VITE_GEMINI_API_KEY is not configured in .env');
   }
 
-  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=${apiKey}`;
 
   const response = await fetch(endpoint, {
     method: 'POST',
