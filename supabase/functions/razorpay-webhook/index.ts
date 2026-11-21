@@ -57,8 +57,22 @@ serve(async (req) => {
 
       const razorpayOrderId = orderEntity.id || paymentEntity.order_id;
       const razorpayPaymentId = paymentEntity.id;
-      const userId = orderEntity.notes?.userId || paymentEntity.notes?.userId;
-      const planTier = orderEntity.notes?.planTier || paymentEntity.notes?.planTier;
+      let userId = orderEntity.notes?.userId || paymentEntity.notes?.userId;
+      let planTier = orderEntity.notes?.planTier || paymentEntity.notes?.planTier;
+
+      // Fallback: If notes are not in the webhook event, look up the order in Supabase
+      if ((!userId || !planTier) && razorpayOrderId) {
+        const { data: dbOrder } = await supabaseAdmin
+          .from('orders')
+          .select('user_id, plan_tier')
+          .eq('razorpay_order_id', razorpayOrderId)
+          .maybeSingle();
+
+        if (dbOrder) {
+          userId = dbOrder.user_id;
+          planTier = dbOrder.plan_tier;
+        }
+      }
 
       if (razorpayOrderId) {
         // Update Order record

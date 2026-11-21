@@ -80,10 +80,18 @@ CREATE TABLE IF NOT EXISTS public.orders (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now())
 );
 
--- 4. Enable Row Level Security (RLS)
+-- 4. Enable Row Level Security (RLS) and Grant Permissions
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.portfolios ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
+
+-- Explicitly grant permissions to authenticated and anon roles so RLS policies can take effect
+GRANT ALL ON TABLE public.profiles TO authenticated;
+GRANT ALL ON TABLE public.profiles TO anon;
+GRANT ALL ON TABLE public.portfolios TO authenticated;
+GRANT ALL ON TABLE public.portfolios TO anon;
+GRANT ALL ON TABLE public.orders TO authenticated;
+GRANT ALL ON TABLE public.orders TO anon;
 
 -- ─── Profiles Policies ───
 DROP POLICY IF EXISTS "Public profiles can be viewed by anyone" ON public.profiles;

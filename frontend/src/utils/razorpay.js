@@ -54,10 +54,11 @@ export async function createRazorpayOrder(planTier) {
   const keyId = import.meta.env.VITE_RAZORPAY_KEY_ID || DEFAULT_TEST_KEY_ID;
 
   return {
-    orderId: `order_${planTier}_${Date.now()}`,
+    orderId: `order_mock_${planTier}_${Date.now()}`,
     amount: amounts[planTier] || 9900,
     currency: 'INR',
     keyId: keyId,
+    isMock: true,
   };
 }
 
@@ -71,6 +72,7 @@ export async function verifyAndUpgradeTier(planTier, paymentDetails = {}) {
   const now = new Date();
   const expiresAt = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000); // 30 days validity
 
+  // 1. Update user profile with active tier & 30-day validity
   const { error } = await supabase
     .from('profiles')
     .update({
@@ -83,11 +85,29 @@ export async function verifyAndUpgradeTier(planTier, paymentDetails = {}) {
     .eq('id', user.id);
 
   if (error) {
-    console.warn('Could not update profile directly (RLS or table):', error.message);
+    console.error('Could not update profile directly:', error.message);
+  }
+
+  // 2. Mark corresponding order as paid in orders table
+  const orderId = paymentDetails?.razorpay_order_id;
+  const paymentId = paymentDetails?.razorpay_payment_id;
+  if (orderId) {
+    try {
+      await supabase
+        .from('orders')
+        .update({
+          status: 'paid',
+          razorpay_payment_id: paymentId || null,
+          updated_at: now.toISOString(),
+        })
+        .eq('razorpay_order_id', orderId);
+    } catch (orderErr) {
+      console.warn('Could not update order status in orders table:', orderErr);
+    }
   }
 
   return {
-    success: true,
+    success: !error,
     planTier,
     subscribed_at: now.toISOString(),
     subscription_expires_at: expiresAt.toISOString(),
